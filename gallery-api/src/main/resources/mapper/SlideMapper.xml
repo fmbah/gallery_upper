@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.SlideMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.Slide">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="link_url" jdbcType="VARCHAR" property="linkUrl" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="weight" jdbcType="TINYINT" property="weight" />
+  </resultMap>
+</mapper>

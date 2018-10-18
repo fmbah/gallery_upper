@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.TemplateStatisticsMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.TemplateStatistics">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="template_id" jdbcType="INTEGER" property="templateId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="visitor_count" jdbcType="INTEGER" property="visitorCount" />
+    <result column="share_count" jdbcType="INTEGER" property="shareCount" />
+    <result column="used_count" jdbcType="INTEGER" property="usedCount" />
+  </resultMap>
+
+
+  <select id="queryCategoryDatas" resultType="java.util.Map">
+select
+  (select tb_template_category.title from tb_template_category
+  where tb_template_category.id = tb_template_statistics.category_id) as categoryName,
+  sum(tb_template_statistics.visitor_count) visitorCount,
+  sum(tb_template_statistics.used_count) usedCount
+from tb_template_statistics
+where 1=1
+    <if test="sTime != null and sTime != ''">
+      AND tb_template_statistics.gmt_create <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
+    </if>
+    <if test="eTime != null and eTime != ''">
+      AND tb_template_statistics.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
+    </if>
+group by category_id order by category_id;
+  </select>
+
+</mapper>

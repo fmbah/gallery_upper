@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.CompanyBrandMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.CompanyBrand">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="contact_person" jdbcType="VARCHAR" property="contactPerson" />
+    <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="expired_time" jdbcType="TIMESTAMP" property="expiredTime" />
+  </resultMap>
+</mapper>

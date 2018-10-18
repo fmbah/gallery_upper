@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.BrandCdkeyMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.BrandCdkey">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="is_used" jdbcType="TINYINT" property="isUsed" />
+    <result column="used_user_id" jdbcType="INTEGER" property="usedUserId" />
+    <result column="used_time" jdbcType="TIMESTAMP" property="usedTime" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+</mapper>

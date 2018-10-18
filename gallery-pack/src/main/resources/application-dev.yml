@@ -1,0 +1,80 @@
+# 开发环境配置
+http:
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
+# 数据源配置
+spring:
+  datasource:
+    drivername: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.220.110.166:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123456
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 600
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+
+  redis:
+      database: 8
+      host: 10.220.110.228
+      port: 6379
+      pass: none
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+      timeout: 0
+
+
+aliyun:
+  oss:
+    endpoint: http://oss-cn-hangzhou.aliyuncs.com
+    accessKeyId: LTAIAop7Bgx35OgG
+    accessKeySecret: ydBCcgGiwqNZDrN2d4d1XbL954eYuZ
+    bucket: daily-test
+    cdnurl: https://daily-test.oss-cn-hangzhou.aliyuncs.com/
+
+
+wechat:
+  miniapp:
+    appid: wx45d98d2c8e80956f
+    secret: 42f0e12c6ce1019d4b467d028208e741
+    mchId: 1488332072
+    mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
+    token: gOcTDdBFEI
+    aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
+    msgDataFormat: JSON
+  pay:
+      appId: wx45d98d2c8e80956f
+      mchId: 1488332072
+      mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
+      subAppId:
+      subMchId:
+      keyPath:
+  mp:
+      appId: wx339e0d4617a97a30
+      secret: 4e9b94388c3980c91fb5757086e3784d
+      token: gOcTDdBFEI
+      aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    com:
+      xs:
+        daos: debug

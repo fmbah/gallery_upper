@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- 定义参数 -->
+    <property name="log.lever" value="info" />
+    <property name="log.maxHistory" value="30" />
+    <!--<property name="log.filePath" value="${catalina.base}/logs/webapp"></property>-->
+    <property name="log.filePath" value="gallery/logs"></property>
+    <property name="log.pattern" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n" />
+
+
+    <!-- INFO -->
+    <appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${log.filePath}/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${log.filePath}/log/info.%d{yyyy-MM-dd}.log.gz
+            </fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- ERROR -->
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <file>${log.filePath}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 文件名称 -->
+            <fileNamePattern>${log.filePath}/log/error.%d{yyyy-MM-dd}.log.gz
+            </fileNamePattern>
+            <!-- 文件最大保存历史数量 -->
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+
+    <!-- 生产环境用info -->
+    <logger name="com.xs" level="${log.lever}">
+        <appender-ref ref="infoAppender" />
+        <appender-ref ref="errorAppender" />
+    </logger>
+</configuration>
