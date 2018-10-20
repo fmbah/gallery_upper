@@ -16,4 +16,52 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
+
+
+  <select id="searchTemplates" resultType="java.util.HashMap">
+
+    select t.id as id, t.category_id as categoryId, t.name as name, t.brand_id as brandId,
+      t.descri as descri, t.preview_image_url as previewImageUrl, t.ratio as ratio,
+
+      tc.title as title, tc.type as type, tc.background_image_url as backgroundImageUrl,
+      tc.introduction as introduction, tc.is_hot as isHot, tc.template_filters as templateFilters,
+      tc.id as tcId
+
+    from tb_template as t inner join tb_template_category as tc on t.category_id = tc.id and
+    t.is_enabled = true
+    where 1 != 0
+
+
+    <if test="lNames != null and lNames != ''">
+    or t.id in (select distinct tl.template_id as templateId
+    from tb_label as l inner join tb_template_labels as tl on tl.label_id = l.id
+
+    <foreach item="lName" index="index" collection="lNames" >
+      and l.name like concat('%',#{lName},'%')
+    </foreach>
+
+    )
+    </if>
+
+    <if test="tcTitle != null and tcTitle != ''">
+      <bind name="_tcTitle" value="'%' + _parameter.tcTitle + '%'" />
+      or tc.title like #{_tcTitle}
+    </if>
+    <if test="tName != null and tName != ''">
+      <bind name="_tName" value="'%' + _parameter.tName + '%'" />
+      or t.name like #{_tName}
+    </if>
+
+    <if test="tcId != null and tcId != ''">
+      <bind name="_tcId" value="'%' + _parameter.tcId + '%'" />
+      or t.id = #{_tcId}
+    </if>
+    <if test="tRatio != null and tRatio != ''">
+      <bind name="_tRatio" value="'%' + _parameter.tRatio + '%'" />
+      or t.ratio = #{_tRatio}
+    </if>
+
+    order by t.gmt_modified desc;
+  </select>
+
 </mapper>

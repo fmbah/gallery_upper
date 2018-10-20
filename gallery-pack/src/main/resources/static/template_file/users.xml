@@ -1,0 +1,7 @@
+<xls>
+    <area ref="Sheet1!A1:K2">
+        <each items="users" var="bean" ref="Sheet1!A2:K2">
+            <area ref="Sheet1!A2:K2"/>
+        </each>
+    </area>
+</xls>

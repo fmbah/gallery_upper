@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
@@ -60,6 +61,9 @@ public class CompanyBrand extends BaseBean {
     @Transient
     @ApiModelProperty(value = "模板数量")
     private Integer userCount;
+    @Transient
+    @ApiModelProperty(value = "模板集合")
+    private List<Template> templateList;
 
     /**
      * @return id
@@ -191,5 +195,13 @@ public class CompanyBrand extends BaseBean {
 
     public void setUserCount(Integer userCount) {
         this.userCount = userCount;
+    }
+
+    public List<Template> getTemplateList() {
+        return templateList;
+    }
+
+    public void setTemplateList(List<Template> templateList) {
+        this.templateList = templateList;
     }
 }

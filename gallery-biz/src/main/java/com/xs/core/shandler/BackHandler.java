@@ -91,7 +91,7 @@ public class BackHandler extends HandlerInterceptorAdapter {
 
                     if (menuId == null) {
                         ResponseBean result = new ResponseBean();
-                        result.setCode(ResultCode.UNAUTHORIZED).setMsg("当前操作代码:0,未传菜单id");//未传菜单id
+                        result.setCode(ResultCode.FAIL).setMsg("当前操作代码:0,未传菜单id");//未传菜单id
                         RespUtil.responseResult(response, result);
                         return false;
                     }

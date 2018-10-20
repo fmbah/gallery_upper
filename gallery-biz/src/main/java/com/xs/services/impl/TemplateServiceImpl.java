@@ -2,14 +2,10 @@ package com.xs.services.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xs.beans.CompanyBrand;
-import com.xs.beans.TemplateCategory;
+import com.xs.beans.*;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
-import com.xs.daos.CompanyBrandMapper;
-import com.xs.daos.TemplateCategoryMapper;
-import com.xs.daos.TemplateMapper;
-import com.xs.beans.Template;
+import com.xs.daos.*;
 import com.xs.services.TemplateCategoryService;
 import com.xs.services.TemplateService;
 import com.xs.core.sservice.AbstractService;
@@ -41,6 +37,10 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
     private TemplateCategoryMapper templateCategoryMapper;
     @Autowired
     private CompanyBrandMapper companyBrandMapper;
+    @Autowired
+    private TemplateLabelsMapper templateLabelsMapper;
+    @Autowired
+    private LabelMapper labelMapper;
 
     @Override
     public Object queryWithPage(int page, int size, Boolean isEnabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand) {
@@ -109,10 +109,29 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
             }
         }
 
+        if (StringUtils.isEmpty(model.getLabelIds())) {
+            throw new ServiceException("标签数据不可为空");
+        } else {
+            for (String labelId : model.getLabelIds().split(",")) {
+                Label label = labelMapper.selectByPrimaryKey(Integer.valueOf(labelId));
+                if (label == null) {
+                    throw new ServiceException("标签数据不存在或已删除");
+                }
+            }
+        }
+
         model.setGmtCreate(new Date());
         model.setGmtModified(new Date());
 
         super.save(model);
+
+        for (String labelId : model.getLabelIds().split(",")) {
+            TemplateLabels templateLabels = new TemplateLabels();
+            templateLabels.setGmtCreate(new Date());
+            templateLabels.setLabelId(Integer.valueOf(labelId));
+            templateLabels.setTemplateId(model.getId());
+            templateLabelsMapper.insert(templateLabels);
+        }
     }
 
     @Override
@@ -133,10 +152,34 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
             }
         }
 
+        if (StringUtils.isEmpty(model.getLabelIds())) {
+            throw new ServiceException("标签数据不可为空");
+        } else {
+            for (String labelId : model.getLabelIds().split(",")) {
+                Label label = labelMapper.selectByPrimaryKey(Integer.valueOf(labelId));
+                if (label == null) {
+                    throw new ServiceException("标签数据不存在或已删除");
+                }
+            }
+        }
+
         BeanUtils.copyProperties(model, template);
 
         template.setGmtModified(new Date());
         super.update(template);
+
+        Condition templateLabelsCondition = new Condition(TemplateLabels.class);
+        Example.Criteria templateLabelsConditionCriteria = templateLabelsCondition.createCriteria();
+        templateLabelsConditionCriteria.andEqualTo("templateId", template.getId());
+        templateLabelsMapper.deleteByCondition(templateLabelsCondition);
+
+        for (String labelId : model.getLabelIds().split(",")) {
+            TemplateLabels templateLabels = new TemplateLabels();
+            templateLabels.setGmtCreate(new Date());
+            templateLabels.setLabelId(Integer.valueOf(labelId));
+            templateLabels.setTemplateId(template.getId());
+            templateLabelsMapper.insert(templateLabels);
+        }
     }
 
     @Override

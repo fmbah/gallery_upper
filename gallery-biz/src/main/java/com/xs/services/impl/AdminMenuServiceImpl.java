@@ -45,7 +45,7 @@ public class AdminMenuServiceImpl extends AbstractService<AdminMenu> implements 
             Condition condition1 = new Condition(AdminMenu.class);
             Example.Criteria criteria1 = condition1.createCriteria();
             criteria1.andEqualTo("pId", result.get(i).getId());
-            result.get(i).setSubMenu(super.findByCondition(condition1));
+            result.get(i).setChildren(super.findByCondition(condition1));
         }
         return result;
     }
@@ -68,7 +68,7 @@ public class AdminMenuServiceImpl extends AbstractService<AdminMenu> implements 
             Condition condition1 = new Condition(AdminMenu.class);
             Example.Criteria criteria1 = condition1.createCriteria();
             criteria1.andEqualTo("pId", adminMenus.get(i).getId());
-            adminMenus.get(i).setSubMenu(super.findByCondition(condition1));
+            adminMenus.get(i).setChildren(super.findByCondition(condition1));
         }
 
         //所有菜单,已有菜单,
@@ -89,7 +89,7 @@ public class AdminMenuServiceImpl extends AbstractService<AdminMenu> implements 
                 next.setHasSelected(true);
             }
 
-            List<AdminMenu> subMenu = next.getSubMenu();
+            List<AdminMenu> subMenu = next.getChildren();
             if (subMenu != null) {
                 boolean hasDel1 = false;
                 for (AdminMenu adminMenu : subMenu) {
@@ -108,6 +108,15 @@ public class AdminMenuServiceImpl extends AbstractService<AdminMenu> implements 
                 }
             }
 
+        }
+
+        for (AdminMenu adminMenu : adminMenus) {
+            adminMenu.setLabel(adminMenu.getMenuName());
+            if (adminMenu.getChildren() != null && !adminMenu.getChildren().isEmpty()) {
+                for (AdminMenu child : adminMenu.getChildren()) {
+                    child.setLabel(child.getMenuName());
+                }
+            }
         }
 
         return ResultGenerator.genSuccessResult(adminMenus);

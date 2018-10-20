@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.UserMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.User">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="wx_openid" jdbcType="VARCHAR" property="wxOpenid" />
+    <result column="wx_unionid" jdbcType="VARCHAR" property="wxUnionid" />
+    <result column="wx_mini_openid" jdbcType="VARCHAR" property="wxMiniOpenid" />
+    <result column="wx_sex" jdbcType="TINYINT" property="wxSex" />
+    <result column="wx_headimgurl" jdbcType="VARCHAR" property="wxHeadimgurl" />
+    <result column="member_expired" jdbcType="TIMESTAMP" property="memberExpired" />
+    <result column="recommend_id" jdbcType="INTEGER" property="recommendId" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="member_type" jdbcType="TINYINT" property="memberType" />
+    <result column="is_agent" jdbcType="BIT" property="isAgent" />
+    <result column="cash_balance" jdbcType="DECIMAL" property="cashBalance" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+  </resultMap>
+</mapper>

@@ -70,6 +70,14 @@ public class Template {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
+    @Transient
+    @ApiModelProperty(value = "模板标签id集合")
+    private String labelIds;
+
+    @Transient
+    @ApiModelProperty(value = "是否收藏")
+    private Boolean hasCollection;
+
     /**
      * @return id
      */
@@ -228,5 +236,21 @@ public class Template {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    public String getLabelIds() {
+        return labelIds;
+    }
+
+    public void setLabelIds(String labelIds) {
+        this.labelIds = labelIds;
+    }
+
+    public Boolean getHasCollection() {
+        return hasCollection;
+    }
+
+    public void setHasCollection(Boolean hasCollection) {
+        this.hasCollection = hasCollection;
     }
 }

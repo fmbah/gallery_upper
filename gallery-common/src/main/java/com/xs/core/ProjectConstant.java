@@ -33,6 +33,8 @@ public final class ProjectConstant {
     public static final String TEMPLATE_SHARE = "templateShare:templateId:%s:categoryId:%s:brandId:%s";
     public static final String TEMPLATE_USED = "templateUsed:templateId:%s:categoryId:%s:brandId:%s";
 
+    public static final String USER_TEMPLATE_COLLECTIONS = "userTemplateCollection:userId:%s";
+
 
 
 }

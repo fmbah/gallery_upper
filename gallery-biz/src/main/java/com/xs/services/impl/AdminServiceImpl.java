@@ -157,6 +157,15 @@ public class AdminServiceImpl extends AbstractService<Admin> implements AdminSer
         admin.setGmtModified(new Date());
         this.update(admin);
 
+        try (Jedis jedis = jedisPool.getResource()) {
+            Long zrem = jedis.zrem(BACK_LOGIN_BZ, admin.getUsername());
+            if (zrem != null && zrem != 0) {
+                System.out.println("redis 删除ok ");
+            } else {
+                System.out.println("redis 删除error ");
+            }
+        }
+
         return ResultGenerator.genSuccessResult();
     }
 

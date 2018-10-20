@@ -1,7 +1,10 @@
 package com.xs.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xs.beans.Admin;
 import com.xs.beans.AdminRoleMenu;
+import com.xs.core.ResponseBean;
 import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.AdminMenuService;
@@ -22,6 +25,7 @@ import javax.servlet.http.Cookie;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.xs.core.ProjectConstant.BACK_LOGIN_BZ;
@@ -128,7 +132,19 @@ public class LoginController extends BaseController {
 //                        System.out.println(targetCookie.getValue());
 //                    }
 
-                    return adminMenuService.getMenusByRoleId(admin.getRoleId());
+                    HashMap result = new HashMap();
+                    result.put("user", admin);
+                    Object menus = adminMenuService.getMenusByRoleId(admin.getRoleId());
+                    if (menus != null) {
+                        Gson gson = new Gson();
+                        ResponseBean responseBean = gson.fromJson(gson.toJson(menus), new TypeToken<ResponseBean>() {
+                        }.getType());
+                        result.put("menus", responseBean.getData());
+                    } else {
+                        result.put("menus", null);
+                    }
+
+                    return ResultGenerator.genSuccessResult(result);
                 } else {
                     return ResultGenerator.genFailResult("帐号或密码不正确，请重新输入或联系管理员处理");
                 }

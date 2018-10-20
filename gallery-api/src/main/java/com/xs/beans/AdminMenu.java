@@ -49,10 +49,12 @@ public class AdminMenu {
 
 
     @Transient
-    private List<AdminMenu> subMenu;
+    private List<AdminMenu> children;
     @Transient
     @ApiModelProperty(value = "是否选中")
     private Boolean hasSelected;
+    @Transient
+    private String label;
 
     /**
      * @return id
@@ -186,12 +188,12 @@ public class AdminMenu {
         this.gmtModified = gmtModified;
     }
 
-    public List<AdminMenu> getSubMenu() {
-        return subMenu;
+    public List<AdminMenu> getChildren() {
+        return children;
     }
 
-    public void setSubMenu(List<AdminMenu> subMenu) {
-        this.subMenu = subMenu;
+    public void setChildren(List<AdminMenu> children) {
+        this.children = children;
     }
 
     public Boolean getHasSelected() {
@@ -200,5 +202,13 @@ public class AdminMenu {
 
     public void setHasSelected(Boolean hasSelected) {
         this.hasSelected = hasSelected;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
