@@ -40,7 +40,7 @@ category: 普通类目
 
     @ApiModelProperty(value = "简介")
     @Length(max = 128,message = "简介最长128个字符!")
-    @NotBlank(message = "简介不能为空")
+//    @NotBlank(message = "简介不能为空")
     private String introduction;
 
     /**
@@ -49,7 +49,7 @@ category: 普通类目
     @Column(name = "background_image_url")
     @ApiModelProperty(value = "分类背景图")
     @Length(max = 192,message = "分类背景图最长192个字符!")
-    @NotBlank(message = "分类背景图不能为空")
+//    @NotBlank(message = "分类背景图不能为空")
     private String backgroundImageUrl;
 
     @Column(name = "gmt_create")
@@ -65,7 +65,7 @@ category: 普通类目
      */
     @Column(name = "template_filters")
     @ApiModelProperty(value = "模板滤镜，数组形式。如：[{\"num\":\"1\", \"url\": \"xxx\"}, {}...]")
-    @NotBlank(message = "模板滤镜不能为空")
+//    @NotBlank(message = "模板滤镜不能为空")
     private String templateFilters;
 
 

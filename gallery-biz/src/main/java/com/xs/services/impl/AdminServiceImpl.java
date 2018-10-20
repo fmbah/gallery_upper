@@ -25,6 +25,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.xs.core.ProjectConstant.BACK_DEFAULT_PASS;
@@ -90,11 +91,25 @@ public class AdminServiceImpl extends AbstractService<Admin> implements AdminSer
 
     @Override
     public Admin findById(Integer id) {
-        return super.findById(id);
+
+        Admin admin = super.findById(id);
+
+        if (admin != null) {
+            AdminRole adminRole = adminRoleMapper.selectByPrimaryKey(admin.getRoleId());
+            if (adminRole != null) {
+                admin.setRoleName(adminRole.getName());
+            }
+            CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(admin.getBrandId());
+            if (companyBrand != null) {
+                admin.setBrandName(companyBrand.getName());
+            }
+        }
+
+        return admin;
     }
 
     @Override
-    public PageInfo queryWithPage(int page, int size, Integer roleId, String username, Integer brandId, Boolean isBrand) {
+    public PageInfo queryWithPage(int page, int size, Integer roleId, String username, Integer brandId, Boolean isBrand, String brandName) {
 
         PageHelper.startPage(page, size);
         Condition condition = new Condition(Admin.class);
@@ -124,6 +139,18 @@ public class AdminServiceImpl extends AbstractService<Admin> implements AdminSer
             CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(adminRoleList.get(i).getBrandId());
             if (companyBrand != null) {
                 adminRoleList.get(i).setBrandName(companyBrand.getName());
+            }
+        }
+
+        if (!StringUtils.isEmpty(brandName)) {
+            if (adminRoleList != null && adminRoleList.size() > 0) {
+                Iterator<Admin> iterator = adminRoleList.iterator();
+                while (iterator.hasNext()) {
+                    Admin next = iterator.next();
+                    if (next.getBrandName().indexOf(brandName) < 0) {
+                        iterator.remove();
+                    }
+                }
             }
         }
 

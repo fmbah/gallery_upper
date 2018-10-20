@@ -3,10 +3,12 @@ package com.xs.services.impl;
 import com.aliyun.oss.OSSClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xs.beans.User;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.ResultGenerator;
 import com.xs.daos.BrandCdkeyMapper;
 import com.xs.beans.BrandCdkey;
+import com.xs.daos.UserMapper;
 import com.xs.services.BrandCdkeyService;
 import com.xs.core.sservice.AbstractService;
 import com.xs.utils.JxlsExportUtil;
@@ -42,6 +44,8 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
     private BrandCdkeyMapper brandcdkeyMapper;
     @Autowired
     private OssConfig ossConfig;
+    @Autowired
+    private UserMapper userMapper;
 
 
     @Override
@@ -63,11 +67,15 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
         condition.setOrderByClause(" gmt_modified desc");
 
         List<BrandCdkey> list = super.findByCondition(condition);
-        //TODO 使用用户名称
         for (int i = 0; i < list.size(); i++) {
 
             list.get(i).setIsUsedStr(list.get(i).getIsUsed().byteValue() == 0 ? "未激活" : "已激活");
-
+            User user = userMapper.selectByPrimaryKey(list.get(i).getUsedUserId());
+            if (user != null) {
+                list.get(i).setUsedUserName(user.getNickname());
+            } else {
+                list.get(i).setUsedUserName(null);
+            }
         }
 
         PageInfo pageInfo = new PageInfo(list);
@@ -91,10 +99,16 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
         PageInfo pageInfo = new PageInfo(list);
 
         list = pageInfo.getList();
-        //TODO 使用用户名称
         for (int i = 0; i < list.size(); i++) {
 
             list.get(i).setIsUsedStr(list.get(i).getIsUsed().byteValue() == 0 ? "未激活" : "已激活");
+
+            User user = userMapper.selectByPrimaryKey(list.get(i).getUsedUserId());
+            if (user != null) {
+                list.get(i).setUsedUserName(user.getNickname());
+            } else {
+                list.get(i).setUsedUserName(null);
+            }
         }
         File exportFile = null;
         try{

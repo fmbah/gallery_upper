@@ -24,7 +24,7 @@ public interface AdminService extends Service<Admin> {
      * @auther: Fmbah
      * @date: 18-10-16 下午6:33
      */
-    PageInfo queryWithPage(int page, int size, Integer roleId, String username, Integer brandId, Boolean isBrand);
+    PageInfo queryWithPage(int page, int size, Integer roleId, String username, Integer brandId, Boolean isBrand, String brandName);
 
 
     /**

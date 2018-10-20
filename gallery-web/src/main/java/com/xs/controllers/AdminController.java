@@ -101,15 +101,17 @@ public class AdminController extends BaseController{
     @ApiImplicitParam(value = "条数",name = "size",paramType = "query",defaultValue = "0"),
             @ApiImplicitParam(value = "角色id",name = "roleId",paramType = "query"),
             @ApiImplicitParam(value = "帐号名称",name = "username",paramType = "query"),
+            @ApiImplicitParam(value = "品牌名称",name = "brandName",paramType = "query"),
             @ApiImplicitParam(value = "是否品牌帐号",name = "isBrand",paramType = "query", required = true)
     })
     @GetMapping(value = "/list",produces = "application/json;charset=utf-8")
     public Object list(@RequestParam(required = false,defaultValue = "0") Integer page,
                        @RequestParam(required = false,defaultValue = "0") Integer size,
                        @RequestParam(required = false) Integer roleId,
+                       @RequestParam(required = false) String brandName,
                        @RequestParam(required = false) String username,
                        @RequestParam(defaultValue = "false") Boolean isBrand
     ){
-        return ResultGenerator.genSuccessResult(adminService.queryWithPage(page, size, roleId, username, 0, isBrand));
+        return ResultGenerator.genSuccessResult(adminService.queryWithPage(page, size, roleId, username, 0, isBrand, brandName));
     }
 }

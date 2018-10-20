@@ -65,6 +65,10 @@ public class CompanyBrand extends BaseBean {
     @ApiModelProperty(value = "模板集合")
     private List<Template> templateList;
 
+    @Transient
+    @ApiModelProperty(value = "激活码数量")
+    private Integer ckdNum;
+
     /**
      * @return id
      */
@@ -203,5 +207,13 @@ public class CompanyBrand extends BaseBean {
 
     public void setTemplateList(List<Template> templateList) {
         this.templateList = templateList;
+    }
+
+    public Integer getCkdNum() {
+        return ckdNum;
+    }
+
+    public void setCkdNum(Integer ckdNum) {
+        this.ckdNum = ckdNum;
     }
 }

@@ -23,10 +23,7 @@ import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.xs.core.ProjectConstant.COMPANY_BRAND_CDK;
 
@@ -77,7 +74,26 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
             List<Template> templates = templateMapper.selectByCondition(tmpTemplate);
             list.get(i).setTemplateCount(templates == null || templates.size() == 0 ? 0 : templates.size());
 
-            //TODO 拥有用户数    从激活码中取,需要根据按照品牌id筛选后,通过使用者去重
+            Condition cdkCondition = new Condition(BrandCdkey.class);
+            Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
+            cdkConditionCriteria.andEqualTo("brandId", list.get(i).getId());
+//            cdkConditionCriteria.andEqualTo("isUsed", 1);
+//            cdkConditionCriteria.andNotEqualTo("usedUserId", 0);
+            List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(cdkCondition);
+            if (brandCdkeys != null && brandCdkeys.size() > 0) {
+                HashSet<Integer> uIds = new HashSet<>();
+                for (BrandCdkey brandCdkey : brandCdkeys) {
+                    if (brandCdkey.getUsedUserId() != null && brandCdkey.getUsedUserId() != 0 && brandCdkey.getIsUsed().byteValue() == 1) {
+                        uIds.add(brandCdkey.getUsedUserId());
+                    }
+                }
+                list.get(i).setUserCount(uIds.size());
+                list.get(i).setCkdNum(brandCdkeys.size());
+            } else {
+                list.get(i).setUserCount(0);
+                list.get(i).setCkdNum(0);
+            }
+
         }
         PageInfo pageInfo = new PageInfo(list);
 

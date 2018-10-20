@@ -110,7 +110,7 @@ public class BrandCdkeyController extends BaseController{
                        @RequestParam(required = false,defaultValue = "0") Integer size,
                        @RequestParam(required = false) String code,
                        @RequestParam(required = false) String isUsed,
-                                   @RequestParam(required = false) Integer brandId
+                                   @RequestParam Integer brandId
     ){
         return brandCdkeyService.queryWithPage(page, size, code, isUsed, brandId);
     }

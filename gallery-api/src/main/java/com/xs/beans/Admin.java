@@ -22,7 +22,7 @@ public class Admin extends BaseBean {
      */
     @ApiModelProperty(value = "帐号")
     @NotBlank(message = "帐号不能为空!")
-    @Length(min=1,max=20,message = "帐号不能超过20个字符!")
+    @Length(max=20,message = "帐号不能超过20个字符!")
     private String username;
 
     /**
@@ -42,8 +42,8 @@ public class Admin extends BaseBean {
     private Date gmtModified;
 
     @ApiModelProperty(value = "简介")
-    @NotBlank(message = "简介不能为空!")
-    @Length(min=1,max=256,message = "简介不能超过256个字符!")
+//    @NotBlank(message = "简介不能为空!")
+    @Length(max=256,message = "简介不能超过256个字符!")
     private String remark;
 
     /**

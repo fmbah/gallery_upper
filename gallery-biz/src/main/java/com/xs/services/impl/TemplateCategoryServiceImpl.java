@@ -96,6 +96,19 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
     public void save(TemplateCategory model) {
         model.setGmtModified(new Date());
         model.setGmtCreate(new Date());
+
+
+        if (StringUtils.isEmpty(model.getTemplateFilters())) {
+            model.setTemplateFilters(StringUtils.EMPTY);
+        }
+        if (StringUtils.isEmpty(model.getBackgroundImageUrl())) {
+            model.setBackgroundImageUrl(StringUtils.EMPTY);
+        }
+
+        if (StringUtils.isEmpty(model.getIntroduction())) {
+            model.setIntroduction(StringUtils.EMPTY);
+        }
+
         super.save(model);
     }
 
