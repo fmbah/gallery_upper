@@ -78,6 +78,9 @@ public class Template {
     @ApiModelProperty(value = "是否收藏")
     private Boolean hasCollection;
 
+    @Transient
+    @ApiModelProperty(value = "是否可用")
+    private Boolean canUse;
     /**
      * @return id
      */
@@ -252,5 +255,13 @@ public class Template {
 
     public void setHasCollection(Boolean hasCollection) {
         this.hasCollection = hasCollection;
+    }
+
+    public Boolean getCanUse() {
+        return canUse;
+    }
+
+    public void setCanUse(Boolean canUse) {
+        this.canUse = canUse;
     }
 }

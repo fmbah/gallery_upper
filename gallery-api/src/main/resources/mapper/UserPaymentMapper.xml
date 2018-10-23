@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.UserPaymentMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.UserPayment">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
+    <result column="gmt_payment" jdbcType="TIMESTAMP" property="gmtPayment" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="recharge_type" jdbcType="TINYINT" property="rechargeType" />
+
+    <result column="sp1Id" jdbcType="INTEGER" property="sp1Id" />
+    <result column="sp1Name" jdbcType="VARCHAR" property="sp1Name" />
+    <result column="sp1Profit" jdbcType="DECIMAL" property="sp1Profit" />
+    <result column="sp2Id" jdbcType="INTEGER" property="sp2Id" />
+    <result column="sp2Name" jdbcType="VARCHAR" property="sp2Name" />
+    <result column="sp2Profit" jdbcType="DECIMAL" property="sp2Profit" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
+    <result column="wxHeadImgurl" jdbcType="VARCHAR" property="wxHeadImgurl" />
+    <result column="rechargeTypeStr" jdbcType="VARCHAR" property="rechargeTypeStr" />
+
+  </resultMap>
+
+
+  <select id="queryWithPage" parameterType="com.xs.beans.UserPayment" resultMap="BaseResultMap">
+
+    select * from (select tup.*,
+                      case tup.recharge_type
+                      when 5 then '半年会员'
+                      when 6 then '一年会员'
+                      when 10 then '终身会员'
+                      else
+                      '未知'
+                      end as rechargeTypeStr,
+                     (select tu.nickname from tb_user as tu where tup.user_id = tu.id) as userName,
+                     (select tu.wx_headimgurl from tb_user as tu where tup.user_id = tu.id) as wxHeadImgurl,
+                     tmp_tsp1.user_id as sp1Id, tmp_tsp1.nickname as sp1Name,tmp_tsp1.profit as sp1Profit,
+                     tmp_tsp2.user_id as sp2Id, tmp_tsp2.nickname as sp2Name,tmp_tsp2.profit as sp2Profit from tb_user_payment as tup
+      left join
+      (select tu.nickname, tu.id, tsp.user_id, tsp.paymnet_id, tsp.profit from tb_share_profit as tsp inner join tb_user as tu on tu.id = tsp.user_id where tsp.sub_type = 1) as tmp_tsp1
+      on tup.id = tmp_tsp1.paymnet_id
+
+      left join
+      (select tu.nickname, tu.id, tsp.user_id, tsp.paymnet_id, tsp.profit from tb_share_profit as tsp inner join tb_user as tu on tu.id = tsp.user_id where tsp.sub_type = 2) as tmp_tsp2
+        on tup.id = tmp_tsp2.paymnet_id ) as tmp
+
+
+    where 1=1 and status = 'paid'
+
+    <if test="userId != null and userId != ''">
+      AND tmp.user_id = #{userId}
+    </if>
+    <if test="userName != null and userName != ''">
+      <bind name="_userName" value="'%' + _parameter.userName + '%'" />
+      AND tmp.userName like #{_userName}
+    </if>
+
+    <if test="sp1Id != null and sp1Id != ''">
+      AND tmp.sp1Id = #{sp1Id}
+    </if>
+    <if test="sp1Name != null and sp1Name != ''">
+      <bind name="_sp1Name" value="'%' + _parameter.sp1Name + '%'" />
+      AND tmp.sp1Name like #{_sp1Name}
+    </if>
+
+    <if test="sTime != null and sTime != ''">
+      AND tmp.gmt_create <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
+    </if>
+    <if test="eTime != null and eTime != ''">
+      AND tmp.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
+    </if>
+
+  </select>
+
+</mapper>

@@ -16,6 +16,8 @@ public final class ProjectConstant {
     public static final String MAPPER_INTERFACE_REFERENCE = BASE_PACKAGE + ".core.smapper.SMapper";//Mapper插件基础接口的完全限定名
 
 
+    public static final String WEB_BACK_DOMAIN = "https://scottwdr.4kb.cn";//后台域名
+
     //阿里配置
     public static final String ALIYUN_OSS_IMG_ADDRESS="https://daily-test.oss-cn-hangzhou.aliyuncs.com/";
 
@@ -32,8 +34,8 @@ public final class ProjectConstant {
     public static final String TEMPLATE_VISITOR = "templateVisitor:templateId:%s:categoryId:%s:brandId:%s";
     public static final String TEMPLATE_SHARE = "templateShare:templateId:%s:categoryId:%s:brandId:%s";
     public static final String TEMPLATE_USED = "templateUsed:templateId:%s:categoryId:%s:brandId:%s";
-
     public static final String USER_TEMPLATE_COLLECTIONS = "userTemplateCollection:userId:%s";
+    public static final String USER_DRAWCASHLOG = "userDrawcashlog:userId:%s";
 
 
 

@@ -49,6 +49,7 @@
         <jxls-poi.version>1.0.15</jxls-poi.version>
         <jxls-jexcel.version>1.0.7</jxls-jexcel.version>
         <jxls-reader.version>[2.0.3,)</jxls-reader.version>
+        <dom4j.version>1.6.1</dom4j.version>
     </properties>
 
     <dependencies>
@@ -205,6 +206,13 @@
             <groupId>org.jxls</groupId>
             <artifactId>jxls-reader</artifactId>
             <version>${jxls-reader.version}</version>
+        </dependency>
+
+        <!-- dom4j -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>${dom4j.version}</version>
         </dependency>
     </dependencies>
 

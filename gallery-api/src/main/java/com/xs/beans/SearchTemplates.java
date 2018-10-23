@@ -26,6 +26,9 @@ public class SearchTemplates extends BaseBean {
     @ApiModelProperty(value = "标签名称,内部系统使用")
     String[] lNames;
 
+    @ApiModelProperty(value = "当前用户id")
+    Integer userId;
+
 
     public String getTcTitle() {
         return tcTitle;
@@ -73,5 +76,13 @@ public class SearchTemplates extends BaseBean {
 
     public void setlNames(String[] lNames) {
         this.lNames = lNames;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

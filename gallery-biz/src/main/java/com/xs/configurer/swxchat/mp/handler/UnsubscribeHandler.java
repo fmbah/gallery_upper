@@ -23,14 +23,11 @@ import java.util.Map;
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 @Scope("singleton")
 public class UnsubscribeHandler extends AbstractHandler{
-//    @Autowired
-//    UserService userService;
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMpXmlMessage, Map<String, Object> map, WxMpService wxMpService, WxSessionManager wxSessionManager) throws WxErrorException {
         String openId = wxMpXmlMessage.getFromUser();
         this.logger.info("取消关注用户 OPENID: " + openId);
         // TODO 可以更新本地数据库为取消关注状态
-//        userService.saveUser("weixinOpenid", openId, null);
         return null;
     }
 }

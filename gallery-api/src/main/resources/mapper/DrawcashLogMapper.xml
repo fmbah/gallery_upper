@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.DrawcashLogMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.DrawcashLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="draw_cash" jdbcType="DECIMAL" property="drawCash" />
+    <result column="taxation_cash" jdbcType="DECIMAL" property="taxationCash" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="fail_msg" jdbcType="VARCHAR" property="failMsg" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="wxHeadImgurl" jdbcType="VARCHAR" property="wxHeadImgurl" />
+    <result column="statusStr" jdbcType="VARCHAR" property="statusStr" />
+  </resultMap>
+
+  <select id="queryWithPage" resultMap="BaseResultMap">
+    select
+      dl.*,
+      case dl.status
+        when 'WAIT_PROCESS' then '审核中'
+        when 'FINISHED' then '已完成'
+        when 'FAIL' then '已拒绝'
+        else '未知'
+      end as statusStr,
+      u.nickname as nickname, u.wx_headimgurl as wxHeadImgurl
+    from tb_drawcash_log as dl, tb_user as u where dl.user_id = u.id
+
+    <if test="sTime != null and sTime != ''">
+      AND dl.gmt_create <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
+    </if>
+    <if test="eTime != null and eTime != ''">
+      AND dl.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
+    </if>
+
+    <if test="userId != null and userId != ''">
+      AND dl.user_id = #{userId}
+    </if>
+    <if test="nickname != null and nickname != ''">
+      <bind name="_userName" value="'%' + _parameter.nickname + '%'" />
+      AND u.nickname like #{_userName}
+    </if>
+    <if test="status != null and status != ''">
+      AND dl.status = #{status}
+    </if>
+
+  </select>
+
+</mapper>

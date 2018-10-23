@@ -5,12 +5,10 @@ import com.xs.services.TemplateCategoryService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.core.scontroller.BaseController;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
 import java.util.List;
@@ -67,8 +65,8 @@ public class TemplateCategoryController extends BaseController{
     }
 
     @ApiOperation(value = "修改滤镜",notes = "修改滤镜")
-    @PostMapping(value = "/updateFilters/{id}/{filters}",produces = "application/json;charset=utf-8")
-    public Object updateFilters(@PathVariable Integer id, @PathVariable String filters) {
+    @PostMapping(value = "/updateFilters/{id}/",produces = "application/json;charset=utf-8")
+    public Object updateFilters(@PathVariable Integer id, @RequestParam String filters) {
         return templateCategoryService.updateFilters(id, filters);
     }
 

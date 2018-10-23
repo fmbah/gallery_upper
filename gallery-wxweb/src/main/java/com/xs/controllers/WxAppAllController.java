@@ -61,7 +61,7 @@ public class WxAppAllController extends BaseController {
 
     @GetMapping(value = "/templateInfo/{userId}/{id}/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "模板详情", notes = "模板详情")
-    public Object templateInfo(@ApiParam(name = "userId", value="分类名称", type = "query") @PathVariable Integer userId,
+    public Object templateInfo(@ApiParam(name = "userId", value="用户id", type = "query") @PathVariable Integer userId,
                                @ApiParam(name = "id", value="模板名称", type = "query") @PathVariable Integer id) {
         return wxAppAllService.templateInfo(userId, id);
     }
@@ -71,8 +71,9 @@ public class WxAppAllController extends BaseController {
     public Object templateCenter(@ApiParam(value = "页码",name = "page", type = "query",defaultValue = "0") @RequestParam(required = false, defaultValue = "0") Integer page,
                                  @ApiParam(value = "每页容量",name = "size", type = "query",defaultValue = "0") @RequestParam(required = false, defaultValue = "0") Integer size,
                                  @ApiParam(value = "分类id",name = "categoryId", type = "query") @RequestParam(required = false) Integer categoryId,
-                                 @ApiParam(value = "比例,业务方定",name = "ratio", type = "query") @RequestParam(required = false) Byte ratio) {
-        return wxAppAllService.templateCenter(page, size, categoryId, ratio);
+                                 @ApiParam(value = "比例,业务方定",name = "ratio", type = "query") @RequestParam(required = false) Byte ratio
+                                ,@ApiParam(name = "userId", value="用户id", type = "query", required = true) @RequestParam Integer userId) {
+        return wxAppAllService.templateCenter(page, size, categoryId, ratio, userId);
     }
 
 
@@ -86,8 +87,9 @@ public class WxAppAllController extends BaseController {
     @GetMapping(value = "/userCollections/{userId}/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "用户收藏模板集合", notes = "用户收藏模板集合")
     public Object userCollections(@ApiParam(name = "userId", value="分类名称", type = "query",required = true) @PathVariable Integer userId
+            , @ApiParam(name = "searchText", value="搜索文字", type = "query",required = false) @RequestParam(required = false) String searchText
                                  ) {
-        return wxAppAllService.userCollections(userId);
+        return wxAppAllService.userCollections(userId, searchText);
     }
 
     @PostMapping(value = "/verifyBrandCode/{userId}/{code}/", produces = "application/json;charset=utf-8")
@@ -98,7 +100,13 @@ public class WxAppAllController extends BaseController {
     }
 
 
+    @RequestMapping(value = "orderDown",method = RequestMethod.POST)
+    @ApiOperation(value = "下订单",notes = "下订单")
+    public Object orderDown(@ApiParam(name = "rechargeType", value = "支付类型：5: 半年会员 6: 全年会员 10: 终身会员", required = true, type = "string") @RequestParam Byte rechargeType,
+                            @ApiParam(name = "userId", value = "用户id", required = true, type = "string") @RequestParam Integer userId){
 
+        return wxAppAllService.orderDown(userId, rechargeType);
+    }
 
 
 

@@ -8,14 +8,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.ActiveCdk;
 import com.xs.beans.BrandCdkey;
+import com.xs.beans.ShareProfit;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.Result;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
-import com.xs.daos.ActiveCdkMapper;
-import com.xs.daos.BrandCdkeyMapper;
-import com.xs.daos.CompanyBrandMapper;
-import com.xs.daos.UserMapper;
+import com.xs.daos.*;
 import com.xs.beans.User;
 import com.xs.services.ActiveCdkService;
 import com.xs.services.UserService;
@@ -63,6 +61,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     private ActiveCdkMapper activeCdkMapper;
     @Autowired
     private OssConfig ossConfig;
+    @Autowired
+    private ShareProfitMapper shareProfitMapper;
 
 
     @Override
@@ -248,7 +248,17 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                     }
                 }
 
-                //TODO 分享获益总额
+                Condition shareProfitCondition = new Condition(ShareProfit.class);
+                Example.Criteria shareProfitConditionCriteria = shareProfitCondition.createCriteria();
+                shareProfitConditionCriteria.andEqualTo("userId", user.getId());
+                List<ShareProfit> shareProfits = shareProfitMapper.selectByCondition(shareProfitCondition);
+                if (shareProfits != null) {
+                    BigDecimal allProfit = new BigDecimal(0);
+                    for (ShareProfit shareProfit : shareProfits) {
+                        allProfit = allProfit.add(shareProfit.getProfit());
+                    }
+                    user.setShareProfitAmount(allProfit);
+                }
 
             }
         }

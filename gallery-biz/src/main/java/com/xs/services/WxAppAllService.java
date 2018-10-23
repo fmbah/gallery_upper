@@ -4,7 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.*;
 import com.xs.core.ResultGenerator;
+import com.xs.daos.LabelMapper;
+import com.xs.daos.TemplateLabelsMapper;
 import com.xs.daos.TemplateMapper;
+import com.xs.daos.UserPaymentMapper;
+import com.xs.utils.GenerateOrderno;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static com.xs.core.ProjectConstant.USER_TEMPLATE_COLLECTIONS;
@@ -50,6 +55,12 @@ public class WxAppAllService {
     private JedisPool jedisPool;
     @Autowired
     private BrandCdkeyService brandCdkeyService;
+    @Autowired
+    private UserPaymentMapper userPaymentMapper;
+    @Autowired
+    private TemplateLabelsMapper templateLabelsMapper;
+    @Autowired
+    private LabelMapper labelMapper;
 
     /**
      *
@@ -146,7 +157,36 @@ public class WxAppAllService {
             searchTemplates.setlNames(searchTemplates.get_lNames().split(","));
         }
 
-        return ResultGenerator.genSuccessResult(templateMapper.searchTemplates(searchTemplates));
+        List<HashMap> list = templateMapper.searchTemplates(searchTemplates);
+
+        //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
+        Condition activeCdkCon = new Condition(ActiveCdk.class);
+        Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
+        activeCdkConCriteria.andEqualTo("usedUserId", searchTemplates.getUserId());
+        List<ActiveCdk> activeCdks = activeCdkService.findByCondition(activeCdkCon);
+
+        HashSet<Integer> brandIds = new HashSet<>();
+        if (activeCdks != null && !activeCdks.isEmpty()) {
+            for (ActiveCdk activeCdk : activeCdks) {
+                brandIds.add(activeCdk.getBrandId());
+            }
+        }
+
+        if (list != null && !list.isEmpty()) {
+            Iterator<HashMap> iterator = list.iterator();
+            while(iterator.hasNext()) {
+                HashMap hashMap = iterator.next();
+                Object brandIdObject = hashMap.get("brandId");
+                if (brandIdObject != null) {
+                    Integer brandId = ((Long) brandIdObject).intValue();
+                    if (!brandIds.contains(brandId)) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+
+        return ResultGenerator.genSuccessResult(list);
     }
 
     /**
@@ -163,6 +203,11 @@ public class WxAppAllService {
         if (template == null) {
             return ResultGenerator.genFailResult("模板数据不存在或已删除");
         }
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
+
         try (Jedis jedis = jedisPool.getResource()) {
             Long zrank = jedis.zrank(String.format(USER_TEMPLATE_COLLECTIONS, String.valueOf(userId)), String.valueOf(id));
             if (zrank == null || zrank == 0) {
@@ -171,6 +216,33 @@ public class WxAppAllService {
                 template.setHasCollection(true);
             }
         }
+
+        //详情页面判断当前用户是否可以使用此模板,品牌会员模板均可使用,会员只可使用普通模板
+        //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
+        Condition activeCdkCon = new Condition(ActiveCdk.class);
+        Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
+        activeCdkConCriteria.andEqualTo("usedUserId", userId);
+        List<ActiveCdk> activeCdks = activeCdkService.findByCondition(activeCdkCon);
+
+        HashSet<Integer> brandIds = new HashSet<>();
+        if (activeCdks != null && !activeCdks.isEmpty()) {
+            for (ActiveCdk activeCdk : activeCdks) {
+                brandIds.add(activeCdk.getBrandId());
+            }
+        }
+
+        boolean canUse = false;
+        if (user.getMemberExpired().after(new Date())) {//是会员且未过期
+            if (template.getBrandId() != null && template.getBrandId() != 0) {
+
+            } else {
+                canUse = true;
+            }
+        }
+        if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {//品牌会员可使用所有普通模板以及自己品牌模板
+            canUse = true;
+        }
+        template.setCanUse(canUse);
 
         return ResultGenerator.genSuccessResult(template);
     }
@@ -184,7 +256,7 @@ public class WxAppAllService {
      * @auther: Fmbah
      * @date: 18-10-19 下午8:27
      */
-    public Object templateCenter(int page, int size, Integer categoryId, Byte ratio){
+    public Object templateCenter(int page, int size, Integer categoryId, Byte ratio, Integer userId){
 
         HashMap result = new HashMap();
 
@@ -196,6 +268,23 @@ public class WxAppAllService {
         }
         if (ratio != null) {
             criteria.andEqualTo("ratio", ratio);
+        }
+        //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
+        Condition activeCdkCon = new Condition(ActiveCdk.class);
+        Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
+        activeCdkConCriteria.andEqualTo("usedUserId", userId);
+        List<ActiveCdk> activeCdks = activeCdkService.findByCondition(activeCdkCon);
+
+        HashSet<Integer> brandIds = new HashSet<>();
+        if (activeCdks != null && !activeCdks.isEmpty()) {
+            for (ActiveCdk activeCdk : activeCdks) {
+                brandIds.add(activeCdk.getBrandId());
+            }
+        }
+        if (!brandIds.isEmpty()) {
+            criteria.andIn("brandId", brandIds);
+        } else {
+            criteria.andEqualTo("brandId", 0);
         }
         List<Template> templates = templateService.findByCondition(condition);
         PageInfo pageInfo = new PageInfo(templates);
@@ -249,7 +338,7 @@ public class WxAppAllService {
      * @auther: Fmbah
      * @date: 18-10-19 下午9:03
      */
-    public Object userCollections(Integer userId) {
+    public Object userCollections(Integer userId, String searchText) {
 
         try (Jedis jedis = jedisPool.getResource()) {
             Set<String> templateIds = jedis.zrange(String.format(USER_TEMPLATE_COLLECTIONS, String.valueOf(userId)), 0, -1);
@@ -261,6 +350,50 @@ public class WxAppAllService {
                 if (templates != null && templates.size() > 0) {
                     for (Template template : templates) {
                         template.setHasCollection(true);
+                    }
+                }
+            }
+
+            //根据搜索文字将检索出来过滤下,根据标题和标签
+            if (!StringUtils.isEmpty(searchText)) {
+                if (templates != null && !templates.isEmpty()) {
+                    Iterator<Template> iterator = templates.iterator();
+                    while (iterator.hasNext()) {
+                        Template next = iterator.next();
+
+                        if (next.getName().indexOf(searchText) >= 0) {
+                            continue;
+                        } else {
+                            boolean hasRemove = true;
+                            Condition tlCondition = new Condition(TemplateLabels.class);
+                            Example.Criteria tlConditionCriteria = tlCondition.createCriteria();
+                            tlConditionCriteria.andEqualTo("templateId", next.getId());
+                            List<TemplateLabels> templateLabels = templateLabelsMapper.selectByCondition(tlCondition);
+
+                            if (templateLabels != null && !templateLabels.isEmpty()) {
+                                HashSet<Integer> lIds = new HashSet<>();
+                                for (TemplateLabels tl : templateLabels) {
+                                    lIds.add(tl.getLabelId());
+                                }
+
+                                Condition lCondition = new Condition(Label.class);
+                                Example.Criteria lConditionCriteria = lCondition.createCriteria();
+                                lConditionCriteria.andIn("id", lIds);
+                                List<Label> labels = labelMapper.selectByCondition(lCondition);
+
+                                for (Label l : labels) {
+                                    if (l.getName().indexOf(searchText) >= 0) {
+                                        hasRemove = false;
+                                        break;
+                                    }
+                                }
+
+                            }
+
+                            if (hasRemove) {
+                                iterator.remove();
+                            }
+                        }
                     }
                 }
             }
@@ -295,6 +428,15 @@ public class WxAppAllService {
         return ResultGenerator.genSuccessResult();
     }
 
+    /**
+     *
+     * 功能描述: 用户详情
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-10-22 下午2:45
+     */
     public Object findUserById(Integer id) {
 
         User user = userService.findById(id);
@@ -325,14 +467,99 @@ public class WxAppAllService {
         }
         result.put("companyBrands", companyBrands);
         result.put("companyBrandsNum", companyBrands != null && companyBrands.size() > 0 ?  companyBrands.size() : 0);
-        result.put("user", companyBrands);
+        result.put("user", user);
+
+
+
 
         return ResultGenerator.genSuccessResult(result);
     }
 
 
 
+    /**
+     *
+     * 功能描述:
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-10-22 下午5:59
+     */
+    public Object orderDown(Integer userId, Byte rechargeType){
 
+        Date now = new Date();
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
+
+        if (user.getMemberExpired().after(now)) {//未过期,保证向上充值
+            if (user.getMemberType().byteValue() >= rechargeType) {
+
+                if (user.getMemberType().byteValue() == 5) {
+                    user.setMemberTypeStr("半年会员");
+                } else if(user.getMemberType().byteValue() == 6) {
+                    user.setMemberTypeStr("全年会员");
+                } else if(user.getMemberType().byteValue() == 10) {
+                    user.setMemberTypeStr("终身会员");
+                } else {
+                    user.setMemberTypeStr("");
+                }
+
+                String rechargeTypeStr = "";
+                switch(rechargeType){
+                    case 5 :
+                        rechargeTypeStr = "半年会员";
+                        break;
+                    case 6 :
+                        rechargeTypeStr = "全年会员";
+                        break;
+                    case 10 :
+                        rechargeTypeStr = "终身会员";
+                        break;
+                    default:
+                        rechargeTypeStr = "";
+                        break;
+                }
+                return ResultGenerator.genFailResult("您现在是"+ user.getMemberTypeStr() +"会员，无法充值"+ rechargeTypeStr +"会员！");
+            }
+        }
+
+        Calendar.getInstance();
+        UserPayment userPayment = new UserPayment();
+        userPayment.setUserId(userId);
+        userPayment.setOrderNo(GenerateOrderno.get());
+        userPayment.setStatus("unpay");
+        userPayment.setTransactionId(StringUtils.EMPTY);
+        Calendar instance = Calendar.getInstance();
+        instance.set(Calendar.YEAR, 1970);
+        instance.set(Calendar.MONTH, 0);
+        instance.set(Calendar.DATE, 1);
+        instance.set(Calendar.HOUR, 0);
+        instance.set(Calendar.MINUTE, 0);
+        instance.set(Calendar.SECOND, 0);
+        Date initDate = instance.getTime();
+        userPayment.setGmtPayment(initDate);
+        userPayment.setGmtCreate(now);
+        userPayment.setGmtModified(now);
+        userPayment.setRechargeType(rechargeType);
+
+        if (rechargeType.byteValue() == 5) {
+            userPayment.setAmount(new BigDecimal(268));
+        } else if (rechargeType.byteValue() == 6) {
+            userPayment.setAmount(new BigDecimal(365));
+        } else if (rechargeType.byteValue() == 10) {
+            userPayment.setAmount(new BigDecimal(899));
+        } else {
+            return ResultGenerator.genFailResult("购买类型有误");
+        }
+        userPaymentMapper.insert(userPayment);
+
+
+
+        return ResultGenerator.genSuccessResult(userPayment.getId());
+    }
 
 
 }
