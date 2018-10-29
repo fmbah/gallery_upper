@@ -1,6 +1,7 @@
 package com.xs.beans;
 
 import com.xs.core.sbean.BaseBean;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 import javax.persistence.*;
@@ -47,6 +48,10 @@ public class TemplateStatistics extends BaseBean {
     private String categoryName;
     @Transient
     private String brandName;
+
+    @Transient
+    @ApiModelProperty(value = "模板名称")
+    private String name;
 
     /**
      * @return id
@@ -198,5 +203,13 @@ public class TemplateStatistics extends BaseBean {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

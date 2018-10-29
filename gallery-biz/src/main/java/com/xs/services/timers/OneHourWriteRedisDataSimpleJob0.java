@@ -2,6 +2,7 @@ package com.xs.services.timers;
 
 import com.xs.beans.TemplateStatistics;
 import com.xs.daos.TemplateStatisticsMapper;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +36,10 @@ public class OneHourWriteRedisDataSimpleJob0 {
     @Autowired
     private TemplateStatisticsMapper templateStatisticsMapper;
 
-//    @Scheduled(fixedDelay = 100)
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "0 29 * * * ?")
     public void runSchedule() {
 
         logger.info("OneHourWriteRedisDataSimpleJob0......");
-
         try (Jedis jedis = jedisPool.getResource()) {
             Set<String> visitors = jedis.keys(String.format(TEMPLATE_VISITOR, "*", "*", "*"));
             if (visitors != null) {
@@ -50,8 +49,6 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String brandId = visitor.split(":")[6];
 
                     String visitorCount = jedis.get(visitor);
-                    String shareCount = String.format(TEMPLATE_SHARE, templateId, categoryId, brandId);
-                    String usedCount = String.format(TEMPLATE_USED, templateId, categoryId, brandId);
 
                     TemplateStatistics templateStatistics = new TemplateStatistics();
                     templateStatistics.setBrandId(Integer.valueOf(templateId));
@@ -59,11 +56,57 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     templateStatistics.setBrandId(Integer.valueOf(brandId));
                     templateStatistics.setGmtCreate(new Date());
                     templateStatistics.setVisitorCount(Integer.valueOf(visitorCount));
-                    templateStatistics.setShareCount(Integer.valueOf(shareCount));
-                    templateStatistics.setUsedCount(Integer.valueOf(usedCount));
+                    templateStatistics.setShareCount(0);
+                    templateStatistics.setUsedCount(0);
                     templateStatisticsMapper.insert(templateStatistics);
+
                 }
             }
+
+            Set<String> shares = jedis.keys(String.format(TEMPLATE_SHARE, "*", "*", "*"));
+            if (shares != null) {
+                for (String share : shares) {
+                    String templateId = share.split(":")[2];
+                    String categoryId = share.split(":")[4];
+                    String brandId = share.split(":")[6];
+
+                    String shareCount = jedis.get(share);
+
+                    TemplateStatistics templateStatistics = new TemplateStatistics();
+                    templateStatistics.setBrandId(Integer.valueOf(templateId));
+                    templateStatistics.setCategoryId(Integer.valueOf(categoryId));
+                    templateStatistics.setBrandId(Integer.valueOf(brandId));
+                    templateStatistics.setGmtCreate(new Date());
+                    templateStatistics.setVisitorCount(0);
+                    templateStatistics.setShareCount(Integer.valueOf(shareCount));
+                    templateStatistics.setUsedCount(0);
+                    templateStatisticsMapper.insert(templateStatistics);
+
+                }
+            }
+
+            Set<String> useds = jedis.keys(String.format(TEMPLATE_USED, "*", "*", "*"));
+            if (useds != null) {
+                for (String used : useds) {
+                    String templateId = used.split(":")[2];
+                    String categoryId = used.split(":")[4];
+                    String brandId = used.split(":")[6];
+
+                    String usedCount = jedis.get(used);
+
+                    TemplateStatistics templateStatistics = new TemplateStatistics();
+                    templateStatistics.setBrandId(Integer.valueOf(templateId));
+                    templateStatistics.setCategoryId(Integer.valueOf(categoryId));
+                    templateStatistics.setBrandId(Integer.valueOf(brandId));
+                    templateStatistics.setGmtCreate(new Date());
+                    templateStatistics.setVisitorCount(0);
+                    templateStatistics.setShareCount(0);
+                    templateStatistics.setUsedCount(Integer.valueOf(usedCount));
+                    templateStatisticsMapper.insert(templateStatistics);
+
+                }
+            }
+
         }
 
     }

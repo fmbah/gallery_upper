@@ -1,5 +1,6 @@
 package com.xs.services.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.*;
@@ -9,6 +10,7 @@ import com.xs.daos.*;
 import com.xs.services.TemplateCategoryService;
 import com.xs.services.TemplateService;
 import com.xs.core.sservice.AbstractService;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -122,6 +126,7 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
 
         model.setGmtCreate(new Date());
         model.setGmtModified(new Date());
+        model.setDescri(StringUtils.EMPTY);
 
         super.save(model);
 
@@ -184,6 +189,29 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
 
     @Override
     public Template findById(Integer id) {
-        return super.findById(id);
+        Template template = super.findById(id);
+        if (template == null) {
+            throw new ServiceException("模板数据不存在或已删除");
+        }
+        Condition templateLabelsCondition = new Condition(TemplateLabels.class);
+        Example.Criteria templateLabelsConditionCriteria = templateLabelsCondition.createCriteria();
+        templateLabelsConditionCriteria.andEqualTo("templateId", template.getId());
+        List<TemplateLabels> templateLabels = templateLabelsMapper.selectByCondition(templateLabelsCondition);
+        if (templateLabels != null) {
+            List<HashMap> lidsList = new ArrayList<>();
+            for(TemplateLabels tl : templateLabels) {
+                Label label = labelMapper.selectByPrimaryKey(tl.getLabelId());
+                if (label != null) {
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("name", label.getName());
+                    hashMap.put("id", label.getId());
+                    lidsList.add(hashMap);
+                }
+            }
+            if (!lidsList.isEmpty()) {
+                template.setLabelIds(JSONObject.toJSONString(lidsList));
+            }
+        }
+        return template;
     }
 }

@@ -21,7 +21,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static com.xs.core.ProjectConstant.USER_TEMPLATE_COLLECTIONS;
+import static com.xs.core.ProjectConstant.*;
 
 /**
  * @ClassName WxAppAllService
@@ -243,6 +243,8 @@ public class WxAppAllService {
             canUse = true;
         }
         template.setCanUse(canUse);
+
+        this.templateIncr(userId, template.getId(), 3);
 
         return ResultGenerator.genSuccessResult(template);
     }
@@ -561,5 +563,54 @@ public class WxAppAllService {
         return ResultGenerator.genSuccessResult(userPayment.getId());
     }
 
+    /**
+     *
+     * 功能描述: 查看和分享和使用调用此方法,用来统计数据
+     *
+     * @param: type 类型(1:分享 2:使用 3:查看)
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-10-25 上午11:42
+     */
+    public Object templateIncr(Integer userId, Integer templateId, Integer type) {
 
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
+
+        Template template = templateService.findById(templateId);
+        if (template == null) {
+            return ResultGenerator.genFailResult("模板数据不存在或已删除");
+        }
+        if (!template.getIsEnabled()) {
+            return ResultGenerator.genFailResult("模板数据未启用");
+        }
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            //查看
+            //计数器+1
+            //放到字符串存储起来
+            //定时写到库里,将计数器清空
+            if (type == 3) {
+                String visitorKey = String.format(TEMPLATE_VISITOR, templateId, template.getCategoryId(), template.getBrandId());
+                jedis.incr(visitorKey);
+            }
+
+            //分享
+            if (type == 1) {
+                String shareKey = String.format(TEMPLATE_SHARE, templateId, template.getCategoryId(), template.getBrandId());
+                jedis.incr(shareKey);
+            }
+
+            //使用
+            if (type == 2) {
+                String usedKey = String.format(TEMPLATE_USED, templateId, template.getCategoryId(), template.getBrandId());
+                jedis.incr(usedKey);
+            }
+        }
+
+
+        return ResultGenerator.genSuccessResult();
+    }
 }

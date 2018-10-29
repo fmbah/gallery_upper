@@ -31,7 +31,7 @@ public final class ProjectConstant {
 
     //redis配置
     public static final String COMPANY_BRAND_CDK = "companyBrandCdk";
-    public static final String TEMPLATE_VISITOR = "templateVisitor:templateId:%s:categoryId:%s:brandId:%s";
+    public static final String TEMPLATE_VISITOR = "templateVisitor:templateId:%s:categoryId:%s:brandId:%s";//计数器存储
     public static final String TEMPLATE_SHARE = "templateShare:templateId:%s:categoryId:%s:brandId:%s";
     public static final String TEMPLATE_USED = "templateUsed:templateId:%s:categoryId:%s:brandId:%s";
     public static final String USER_TEMPLATE_COLLECTIONS = "userTemplateCollection:userId:%s";

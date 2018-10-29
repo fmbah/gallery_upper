@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Date: 18-10-10 下午4:27
  * @Description: 
  */
-public class BaseController {
+public abstract class BaseController {
 
     public final Logger logger = LoggerFactory.getLogger(BaseController.class);
 

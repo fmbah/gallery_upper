@@ -10,7 +10,7 @@
     <result column="brand_id" jdbcType="INTEGER" property="brandId" />
     <result column="ratio" jdbcType="TINYINT" property="ratio" />
     <result column="is_enabled" jdbcType="BIT" property="isEnabled" />
-    <result column="preview_image_url" jdbcType="VARCHAR" property="previewImageUrl" />
+    <result column="preview_image_url" jdbcType="LONGVARCHAR" property="previewImageUrl" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="descri" jdbcType="LONGVARCHAR" property="desc" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />

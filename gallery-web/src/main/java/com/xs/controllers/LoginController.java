@@ -3,6 +3,7 @@ package com.xs.controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xs.beans.Admin;
+import com.xs.beans.AdminMenu;
 import com.xs.beans.AdminRoleMenu;
 import com.xs.core.ResponseBean;
 import com.xs.core.ResultGenerator;
@@ -111,7 +112,16 @@ public class LoginController extends BaseController {
                         }
                         String menuIds = "";
                         for (AdminRoleMenu adminRoleMenu : adminRoleMenus) {
-                            menuIds = menuIds + "," + adminRoleMenu.getMenuId();
+                            AdminMenu adminMenu = adminMenuService.findById(adminRoleMenu.getMenuId().intValue());
+                            if (adminMenu != null) {
+                                menuIds = menuIds + "," + adminRoleMenu.getMenuId();
+                                while (adminMenu != null && adminMenu.getpId() != 0) {
+                                    adminMenu = adminMenuService.findById(adminMenu.getpId().intValue());
+                                    if (adminMenu != null) {
+                                        menuIds = menuIds + "," + adminMenu.getId();
+                                    }
+                                }
+                            }
                         }
 
                         String encodeMenuId = URLEncoder.encode(menuIds.substring(1), "utf-8");

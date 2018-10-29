@@ -91,7 +91,8 @@ public class TemplateStatisticsController extends BaseController{
             @ApiImplicitParam(value = "开始时间",name = "sTime",paramType = "query"),
             @ApiImplicitParam(value = "结束时间",name = "eTime",paramType = "query"),
             @ApiImplicitParam(value = "名称",name = "name",paramType = "query"),
-            @ApiImplicitParam(value = "是否品牌",name = "isBrand",paramType = "query", required = true)
+            @ApiImplicitParam(value = "是否品牌",name = "isBrand",paramType = "query", required = true),
+            @ApiImplicitParam(value = "是否导出",name = "isExport",paramType = "query", required = true)
     })
     @GetMapping(value = "/list",produces = "application/json;charset=utf-8")
     public Object list(@RequestParam(required = false,defaultValue = "0") Integer page,
@@ -102,9 +103,10 @@ public class TemplateStatisticsController extends BaseController{
                        @RequestParam(required = false) String eTime,
                        @RequestParam(required = false) String name,
                        @RequestParam Boolean isBrand
+            , @RequestParam Boolean isExport
 
     ){
-        return templateStatisticsService.queryWithPage(page, size, categoryId, name, brandId, isBrand, sTime, eTime);
+        return templateStatisticsService.queryWithPage(page, size, categoryId, name, brandId, isBrand, sTime, eTime, isExport);
     }
 
 

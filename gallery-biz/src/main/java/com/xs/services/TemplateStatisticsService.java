@@ -26,7 +26,7 @@ public interface TemplateStatisticsService extends Service<TemplateStatistics> {
      */
     Object queryWithPage(int page, int size, Integer categoryId,
                          String name, Integer brandId, Boolean isBrand,
-                         String sTime, String eTime);
+                         String sTime, String eTime, Boolean isExport);
 
 
     /**

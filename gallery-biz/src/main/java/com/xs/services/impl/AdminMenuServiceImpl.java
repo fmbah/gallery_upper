@@ -82,17 +82,17 @@ public class AdminMenuServiceImpl extends AbstractService<AdminMenu> implements 
                     break;
                 }
             }
-            if (!hasDel) {
+            if (hasDel) {
 //                iterator.remove();
-                next.setHasSelected(false);
-            } else {
                 next.setHasSelected(true);
+            } else {
+                next.setHasSelected(false);
             }
 
             List<AdminMenu> subMenu = next.getChildren();
             if (subMenu != null) {
-                boolean hasDel1 = false;
                 for (AdminMenu adminMenu : subMenu) {
+                    boolean hasDel1 = false;
                     for (AdminRoleMenu adminRoleMenu : adminRoleMenus) {
                         if (adminMenu.getId().equals(adminRoleMenu.getMenuId())) {
                             hasDel1 = true;
@@ -100,10 +100,10 @@ public class AdminMenuServiceImpl extends AbstractService<AdminMenu> implements 
                         }
                     }
 
-                    if (!hasDel1) {
-                        adminMenu.setHasSelected(false);
-                    } else {
+                    if (hasDel1) {
                         adminMenu.setHasSelected(true);
+                    } else {
+                        adminMenu.setHasSelected(false);
                     }
                 }
             }

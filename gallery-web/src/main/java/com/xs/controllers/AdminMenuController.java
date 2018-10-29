@@ -1,6 +1,7 @@
 package com.xs.controllers;
 
 import com.xs.beans.AdminMenu;
+import com.xs.configurer.sannotation.IgnoreAuth;
 import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.AdminMenuService;
@@ -87,6 +88,7 @@ public class AdminMenuController extends BaseController{
      */
     @ApiOperation(value = "获取相应角色对应的菜单数据",notes = "获取相应角色对应的菜单数据")
     @GetMapping(value = "/getMenusByRoleId/{roleId}",produces = "application/json;charset=utf-8")
+    @IgnoreAuth
     public Object getMenusByRoleId(@ApiParam(name = "roleId", value = "角色id", required = true) @PathVariable(value = "roleId") Long roleId) {
         return adminMenuService.getMenusByRoleId(roleId);
     }

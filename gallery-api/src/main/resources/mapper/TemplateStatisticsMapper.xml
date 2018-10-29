@@ -33,4 +33,74 @@ where 1=1
 group by category_id order by category_id;
   </select>
 
+
+  <select id="queryTemplateCensusDatas" resultType="java.util.Map">
+    select
+    t.id,
+    t.name,
+    tc.title,
+    tmp_ts.visitorCount,
+    tmp_ts.shareCount,
+    tmp_ts.usedCount
+  from tb_template as t
+    inner join tb_template_category as tc on t.category_id = tc.id
+    inner join
+    (select
+       ts.template_id,
+       sum(ts.visitor_count) as visitorCount,
+       sum(ts.share_count)   as shareCount,
+       sum(ts.used_count)    as usedCount
+     from tb_template_statistics as ts
+     where 1 = 1
+      <if test="sTime != null and sTime != ''">
+          AND ts.gmt_create <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
+      </if>
+      <if test="eTime != null and eTime != ''">
+          AND ts.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
+      </if>
+     group by ts.template_id) as tmp_ts on t.id = tmp_ts.template_id
+
+  where 1=1
+      <if test="name != null and name != ''">
+        and t.name like concat('%',#{name},'%')
+      </if>
+      <if test="categoryId != null and categoryId != ''">
+        and tc.id = #{categoryId};
+      </if>
+  </select>
+
+    <select id="queryBrandTemplateCensusDatas" resultType="java.util.Map">
+        select
+        t.id,
+        t.name,
+        cb.name as cbName,
+        tmp_ts.visitorCount,
+        tmp_ts.usedCount
+        from tb_template as t
+        inner join tb_company_brand as cb on t.brand_id = cb.id
+        inner join
+        (select
+        ts.template_id,
+        sum(ts.visitor_count) as visitorCount,
+        sum(ts.share_count)   as shareCount,
+        sum(ts.used_count)    as usedCount
+        from tb_template_statistics as ts
+        where 1 = 1
+        <if test="sTime != null and sTime != ''">
+            AND ts.gmt_create <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="eTime != null and eTime != ''">
+            AND ts.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
+        </if>
+        group by ts.template_id) as tmp_ts on t.id = tmp_ts.template_id
+
+        where 1=1
+        <if test="name != null and name != ''">
+            and t.name like concat('%',#{name},'%')
+        </if>
+        <if test="brandId != null and brandId != ''">
+            and cb.id = #{brandId};
+        </if>
+    </select>
+
 </mapper>

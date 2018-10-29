@@ -28,8 +28,8 @@ public class AdminRole extends BaseBean {
      * 简介
      */
     @ApiModelProperty(value = "角色简介")
-    @NotBlank(message = "角色简介不能为空!")
-    @Length(min=1,max=20,message = "角色简介不能超过20个字符!")
+//    @NotBlank(message = "角色简介不能为空!")
+    @Length(max=20,message = "角色简介不能超过20个字符!")
     private String descri;
 
     @Column(name = "gmt_create")

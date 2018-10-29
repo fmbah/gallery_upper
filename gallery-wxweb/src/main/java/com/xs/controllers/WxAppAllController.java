@@ -86,7 +86,7 @@ public class WxAppAllController extends BaseController {
 
     @GetMapping(value = "/userCollections/{userId}/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "用户收藏模板集合", notes = "用户收藏模板集合")
-    public Object userCollections(@ApiParam(name = "userId", value="分类名称", type = "query",required = true) @PathVariable Integer userId
+    public Object userCollections(@ApiParam(name = "userId", value="用户id", type = "query",required = true) @PathVariable Integer userId
             , @ApiParam(name = "searchText", value="搜索文字", type = "query",required = false) @RequestParam(required = false) String searchText
                                  ) {
         return wxAppAllService.userCollections(userId, searchText);
@@ -108,6 +108,14 @@ public class WxAppAllController extends BaseController {
         return wxAppAllService.orderDown(userId, rechargeType);
     }
 
+
+    @PostMapping(value = "/templateIncr/{userId}/{templateId}/{type}/", produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "分享和使用调用此方法,用来统计数据", notes = "分享和使用调用此方法,用来统计数据")
+    public Object templateIncr(@ApiParam(name = "userId", value="用户id", type = "query",required = true) @PathVariable Integer userId,
+                                  @ApiParam(name = "templateId", value="模板id", type = "query",required = true) @PathVariable Integer templateId,
+                               @ApiParam(name = "type", value="类型(1:分享 2:使用 3:查看)", type = "query",required = true) @PathVariable Integer type) {
+        return wxAppAllService.templateIncr(userId, templateId, type);
+    }
 
 
 }
