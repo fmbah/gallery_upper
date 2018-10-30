@@ -21,7 +21,7 @@ import static com.xs.core.ProjectConstant.BACK_MANAGER_KEY;
  * @Description: 微信小程序登录接口
  */
 @RestController
-@RequestMapping("api/wx/wechat")
+@RequestMapping("api/wx/app/wechat")
 @Api(value="微信小程序登录接口", description = "微信小程序-身份认证接口，用户信息接口")
 public class WxMiniAppController extends BaseController {
 

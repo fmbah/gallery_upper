@@ -1,6 +1,7 @@
 package com.xs;
 
 import com.xs.core.shandler.BackHandler;
+import com.xs.core.shandler.WxHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import static com.xs.core.ProjectConstant.INTERCEPT_BACK_URL;
+import static com.xs.core.ProjectConstant.INTERCEPT_WX_URL;
 
 /**
  * @Auther: Fmbah

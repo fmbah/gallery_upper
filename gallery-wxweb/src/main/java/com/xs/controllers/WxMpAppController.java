@@ -28,7 +28,7 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @Api(value = "WxMpAppController",description = "微信公众号接口")
 @RestController
-@RequestMapping(value = "/api/wx/wechat")
+@RequestMapping(value = "/api/wx/app/wechat")
 public class WxMpAppController extends BaseController {
 
 

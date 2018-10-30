@@ -420,6 +420,11 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("品牌激活码数据不存在或已被其他用户使用");
         }
 
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
+
         BrandCdkey brandCdkey = brandCdkeyService.findBy("code", code);
         brandCdkey.setIsUsed(new Byte("1"));
         brandCdkey.setUsedTime(new Date());
@@ -427,6 +432,7 @@ public class WxAppAllService {
         brandCdkey.setGmtModified(new Date());
 
         brandCdkeyService.update(brandCdkey);
+
         return ResultGenerator.genSuccessResult();
     }
 

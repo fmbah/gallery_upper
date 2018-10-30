@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 @Api(value = "WxPayBearingController",description = "支付接口调用承接轴承功能（衔接前台提交订单功能、后台支付回调功能）")
 @RestController
-@RequestMapping(value = "/api/wx/payBearing")
+@RequestMapping(value = "/api/wx/app/payBearing")
 public class WxPayBearingController extends BaseController {
 
     @Autowired

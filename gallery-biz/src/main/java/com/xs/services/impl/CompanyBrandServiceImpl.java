@@ -174,4 +174,18 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
 
         return ResultGenerator.genSuccessResult();
     }
+
+    @Override
+    public void deleteById(Integer id) {
+
+        Condition condition = new Condition(Template.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("brandId", id);
+        List<Template> templates = templateMapper.selectByCondition(condition);
+        if (templates != null && !templates.isEmpty()) {
+            throw new ServiceException("该品牌已存在模板, 不可删除");
+        }
+
+        super.deleteById(id);
+    }
 }

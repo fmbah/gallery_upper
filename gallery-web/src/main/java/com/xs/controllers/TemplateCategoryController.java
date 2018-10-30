@@ -83,6 +83,28 @@ public class TemplateCategoryController extends BaseController{
     }
 
     /***
+     * 品牌中心分类数据详情
+     * @return
+     */
+    @ApiOperation(value = "品牌中心分类数据详情",notes = "品牌中心分类数据详情")
+    @GetMapping(value = "/getBrandCenterCategoryInfo",produces = "application/json;charset=utf-8")
+    public Object getBrandCenterCategoryInfo() {
+        return templateCategoryService.getBrandCenterCategoryInfo();
+    }
+
+    /***
+     * 品牌中心数据保存
+     * @return
+     */
+    @ApiOperation(value = "品牌中心数据保存",notes = "品牌中心数据保存")
+    @PostMapping(value = "/saveBrandCenterData/{title}/{introduction}/{backgroundImageUrl}",produces = "application/json;charset=utf-8")
+    public Object saveBrandCenterData(@PathVariable String title,
+                                      @PathVariable String introduction,
+                                      @PathVariable String backgroundImageUrl, @RequestParam(required = false) Integer id) {
+        return templateCategoryService.saveBrandCenterData(title, introduction, backgroundImageUrl, id);
+    }
+
+    /***
     * 分页列表
     * @return
     */

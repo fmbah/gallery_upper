@@ -22,10 +22,13 @@ import com.xs.utils.JxlsExportUtil;
 import com.xs.utils.OssUpLoadUtil;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
@@ -36,6 +39,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
+
+import static com.xs.core.ProjectConstant.WX_USER_TOKEN;
 
 
 /**
@@ -54,15 +59,13 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Autowired
     private WxMaService wxService;
     @Autowired
-    private BrandCdkeyMapper brandCdkeyMapper;
-    @Autowired
-    private CompanyBrandMapper companyBrandMapper;
-    @Autowired
     private ActiveCdkMapper activeCdkMapper;
     @Autowired
     private OssConfig ossConfig;
     @Autowired
     private ShareProfitMapper shareProfitMapper;
+    @Autowired
+    private JedisPool jedisPool;
 
 
     @Override
@@ -77,6 +80,15 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         }
         user = saveUser(user, userInfo, request.getParameter("recommendId"));
         result.put("wxUser", user);
+
+        try(Jedis jedis = jedisPool.getResource()) {
+            String key = String.format(WX_USER_TOKEN, user.getId() + "");
+            String token = RandomStringUtils.randomAlphanumeric(9).concat("_").concat(user.getId().toString());
+            jedis.set(key, token);
+            jedis.expire(key, 60 * 60 * 24 * 7);
+            result.put("token", token);
+        }
+
         return result;
     }
 

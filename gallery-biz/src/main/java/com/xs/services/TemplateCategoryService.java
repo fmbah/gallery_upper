@@ -33,4 +33,30 @@ public interface TemplateCategoryService extends Service<TemplateCategory> {
      */
     Object updateFilters(Integer id, String filters);
 
+    /**
+     *
+     * 功能描述: 品牌中心分类数据详情
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-10-30 上午11:46
+     */
+    Object getBrandCenterCategoryInfo();
+
+
+    /**
+     *
+     * 功能描述: 品牌中心数据保存
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-10-30 上午11:51
+     */
+    Object saveBrandCenterData(String title,
+                               String introduction,
+                               String backgroundImageUrl,
+                               Integer id);
+
 }

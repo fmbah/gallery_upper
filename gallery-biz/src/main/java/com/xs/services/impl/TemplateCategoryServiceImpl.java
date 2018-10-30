@@ -54,6 +54,7 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
         if (!StringUtils.isEmpty(title)) {
             criteria.andLike("title", "%" + title + "%");
         }
+        criteria.andEqualTo("type", "brand_center");
         condition.setOrderByClause(" gmt_modified desc");
         List<TemplateCategory> templateCategoryList = super.findByCondition(condition);
 
@@ -97,6 +98,25 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
         model.setGmtModified(new Date());
         model.setGmtCreate(new Date());
 
+        if (model.getHot()) {
+            if (StringUtils.isEmpty(model.getBackgroundImageUrl())) {
+                throw new ServiceException("热门分类背景图不能为空");
+            }
+
+            if (StringUtils.isEmpty(model.getIntroduction())) {
+                throw new ServiceException("热门分类简介不能为空");
+            }
+        }
+
+        if (!StringUtils.isEmpty(model.getType()) && model.getType().equals("brand_center")) {
+            Condition condition = new Condition(TemplateCategory.class);
+            Example.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("type", "category");
+            List<TemplateCategory> templateCategories = templatecategoryMapper.selectByCondition(condition);
+            if (templateCategories != null && templateCategories.size() > 0) {
+                throw new ServiceException("品牌中心分类已存在");
+            }
+        }
 
         if (StringUtils.isEmpty(model.getTemplateFilters())) {
             model.setTemplateFilters(StringUtils.EMPTY);
@@ -146,5 +166,70 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
         templateCategory.setTemplateCount(templates == null ? 0 : templates.size());
 
         return templateCategory;
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+
+        Condition condition = new Condition(Template.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("categoryId", id);
+        List<Template> templates = templateMapper.selectByCondition(condition);
+        if (templates != null && !templates.isEmpty()) {
+            throw new ServiceException("该分类已存在模板, 不可删除");
+        }
+
+        super.deleteById(id);
+    }
+
+    @Override
+    public Object getBrandCenterCategoryInfo() {
+
+        Condition condition = new Condition(TemplateCategory.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("type", "brand_center");
+        List<TemplateCategory> templateCategories = templatecategoryMapper.selectByCondition(condition);
+        if (templateCategories != null && templateCategories.size() > 0) {
+            return ResultGenerator.genSuccessResult(templateCategories.get(0));
+        }
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @Override
+    public Object saveBrandCenterData(String title, String introduction, String backgroundImageUrl, Integer id) {
+
+        TemplateCategory templateCategory = null;
+        if (id == null) {
+            Condition condition = new Condition(TemplateCategory.class);
+            Example.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("type", "category");
+            List<TemplateCategory> templateCategories = templatecategoryMapper.selectByCondition(condition);
+            if (templateCategories != null && templateCategories.size() > 0) {
+                throw new ServiceException("品牌中心分类已存在");
+            }
+            templateCategory = new TemplateCategory();
+            templateCategory.setTitle(title);
+            templateCategory.setIntroduction(introduction);
+            templateCategory.setBackgroundImageUrl(backgroundImageUrl);
+            templateCategory.setType("brand_center");
+            templateCategory.setWeight(Short.MAX_VALUE);
+            templateCategory.setIsHot(true);
+            templateCategory.setTemplateFilters(StringUtils.EMPTY);
+            templateCategory.setGmtCreate(new Date());
+            templateCategory.setGmtModified(new Date());
+            templatecategoryMapper.insert(templateCategory);
+        } else {
+            templateCategory = templatecategoryMapper.selectByPrimaryKey(id);
+            if (templateCategory == null) {
+                throw new ServiceException("该分类数据不存在或已删除");
+            }
+            templateCategory.setTitle(title);
+            templateCategory.setIntroduction(introduction);
+            templateCategory.setBackgroundImageUrl(backgroundImageUrl);
+            templateCategory.setGmtModified(new Date());
+            templatecategoryMapper.updateByPrimaryKey(templateCategory);
+        }
+
+        return ResultGenerator.genSuccessResult();
     }
 }
