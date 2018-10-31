@@ -8,7 +8,6 @@ import java.util.Random;
 //import sun.misc.BASE64Encoder;
 
 /**
- \* 杭州桃子网络科技股份有限公司
  \* User: zhaoxin
  \* Date: 2018/6/7
  \* Time: 17:54

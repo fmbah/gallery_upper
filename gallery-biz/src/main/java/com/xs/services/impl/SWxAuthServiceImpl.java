@@ -16,6 +16,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG;
+import static com.xs.core.ProjectConstant.WX_USER_TOKEN;
 
 /**
  \* 杭州桃子网络科技股份有限公司
@@ -98,8 +100,20 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                             userService.save(user);
                         }
                     }
-                    result = "?userId=" + user.getId() + "&openId=" + wxMpOAuth2AccessToken.getOpenId() + "&unionId=" + wxMpOAuth2AccessToken.getUnionId();
-                    return result;
+                    if (user != null) {
+                        try(Jedis jedis = jedisPool.getResource()) {
+                            String key = String.format(WX_USER_TOKEN, user.getId() + "");
+                            String token = RandomStringUtils.randomAlphanumeric(9).concat("_").concat(user.getId().toString());
+                            jedis.set(key, token);
+                            jedis.expire(key, 60 * 60 * 24 * 7);
+
+                            result = "?userId=" + user.getId() +
+                                    "&openId=" + wxMpOAuth2AccessToken.getOpenId() +
+                                    "&unionId=" + wxMpOAuth2AccessToken.getUnionId() +
+                                    "&token=" + token;
+                            return result;
+                        }
+                    }
                 }
             }
         } catch (WxErrorException e1) {

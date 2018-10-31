@@ -39,6 +39,7 @@ public final class ProjectConstant {
     public static final String USER_DRAWCASHLOG = "userDrawcashlog:userId:%s";
     public static final String WX_USER_TOKEN = "wxUserToken:userId:%s";
     public static final String WX_USER_FONT_TOKEN = "TOKEN";
+    public static final String WX_MSG = "wxMsg";
 
 
 

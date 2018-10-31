@@ -52,8 +52,8 @@ aliyun:
 
 wechat:
   miniapp:
-    appid: wx45d98d2c8e80956f
-    secret: 42f0e12c6ce1019d4b467d028208e741
+    appid: wxe872cecbe6201aca
+    secret: c10f65edd6acf375eef081a523f06674
     mchId: 1488332072
     mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
     token: gOcTDdBFEI
@@ -67,8 +67,8 @@ wechat:
       subMchId:
       keyPath:
   mp:
-      appId: wx339e0d4617a97a30
-      secret: 4e9b94388c3980c91fb5757086e3784d
+      appId: wx3d912b758d72faa1
+      secret: 79f2c442beb6439d62f98862dccc3f33
       token: gOcTDdBFEI
       aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
 

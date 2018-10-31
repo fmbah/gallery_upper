@@ -2,6 +2,7 @@ package com.xs;
 
 import com.xs.core.shandler.BackHandler;
 import com.xs.core.shandler.WxHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -20,11 +21,18 @@ import static com.xs.core.ProjectConstant.INTERCEPT_WX_URL;
  */
 @SpringBootApplication
 public class Application extends WebMvcConfigurerAdapter {
+
+    @Value("${spring.profiles.active}")
+    private String env;//当前激活的配置文件
+
     @Override
     public void addInterceptors(InterceptorRegistry registry){
+        if (!"dev".equals(env)) { //开发环境忽略签名认证
 //        registry.addInterceptor(new WxHandler()).addPathPatterns(INTERCEPT_WX_URL);
-        registry.addInterceptor(new BackHandler()).addPathPatterns(INTERCEPT_BACK_URL);
+            registry.addInterceptor(new BackHandler()).addPathPatterns(INTERCEPT_BACK_URL);
+        }
         super.addInterceptors(registry);
+
     }
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

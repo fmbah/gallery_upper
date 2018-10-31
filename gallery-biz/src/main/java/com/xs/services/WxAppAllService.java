@@ -516,7 +516,7 @@ public class WxAppAllService {
                 }
 
                 String rechargeTypeStr = "";
-                switch(rechargeType){
+                switch (rechargeType) {
                     case 5 :
                         rechargeTypeStr = "半年会员";
                         break;

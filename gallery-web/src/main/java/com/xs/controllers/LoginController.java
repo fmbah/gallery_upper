@@ -31,6 +31,7 @@ import java.util.List;
 
 import static com.xs.core.ProjectConstant.BACK_LOGIN_BZ;
 import static com.xs.core.ProjectConstant.BACK_MANAGER_KEY;
+import static com.xs.core.ProjectConstant.TEMPLATE_SHARE;
 
 /**
  * @ClassName HiController

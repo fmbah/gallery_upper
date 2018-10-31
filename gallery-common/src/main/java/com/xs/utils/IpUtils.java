@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- \* 杭州桃子网络科技股份有限公司
  \* User: zhaoxin
  \* Date: 2018/6/25
  \* Time: 17:54

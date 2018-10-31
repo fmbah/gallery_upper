@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * \* 杭州桃子网络科技股份有限公司
  * \* User: wht
  * \* Date: 18/5/17
  * \* Time: 上午9:54
