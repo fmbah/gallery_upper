@@ -1,24 +1,36 @@
 package com.xs.services.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.OSSClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.*;
+import com.xs.configurer.soss.OssConfig;
+import com.xs.core.ProjectConstant;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
 import com.xs.daos.*;
 import com.xs.services.TemplateCategoryService;
 import com.xs.services.TemplateService;
 import com.xs.core.sservice.AbstractService;
+import com.xs.services.UpLoadService;
+import com.xs.utils.OssUpLoadUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +57,8 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
     private TemplateLabelsMapper templateLabelsMapper;
     @Autowired
     private LabelMapper labelMapper;
+    @Autowired
+    private OssConfig ossConfig;
 
     @Override
     public Object queryWithPage(int page, int size, Boolean isEnabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand) {
@@ -76,6 +90,7 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
             criteria.andEqualTo("brandId", 0);
         }
 
+        condition.setOrderByClause(" id desc");
         List<Template> list = super.findByCondition(condition);
 
         for (int i = 0, j = list.size(); i < j; i++) {
@@ -126,7 +141,34 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
 
         model.setGmtCreate(new Date());
         model.setGmtModified(new Date());
-        model.setDescri(StringUtils.EMPTY);
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        File template = null;
+        try {
+            String s1 = model.getPreviewImageUrl().split("data:image/")[1];
+            template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
+            FileOutputStream write = new FileOutputStream(template);
+            byte[] decoderBytes = decoder.decodeBuffer(model.getPreviewImageUrl().split(",")[1]);
+            write.write(decoderBytes);
+            write.close();
+
+            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+            try {
+                ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+            if(url != null) {
+                model.setPreviewImageUrl(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (template != null) {
+                template.delete();
+            }
+        }
 
         super.save(model);
 
@@ -171,6 +213,36 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
         BeanUtils.copyProperties(model, template);
 
         template.setGmtModified(new Date());
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        File templateFile = null;
+        try {
+            String s1 = model.getPreviewImageUrl().split("data:image/")[1];
+            templateFile = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
+            FileOutputStream write = new FileOutputStream(templateFile);
+            byte[] decoderBytes = decoder.decodeBuffer(model.getPreviewImageUrl().split(",")[1]);
+            write.write(decoderBytes);
+            write.close();
+
+            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+            try {
+                ossClient.putObject(ossConfig.getBucket(), templateFile.getName(), new FileInputStream(templateFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), templateFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+
+            if(url != null) {
+                template.setPreviewImageUrl(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + templateFile.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (templateFile != null) {
+                templateFile.delete();
+            }
+        }
+
         super.update(template);
 
         Condition templateLabelsCondition = new Condition(TemplateLabels.class);

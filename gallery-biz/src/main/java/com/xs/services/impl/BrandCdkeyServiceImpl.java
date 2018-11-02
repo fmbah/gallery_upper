@@ -76,6 +76,10 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
             } else {
                 list.get(i).setUsedUserName(null);
             }
+
+            if (list.get(i).getIsUsed().equals("0")) {
+                list.get(i).setUsedTime(null);
+            }
         }
 
         PageInfo pageInfo = new PageInfo(list);

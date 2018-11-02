@@ -51,7 +51,7 @@ public class Template {
     private String name;
 
     @ApiModelProperty(value = "简介")
-//    @NotBlank(message = "简介不能为空!")
+    @NotBlank(message = "简介不能为空!")
     private String descri;
 
     @Column(name = "gmt_create")

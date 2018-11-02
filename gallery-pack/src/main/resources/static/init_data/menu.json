@@ -1,0 +1,9 @@
+{
+  "button":[
+    {
+      "type": "view",
+      "name": "个人中心",
+      "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3d912b758d72faa1&redirect_uri=https://xishanwenhua.com/api/wx/wechat/distributionCenterAuth&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
+    }
+  ]
+}

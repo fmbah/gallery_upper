@@ -121,7 +121,6 @@ public class PayBearingServiceImpl implements PayBearingService {
                         List<UserPayment> orders = userPaymentService.findByCondition(condition_o);
                         Date modifyDate = new Date();
                         if(orders != null && !orders.isEmpty() && orders.size() == out_trade_nos.length && orders.get(0).getStatus().equals("unpay")) {
-                            StringBuffer stringBuffer = new StringBuffer();
                             for (UserPayment bean : orders) {
                                 bean.setStatus("paid");
                                 bean.setGmtModified(modifyDate);
