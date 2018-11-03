@@ -54,7 +54,7 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
         if (!StringUtils.isEmpty(title)) {
             criteria.andLike("title", "%" + title + "%");
         }
-        criteria.andEqualTo("type", "brand_center");
+//        criteria.andEqualTo("type", "brand_center");
         condition.setOrderByClause(" gmt_modified desc");
         List<TemplateCategory> templateCategoryList = super.findByCondition(condition);
 
@@ -138,6 +138,16 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
         TemplateCategory templateCategory = super.findById(model.getId());
         if (templateCategory == null) {
             throw new ServiceException("分类数据不存在或已删除");
+        }
+
+        if (model.getHot()) {
+            if (StringUtils.isEmpty(model.getBackgroundImageUrl())) {
+                throw new ServiceException("热门分类背景图不能为空");
+            }
+
+            if (StringUtils.isEmpty(model.getIntroduction())) {
+                throw new ServiceException("热门分类简介不能为空");
+            }
         }
 
         BeanUtils.copyProperties(model, templateCategory);

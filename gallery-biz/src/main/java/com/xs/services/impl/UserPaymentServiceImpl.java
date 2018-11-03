@@ -1,6 +1,7 @@
 package com.xs.services.impl;
 
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ServiceException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.*;
@@ -92,6 +93,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
     }
 
     @Override
+    @Transactional(rollbackFor = ServiceException.class)
     public void sumOfMoney(List<UserPayment> userPaymentList) {
 
         Date now = new Date();

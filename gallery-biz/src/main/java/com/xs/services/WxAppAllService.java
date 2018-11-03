@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.*;
 import com.xs.core.ResultGenerator;
+import com.xs.core.sexception.ServiceException;
 import com.xs.daos.LabelMapper;
 import com.xs.daos.TemplateLabelsMapper;
 import com.xs.daos.TemplateMapper;
@@ -487,7 +488,7 @@ public class WxAppAllService {
 
     /**
      *
-     * 功能描述:
+     * 功能描述: 下订单
      *
      * @param:
      * @return:
@@ -589,9 +590,39 @@ public class WxAppAllService {
         if (template == null) {
             return ResultGenerator.genFailResult("模板数据不存在或已删除");
         }
-        if (!template.getIsEnabled()) {
+        if (!template.getEnabled()) {
             return ResultGenerator.genFailResult("模板数据未启用");
         }
+
+        //详情页面判断当前用户是否可以使用此模板,品牌会员模板均可使用,会员只可使用普通模板
+        //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
+        Condition activeCdkCon = new Condition(ActiveCdk.class);
+        Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
+        activeCdkConCriteria.andEqualTo("usedUserId", userId);
+        List<ActiveCdk> activeCdks = activeCdkService.findByCondition(activeCdkCon);
+
+        HashSet<Integer> brandIds = new HashSet<>();
+        if (activeCdks != null && !activeCdks.isEmpty()) {
+            for (ActiveCdk activeCdk : activeCdks) {
+                brandIds.add(activeCdk.getBrandId());
+            }
+        }
+
+        boolean canUse = false;
+        if (user.getMemberExpired().after(new Date())) {//是会员且未过期
+            if (template.getBrandId() != null && template.getBrandId() != 0) {
+
+            } else {
+                canUse = true;
+            }
+        }
+        if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {//品牌会员可使用所有普通模板以及自己品牌模板
+            canUse = true;
+        }
+        if (!canUse) {
+            throw new ServiceException("暂无权限使用此模板");
+        }
+
 
         try (Jedis jedis = jedisPool.getResource()) {
             //查看

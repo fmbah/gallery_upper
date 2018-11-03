@@ -35,7 +35,7 @@ public class Template {
     @Column(name = "is_enabled")
     @ApiModelProperty(value = "是否启用")
     @NotNull(message = "是否启用不能为空")
-    private Boolean isEnabled;
+    private Boolean enabled;
 
     @Column(name = "preview_image_url")
     @ApiModelProperty(value = "预览图")
@@ -141,20 +141,6 @@ public class Template {
     }
 
     /**
-     * @return is_enabled
-     */
-    public Boolean getIsEnabled() {
-        return isEnabled;
-    }
-
-    /**
-     * @param isEnabled
-     */
-    public void setIsEnabled(Boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-
-    /**
      * @return preview_image_url
      */
     public String getPreviewImageUrl() {
@@ -198,14 +184,6 @@ public class Template {
      */
     public void setDescri(String descri) {
         this.descri = descri;
-    }
-
-    public Boolean getEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        isEnabled = enabled;
     }
 
     public Date getGmtCreate() {
@@ -262,5 +240,13 @@ public class Template {
 
     public void setCanUse(Boolean canUse) {
         this.canUse = canUse;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -22,6 +22,6 @@ public interface TemplateService extends Service<Template> {
      * @auther: Fmbah
      * @date: 18-10-17 下午6:20
      */
-    Object queryWithPage(int page, int size, Boolean isEnabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand);
+    Object queryWithPage(int page, int size, Boolean enabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand);
 
 }
