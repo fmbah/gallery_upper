@@ -8,7 +8,7 @@ http:
 spring:
   datasource:
     drivername: com.mysql.jdbc.Driver
-    url: jdbc:mysql://10.220.110.166:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8
+    url: DES@s67hXzwVvfdxset12axMyPKo1-lMNeLbdRhMIUR52vI6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O
     username: root
     password: 123456
     # 使用druid数据源
@@ -44,7 +44,7 @@ spring:
 aliyun:
   oss:
     endpoint: http://oss-cn-hangzhou.aliyuncs.com
-    accessKeyId: LTAIAop7Bgx35OgG
+    accessKeyId: DES@32NWPMTGH-ApvXlbRLNuQlJxBuHQqWzg
     accessKeySecret: ydBCcgGiwqNZDrN2d4d1XbL954eYuZ
     bucket: daily-test
     cdnurl: https://daily-test.oss-cn-hangzhou.aliyuncs.com/
@@ -52,8 +52,8 @@ aliyun:
 
 wechat:
   miniapp:
-    appid: wx45d98d2c8e80956f
-    secret: 42f0e12c6ce1019d4b467d028208e741
+    appid: wxe872cecbe6201aca
+    secret: DES@Bn_ar_N4296pY9B2Pkqr76I4_dIn1ACNX0x8TZLn57FScQbh0Kls4A
     mchId: 1488332072
     mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
     token: gOcTDdBFEI
@@ -68,7 +68,7 @@ wechat:
       keyPath:
   mp:
       appId: wx3d912b758d72faa1
-      secret: 79f2c442beb6439d62f98862dccc3f33
+      secret: DES@nIJYOt47oS1npE1pxq_vxED5ugS32naiCntbY2f-wfJScQbh0Kls4A
       token: gOcTDdBFEI
       aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
 

@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * \* User: wht
- * \* Date: 18/5/17
- * \* Time: 上午9:54
- * \* To change this template use File | Settings | File Templates.
- * \* Description:
- * \
+ * @Auther: Fmbah
+ * @Date: 18-11-3 下午7:22
+ * @Description:
  */
 public class ByteToInputStream {
 

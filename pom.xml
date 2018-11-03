@@ -50,6 +50,7 @@
         <jxls-jexcel.version>1.0.7</jxls-jexcel.version>
         <jxls-reader.version>[2.0.3,)</jxls-reader.version>
         <dom4j.version>1.6.1</dom4j.version>
+        <jasypt-spring-boot-starter.version>2.1.0</jasypt-spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -213,6 +214,11 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>${dom4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>${jasypt-spring-boot-starter.version}</version>
         </dependency>
     </dependencies>
 
