@@ -417,8 +417,16 @@ public class WxAppAllService {
     public Object verifyBrandCode(Integer userId, String code) {
 
         ActiveCdk activeCdk = activeCdkService.findBy("code", code);
-        if (activeCdk == null) {
-            return ResultGenerator.genFailResult("品牌激活码数据不存在或已被其他用户使用");
+        if (activeCdk != null) {
+            return ResultGenerator.genFailResult("品牌激活码已被其他用户使用");
+        }
+
+        BrandCdkey brandCdkey = brandCdkeyService.findBy("code", code);
+        if (brandCdkey == null) {
+            return ResultGenerator.genFailResult("品牌激活码数据不存在或已被删除");
+        }
+        if (brandCdkey.getIsUsed().byteValue() == 1) {
+            return ResultGenerator.genFailResult("品牌激活码已被其他用户使用");
         }
 
         User user = userService.findById(userId);
@@ -426,7 +434,6 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("用户数据不存在或已删除");
         }
 
-        BrandCdkey brandCdkey = brandCdkeyService.findBy("code", code);
         brandCdkey.setIsUsed(new Byte("1"));
         brandCdkey.setUsedTime(new Date());
         brandCdkey.setUsedUserId(userId);
