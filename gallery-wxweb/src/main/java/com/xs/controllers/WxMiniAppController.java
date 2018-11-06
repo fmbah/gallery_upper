@@ -1,5 +1,6 @@
 package com.xs.controllers;
 
+import com.xs.beans.AuthUser;
 import com.xs.configurer.sannotation.IgnoreAuth;
 import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
@@ -41,14 +42,10 @@ public class WxMiniAppController extends BaseController {
     * @Date: 2018/5/31
     **/
     @IgnoreAuth
-    @GetMapping(value = "/user/login", produces = "application/json;charset=utf-8")
+    @PostMapping(value = "/user/login", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "微信小程序身份认证接口", notes = "微信小程序身份认证接口")
-    public Object login(@ApiParam(name = "code", value="用户授权后返回值", required = true, type = "string")@RequestParam String code,
-                        @ApiParam(name = "signature", value="使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息", required = true, type = "string")@RequestParam String signature,
-                        @ApiParam(name = "rawData", value="不包括敏感信息的原始数据字符串，用于计算签名", required = true, type = "string")@RequestParam String rawData,
-                        @ApiParam(name = "encryptedData", value="包括敏感数据在内的完整用户信息的加密数据", required = true, type = "string")@RequestParam String encryptedData,
-                        @ApiParam(name = "iv", value="加密算法的初始向量", required = true, type = "string")@RequestParam String iv) {
-        Map<String, Object> result = userService.login(code, signature, rawData, encryptedData, iv, this.request);
+    public Object login(@RequestBody AuthUser authUser) {
+        Map<String, Object> result = userService.login(authUser.getCode(), authUser.getSignature(), authUser.getRawData(), authUser.getEncryptedData(), authUser.getIv(), this.request);
         return ResultGenerator.genSuccessResult(result);
     }
 

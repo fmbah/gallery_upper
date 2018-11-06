@@ -152,10 +152,16 @@ public class WxAppAllService {
      */
     public Object searchTemplates(SearchTemplates searchTemplates) {
 
-        if (StringUtils.isEmpty(searchTemplates.get_lNames())) {
-            searchTemplates.setlNames(new String[0]);
+        if (!StringUtils.isEmpty(searchTemplates.getSearchValue())) {
+            searchTemplates.setlNames(searchTemplates.getSearchValue().split(","));
+            searchTemplates.setTcTitle(searchTemplates.getSearchValue());
+            searchTemplates.settName(searchTemplates.gettName());
+        }
+
+        if (StringUtils.isEmpty(searchTemplates.gettRatio())) {
+            searchTemplates.set_tRatios(new String[0]);
         } else {
-            searchTemplates.setlNames(searchTemplates.get_lNames().split(","));
+            searchTemplates.set_tRatios(searchTemplates.gettRatio().split(","));
         }
 
         List<HashMap> list = templateMapper.searchTemplates(searchTemplates);
@@ -259,7 +265,7 @@ public class WxAppAllService {
      * @auther: Fmbah
      * @date: 18-10-19 下午8:27
      */
-    public Object templateCenter(int page, int size, Integer categoryId, Byte ratio, Integer userId){
+    public Object templateCenter(int page, int size, Integer categoryId, String ratio, Integer userId, Boolean isBrand){
 
         HashMap result = new HashMap();
 
@@ -269,8 +275,8 @@ public class WxAppAllService {
         if (categoryId != null) {
             criteria.andEqualTo("categoryId", categoryId);
         }
-        if (ratio != null) {
-            criteria.andEqualTo("ratio", ratio);
+        if (!StringUtils.isEmpty(ratio)) {
+            criteria.andIn("ratio", Arrays.asList(ratio.split(",")));
         }
         //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
         Condition activeCdkCon = new Condition(ActiveCdk.class);
@@ -284,8 +290,15 @@ public class WxAppAllService {
                 brandIds.add(activeCdk.getBrandId());
             }
         }
+
+        //是品牌会员 可看到所有模板,
+        //非品牌会员, 智能看普通模板
         if (!brandIds.isEmpty()) {
-            criteria.andIn("brandId", brandIds);
+            if (isBrand == null) {//全部为null, 具体分类为false,品牌为true
+                brandIds.add(0);
+            } else if (isBrand != null && isBrand.booleanValue()) {
+                criteria.andIn("brandId", brandIds);
+            }
         } else {
             criteria.andEqualTo("brandId", 0);
         }
@@ -296,10 +309,10 @@ public class WxAppAllService {
         result.put("pageInfo", pageInfo);
 
         Condition categoryCondition = new Condition(TemplateCategory.class);
-        Example.Criteria categoryConditionCriteria = categoryCondition.createCriteria();
-        if (categoryId != null) {
-            categoryConditionCriteria.andEqualTo("id", categoryId);
-        }
+//        Example.Criteria categoryConditionCriteria = categoryCondition.createCriteria();
+//        if (categoryId != null) {
+//            categoryConditionCriteria.orEqualTo("id", categoryId);
+//        }
         categoryCondition.setOrderByClause(" weight desc");
         List<TemplateCategory> templateCategories = templateCategoryService.findByCondition(categoryCondition);
         result.put("templateCategories", templateCategories);

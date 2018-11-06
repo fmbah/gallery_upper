@@ -20,7 +20,7 @@ import javax.validation.Valid;
  * @Description: 微信小程序接口
  */
 @RestController
-@RequestMapping("api/wx/app/all")
+@RequestMapping("api/wx/app")
 @Api(value="微信小程序接口", description = "微信小程序接口")
 public class WxAppAllController extends BaseController {
 
@@ -71,9 +71,10 @@ public class WxAppAllController extends BaseController {
     public Object templateCenter(@ApiParam(value = "页码",name = "page", type = "query",defaultValue = "0") @RequestParam(required = false, defaultValue = "0") Integer page,
                                  @ApiParam(value = "每页容量",name = "size", type = "query",defaultValue = "0") @RequestParam(required = false, defaultValue = "0") Integer size,
                                  @ApiParam(value = "分类id",name = "categoryId", type = "query") @RequestParam(required = false) Integer categoryId,
-                                 @ApiParam(value = "比例,业务方定",name = "ratio", type = "query") @RequestParam(required = false) Byte ratio
-                                ,@ApiParam(name = "userId", value="用户id", type = "query", required = true) @RequestParam Integer userId) {
-        return wxAppAllService.templateCenter(page, size, categoryId, ratio, userId);
+                                 @ApiParam(value = "比例,业务方定",name = "ratio", type = "query") @RequestParam(required = false) String ratio
+                                ,@ApiParam(name = "userId", value="用户id", type = "query", required = true) @RequestParam Integer userId
+                                ,@ApiParam(name = "isBrand", value="全部不传此字段, 具体分类为false,品牌为true", type = "query") @RequestParam Boolean isBrand) {
+        return wxAppAllService.templateCenter(page, size, categoryId, ratio, userId, isBrand);
     }
 
 

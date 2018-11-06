@@ -29,6 +29,12 @@ public class SearchTemplates extends BaseBean {
     @ApiModelProperty(value = "当前用户id")
     Integer userId;
 
+    @ApiModelProperty(value = "多个比例,内部系统使用")
+    String[] _tRatios;
+
+    @ApiModelProperty(value = "模糊搜索文字(可能模板名称/分类标题/标签名称)")
+    String searchValue;
+
 
     public String getTcTitle() {
         return tcTitle;
@@ -85,4 +91,21 @@ public class SearchTemplates extends BaseBean {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+    public String[] get_tRatios() {
+        return _tRatios;
+    }
+
+    public void set_tRatios(String[] _tRatios) {
+        this._tRatios = _tRatios;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
+    }
 }
+

@@ -29,15 +29,15 @@
 
     from tb_template as t inner join tb_template_category as tc on t.category_id = tc.id and
     t.is_enabled = true
-    where 1 <![CDATA[<>]]> 0
+    where 1 <![CDATA[=]]> 0
 
 
     <if test="lNames != null and lNames != ''">
-    or t.id in (select distinct tl.template_id as templateId
+      or t.id in (select distinct tl.template_id as templateId
     from tb_label as l inner join tb_template_labels as tl on tl.label_id = l.id
-
+    where 1 <![CDATA[=]]> 0
     <foreach item="lName" index="index" collection="lNames" >
-      and l.name like concat('%',#{lName},'%')
+        or l.name like concat('%',#{lName},'%')
     </foreach>
 
     )
@@ -45,20 +45,23 @@
 
     <if test="tcTitle != null and tcTitle != ''">
       <bind name="_tcTitle" value="'%' + _parameter.tcTitle + '%'" />
-      or tc.title like #{_tcTitle}
+        or tc.title like #{_tcTitle}
     </if>
     <if test="tName != null and tName != ''">
       <bind name="_tName" value="'%' + _parameter.tName + '%'" />
-      or t.name like #{_tName}
+        or t.name like #{_tName}
     </if>
 
     <if test="tcId != null and tcId != ''">
       <bind name="_tcId" value="'%' + _parameter.tcId + '%'" />
-      or t.id = #{_tcId}
+        or t.id = #{_tcId}
     </if>
-    <if test="tRatio != null and tRatio != ''">
-      <bind name="_tRatio" value="'%' + _parameter.tRatio + '%'" />
-      or t.ratio = #{_tRatio}
+    <if test="_tRatios != null and _tRatios != ''">
+      <!--<bind name="_tRatio" value="'%' + _parameter.tRatio + '%'" />-->
+      <!--or t.ratio = #{_tRatio}-->
+      <foreach item="tR" index="index" collection="_tRatios" >
+          or t.ratio = #{tR}
+      </foreach>
     </if>
 
     order by t.gmt_modified desc;

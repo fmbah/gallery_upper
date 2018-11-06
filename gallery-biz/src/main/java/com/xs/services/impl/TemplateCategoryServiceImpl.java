@@ -54,7 +54,7 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
         if (!StringUtils.isEmpty(title)) {
             criteria.andLike("title", "%" + title + "%");
         }
-//        criteria.andEqualTo("type", "brand_center");
+        criteria.andNotEqualTo("type", "brand_center");
         condition.setOrderByClause(" gmt_modified desc");
         List<TemplateCategory> templateCategoryList = super.findByCondition(condition);
 

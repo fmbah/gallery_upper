@@ -6,6 +6,8 @@ import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +33,8 @@ category: 普通类目
 
     @ApiModelProperty(value = "权重")
     @NotNull(message = "权重不能为空")
+    @Max(value = 100, message = "权重最大为100")
+    @Min(value = 1, message = "权重最小为1")
     private Short weight;
 
     @Column(name = "is_hot")

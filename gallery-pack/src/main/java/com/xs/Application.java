@@ -28,7 +28,7 @@ public class Application extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry){
 //        if (!"dev".equals(env)) { //开发环境忽略签名认证
-//        registry.addInterceptor(new WxHandler()).addPathPatterns(INTERCEPT_WX_URL);
+        registry.addInterceptor(new WxHandler()).addPathPatterns(INTERCEPT_WX_URL);
             registry.addInterceptor(new BackHandler()).addPathPatterns(INTERCEPT_BACK_URL);
 //        }
         super.addInterceptors(registry);
