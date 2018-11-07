@@ -62,7 +62,7 @@ public class WxHandler extends HandlerInterceptorAdapter {
             boolean pass = false;
             if(null == annotation){
                 String token = request.getHeader(WX_USER_FONT_TOKEN);
-                if (StringUtil.isNotEmpty(token) && token.split("_").length > 0) {
+                if (StringUtil.isNotEmpty(token) && token.split("_").length == 2) {
                     try (Jedis jedis = jedisPool.getResource()) {
                         String key = String.format(WX_USER_TOKEN, token.split("_")[1]);
                         Boolean exists = jedis.exists(key);
