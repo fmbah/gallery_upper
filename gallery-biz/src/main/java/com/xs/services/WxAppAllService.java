@@ -300,17 +300,17 @@ public class WxAppAllService {
             }
         }
 
-        //是品牌会员 可看到所有模板,
-        //非品牌会员, 智能看普通模板
-        if (!brandIds.isEmpty()) {
-            if (isBrand == null) {//全部为null, 具体分类为false,品牌为true
-                brandIds.add(0);
-            } else if (isBrand != null && isBrand.booleanValue()) {
-                criteria.andIn("brandId", brandIds);
-            }
-        } else {
+        if (isBrand == null) {//全部为null, 具体分类为false,品牌为true
+            brandIds.add(0);
+            criteria.andIn("brandId", brandIds);
+        } else if (isBrand != null && isBrand.booleanValue()) {
+            criteria.andIn("brandId", brandIds);
+        } else if (isBrand != null && !isBrand.booleanValue()) {
             criteria.andEqualTo("brandId", 0);
+        } else {
+            throw new ServiceException("系统故障,请联系管理员处理");
         }
+
         List<Template> templates = templateService.findByCondition(condition);
         PageInfo pageInfo = new PageInfo(templates);
 
