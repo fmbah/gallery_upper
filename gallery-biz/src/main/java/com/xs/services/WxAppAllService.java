@@ -224,7 +224,6 @@ public class WxAppAllService {
             }
         }
 
-        //详情页面判断当前用户是否可以使用此模板,品牌会员模板均可使用,会员只可使用普通模板
         //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
         Condition activeCdkCon = new Condition(ActiveCdk.class);
         Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
@@ -239,16 +238,26 @@ public class WxAppAllService {
         }
 
         boolean canUse = false;
+        boolean isMember = false;
         if (user.getMemberExpired().after(new Date())) {//是会员且未过期
-            if (template.getBrandId() != null && template.getBrandId() != 0) {
+            isMember = true;
+        }
 
-            } else {
+        //模板分为两类,品牌模板(只有拥有此品牌的品牌会员可查看分享使用)/普通模板(品牌会员或会员可使用,分享和查看无限制)
+        if (template.getBrandId() != 0) {//品牌模板
+            if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {
                 canUse = true;
+            } else {
+                throw new ServiceException("暂无权限查看此模板");
+            }
+        } else {//非品牌模板
+            if (isMember || !brandIds.isEmpty()) {
+                canUse = true;
+            } else {//对于类型为使用抛出异常
+
             }
         }
-        if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {//品牌会员可使用所有普通模板以及自己品牌模板
-            canUse = true;
-        }
+
         template.setCanUse(canUse);
 
         this.templateIncr(userId, template.getId(), 3);
@@ -601,11 +610,6 @@ public class WxAppAllService {
      */
     public Object templateIncr(Integer userId, Integer templateId, Integer type) {
 
-        User user = userService.findById(userId);
-        if (user == null) {
-            return ResultGenerator.genFailResult("用户数据不存在或已删除");
-        }
-
         Template template = templateService.findById(templateId);
         if (template == null) {
             return ResultGenerator.genFailResult("模板数据不存在或已删除");
@@ -614,16 +618,12 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("模板数据未启用");
         }
 
-        boolean canUse = false;
-        if (user.getMemberExpired().after(new Date())) {//是会员且未过期
-            if (template.getBrandId() != null && template.getBrandId() != 0) {
-
-            } else {
-                canUse = true;
+        if (type != 3) {
+            User user = userService.findById(userId);
+            if (user == null) {
+                return ResultGenerator.genFailResult("用户数据不存在或已删除");
             }
-        }
-        if (template.getBrandId() != null && template.getBrandId() != 0) {
-            //详情页面判断当前用户是否可以使用此模板,品牌会员模板均可使用,会员只可使用普通模板
+
             //查看当前用户的品牌id集合,用来判断搜索结果集中是否可显示模板数据
             Condition activeCdkCon = new Condition(ActiveCdk.class);
             Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
@@ -637,17 +637,30 @@ public class WxAppAllService {
                 }
             }
 
-            if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {//品牌会员可使用所有普通模板以及自己品牌模板
-                canUse = true;
+            boolean canUse = false;
+            boolean isMember = false;
+            if (user.getMemberExpired().after(new Date())) {//是会员且未过期
+                isMember = true;
             }
-        } else {
-            if (type != 2) {
-                canUse = true;
-            }
-        }
 
-        if (!canUse) {
-            throw new ServiceException("暂无权限使用此模板");
+            //模板分为两类,品牌模板(只有拥有此品牌的品牌会员可查看分享使用)/普通模板(品牌会员或会员可使用,分享和查看无限制)
+            if (template.getBrandId() != 0) {//品牌模板
+                if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {
+                    canUse = true;
+                }
+            } else {//非品牌模板
+                if (isMember || !brandIds.isEmpty()) {
+                    canUse = true;
+                } else {//对于类型为使用抛出异常
+                    if (type != 2) {
+                        canUse = true;
+                    }
+                }
+            }
+
+            if (!canUse) {
+                throw new ServiceException("暂无权限使用此模板");
+            }
         }
 
         try (Jedis jedis = jedisPool.getResource()) {
