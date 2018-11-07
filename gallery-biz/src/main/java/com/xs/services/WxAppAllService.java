@@ -131,6 +131,7 @@ public class WxAppAllService {
                     Condition templateCondition = new Condition(Template.class);
                     Example.Criteria templateConditionCriteria = templateCondition.createCriteria();
                     templateConditionCriteria.andEqualTo("brandId", companyBrand.getId());
+                    templateConditionCriteria.andEqualTo("isEnabled", true);
                     List<Template> templateList = templateService.findByCondition(templateCondition);
                     companyBrand.setTemplateList(templateList);
                 }
@@ -209,6 +210,9 @@ public class WxAppAllService {
         Template template = templateService.findById(id);
         if (template == null) {
             return ResultGenerator.genFailResult("模板数据不存在或已删除");
+        }
+        if (!template.getEnabled()) {
+            return ResultGenerator.genFailResult("模板数据未启用");
         }
         User user = userService.findById(userId);
         if (user == null) {
@@ -311,6 +315,7 @@ public class WxAppAllService {
             throw new ServiceException("系统故障,请联系管理员处理");
         }
 
+        criteria.andEqualTo("isEnabled", true);
         List<Template> templates = templateService.findByCondition(condition);
         PageInfo pageInfo = new PageInfo(templates);
 
@@ -339,6 +344,18 @@ public class WxAppAllService {
      * @date: 18-10-19 下午8:58
      */
     public Object saveCollection(Integer userId, Integer templateId) {
+
+        Template template = templateService.findById(templateId);
+        if (template == null) {
+            return ResultGenerator.genFailResult("模板数据不存在或已删除");
+        }
+        if (!template.getEnabled()) {
+            return ResultGenerator.genFailResult("模板数据未启用");
+        }
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
 
         try (Jedis jedis = jedisPool.getResource()){
 
@@ -385,6 +402,10 @@ public class WxAppAllService {
                     Iterator<Template> iterator = templates.iterator();
                     while (iterator.hasNext()) {
                         Template next = iterator.next();
+
+                        if (!next.getEnabled()) {
+                            iterator.remove();
+                        }
 
                         if (next.getName().indexOf(searchText) >= 0) {
                             continue;
