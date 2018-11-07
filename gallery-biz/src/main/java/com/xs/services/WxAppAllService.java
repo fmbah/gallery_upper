@@ -221,7 +221,7 @@ public class WxAppAllService {
 
         try (Jedis jedis = jedisPool.getResource()) {
             Long zrank = jedis.zrank(String.format(USER_TEMPLATE_COLLECTIONS, String.valueOf(userId)), String.valueOf(id));
-            if (zrank == null || zrank == 0) {
+            if (zrank == null) {
                 template.setHasCollection(false);
             } else {
                 template.setHasCollection(true);
