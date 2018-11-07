@@ -639,10 +639,12 @@ public class WxAppAllService {
         if (!brandIds.isEmpty() && brandIds.contains(template.getBrandId())) {//品牌会员可使用所有普通模板以及自己品牌模板
             canUse = true;
         }
-        if (!canUse) {
-            throw new ServiceException("暂无权限使用此模板");
-        }
 
+        if (type == 2) {
+            if (!canUse) {
+                throw new ServiceException("暂无权限使用此模板");
+            }
+        }
 
         try (Jedis jedis = jedisPool.getResource()) {
             //查看
