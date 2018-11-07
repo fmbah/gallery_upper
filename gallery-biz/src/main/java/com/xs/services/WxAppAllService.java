@@ -131,7 +131,7 @@ public class WxAppAllService {
                     Condition templateCondition = new Condition(Template.class);
                     Example.Criteria templateConditionCriteria = templateCondition.createCriteria();
                     templateConditionCriteria.andEqualTo("brandId", companyBrand.getId());
-                    templateConditionCriteria.andEqualTo("isEnabled", true);
+                    templateConditionCriteria.andEqualTo("enabled", true);
                     List<Template> templateList = templateService.findByCondition(templateCondition);
                     companyBrand.setTemplateList(templateList);
                 }
@@ -315,7 +315,7 @@ public class WxAppAllService {
             throw new ServiceException("系统故障,请联系管理员处理");
         }
 
-        criteria.andEqualTo("isEnabled", true);
+        criteria.andEqualTo("enabled", true);
         List<Template> templates = templateService.findByCondition(condition);
         PageInfo pageInfo = new PageInfo(templates);
 
