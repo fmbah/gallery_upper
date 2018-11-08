@@ -122,7 +122,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         logger.info("****************saveUser*****************");
         try {
             if (null == user) {
-                logger.info("****************first***come***in*****************");
+                logger.info("****************first***come***in*****************recommendId: ["+ recommendId +"]");
                 user = new User();
                 user.setGmtCreate(new Date());
                 Calendar instance = Calendar.getInstance();

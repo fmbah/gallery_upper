@@ -143,7 +143,7 @@ public class PayBearingServiceImpl implements PayBearingService {
                 }
             }
 
-            logger.warn("");
+            logger.warn("支付回调签名验证失败...........");
 
         } catch (DocumentException e) {
             logger.error(e.getMessage(), e);
