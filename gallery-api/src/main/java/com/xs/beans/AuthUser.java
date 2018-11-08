@@ -32,6 +32,9 @@ public class AuthUser extends BaseBean {
     @ApiModelProperty(value = "加密算法的初始向量")
     private String iv;
 
+    @ApiModelProperty(value = "推荐人Id")
+    private String recommendId;
+
     public String getCode() {
         return code;
     }
@@ -70,5 +73,13 @@ public class AuthUser extends BaseBean {
 
     public void setIv(String iv) {
         this.iv = iv;
+    }
+
+    public String getRecommendId() {
+        return recommendId;
+    }
+
+    public void setRecommendId(String recommendId) {
+        this.recommendId = recommendId;
     }
 }

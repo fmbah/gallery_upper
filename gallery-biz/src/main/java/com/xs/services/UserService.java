@@ -15,7 +15,7 @@ import java.util.Map;
 
 public interface UserService extends Service<User> {
 
-    Map<String, Object> login(String code, String signature, String rawData, String encryptedData, String iv, HttpServletRequest request);
+    Map<String, Object> login(String code, String signature, String rawData, String encryptedData, String iv, HttpServletRequest request, String recommendId);
 
 
     /**

@@ -69,7 +69,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
 
     @Override
-    public Map<String, Object> login(String code, String signature, String rawData, String encryptedData, String iv, HttpServletRequest request) {
+    public Map<String, Object> login(String code, String signature, String rawData,
+                                     String encryptedData, String iv, HttpServletRequest request, String recommendId) {
 
         Map<String, Object> result = new HashMap<String, Object>();
         Map<String, Object> infoMap = this.getSessionInfo(code, rawData, signature, encryptedData, iv);
@@ -78,7 +79,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         if (user == null) {
             user = this.findBy("wxUnionid", userInfo.getUnionId());
         }
-        user = saveUser(user, userInfo, request.getParameter("recommendId"));
+        user = saveUser(user, userInfo, recommendId);
         result.put("wxUser", user);
 
         try(Jedis jedis = jedisPool.getResource()) {
