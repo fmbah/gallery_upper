@@ -51,9 +51,21 @@ public class WxHandler extends HandlerInterceptorAdapter {
             jedisPool = (JedisPool)SpringBootBeanUtil.getBean("jedisPool");
         }
 
+        //判断 是否是微信浏览器
+        String userAgent = request.getHeader("user-agent").toLowerCase();
+        if(userAgent.indexOf("micromessenger") == -1){//非微信客户端
+            logger.warn("非微信客户端，请求接口：{}，请求IP：{}，请求参数：{}",
+                    request.getRequestURI(), IpUtils.getIpAddr(request), JSON.toJSONString(request.getParameterMap()));
+            ResponseBean result = new ResponseBean();
+            result.setCode(ResultCode.UNAUTHORIZED).setMsg("请使用微信浏览器进行访问！");
+            RespUtil.responseResult(response, result);
+            return false;
+        }
+
         if((handler != null && !(handler instanceof HandlerMethod)) || (handler == null)) {
             return true;
         }
+
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         // 从方法处理器中获取出要调用的方法
         Method method = handlerMethod.getMethod();

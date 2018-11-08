@@ -142,6 +142,9 @@ public class PayBearingServiceImpl implements PayBearingService {
                     return String.format(result, "FAIL", "ORDER NUM ERROR OR EMPTY");
                 }
             }
+
+            logger.warn("");
+
         } catch (DocumentException e) {
             logger.error(e.getMessage(), e);
             throw new ServiceException("微信通知内容dom4j转换sortedMap异常");
@@ -171,7 +174,7 @@ public class PayBearingServiceImpl implements PayBearingService {
         }
         request.setMchId(this.mchId);
         request.setNonceStr(DigestUtil.getRandomStringByLength(false, 32));
-        String body = "火星图库购买会员";
+        String body = "火星图库";
         request.setBody(body);
         request.setSpbillCreateIp(IpUtils.getIpAddr(resp));
         request.setNotifyUrl(WEB_BACK_DOMAIN + "/api/wx/payBearing/payNotify");
@@ -179,7 +182,6 @@ public class PayBearingServiceImpl implements PayBearingService {
         request.setOpenid(user.getWxMiniOpenid());
         String outTradeNo = "";
         Integer totalFee = 0;
-        BigDecimal ratio = new BigDecimal(100);
         for(UserPayment order : orders) {
             Condition condition = new Condition(UserPayment.class);
             Example.Criteria criteria = condition.createCriteria();
