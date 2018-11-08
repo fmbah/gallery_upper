@@ -45,7 +45,7 @@ public class WxMiniAppController extends BaseController {
     @PostMapping(value = "/user/login", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "微信小程序身份认证接口", notes = "微信小程序身份认证接口")
     public Object login(@RequestBody AuthUser authUser) {
-        Map<String, Object> result = userService.login(authUser.getCode(), authUser.getSignature(), authUser.getRawData(), authUser.getEncryptedData(), authUser.getIv(), this.request);
+        Map<String, Object> result = userService.login(authUser.getCode(), authUser.getSignature(), authUser.getRawData(), authUser.getEncryptedData(), authUser.getIv(), this.request, authUser.getRecommendId());
         return ResultGenerator.genSuccessResult(result);
     }
 
