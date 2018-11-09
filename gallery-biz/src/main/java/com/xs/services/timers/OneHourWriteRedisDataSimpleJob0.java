@@ -3,6 +3,7 @@ package com.xs.services.timers;
 import com.xs.beans.TemplateStatistics;
 import com.xs.daos.TemplateStatisticsMapper;
 import io.swagger.models.auth.In;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String categoryId = visitor.split(":")[4];
                     String brandId = visitor.split(":")[6];
 
+                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId) || StringUtils.isEmpty(brandId)) {
+                        continue;
+                    }
                     String visitorCount = jedis.get(visitor);
 
                     TemplateStatistics templateStatistics = new TemplateStatistics();
@@ -70,6 +74,10 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String categoryId = share.split(":")[4];
                     String brandId = share.split(":")[6];
 
+                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId) || StringUtils.isEmpty(brandId)) {
+                        continue;
+                    }
+
                     String shareCount = jedis.get(share);
 
                     TemplateStatistics templateStatistics = new TemplateStatistics();
@@ -91,6 +99,10 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String templateId = used.split(":")[2];
                     String categoryId = used.split(":")[4];
                     String brandId = used.split(":")[6];
+
+                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId) || StringUtils.isEmpty(brandId)) {
+                        continue;
+                    }
 
                     String usedCount = jedis.get(used);
 

@@ -112,6 +112,11 @@ public class WxAppAllService {
      */
     public Object openBrandDatas(Integer id) {
 
+        User user = userService.findById(id);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
+
         HashMap result = new HashMap();
         Condition activeCdkCon = new Condition(ActiveCdk.class);
         Example.Criteria activeCdkConCriteria = activeCdkCon.createCriteria();
@@ -152,6 +157,11 @@ public class WxAppAllService {
      * @date: 18-10-19 下午7:21
      */
     public Object searchTemplates(SearchTemplates searchTemplates) {
+
+        User user = userService.findById(searchTemplates.getUserId());
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
 
         if (!StringUtils.isEmpty(searchTemplates.getSearchValue())) {
             searchTemplates.setlNames(searchTemplates.getSearchValue().split(","));
@@ -280,6 +290,11 @@ public class WxAppAllService {
      */
     public Object templateCenter(int page, int size, Integer categoryId, String ratio, Integer userId, Boolean isBrand){
 
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
+
         HashMap result = new HashMap();
 
         PageHelper.startPage(page, size);
@@ -382,7 +397,12 @@ public class WxAppAllService {
      */
     public Object userCollections(Integer userId, String searchText) {
 
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
         try (Jedis jedis = jedisPool.getResource()) {
+
             Set<String> templateIds = jedis.zrange(String.format(USER_TEMPLATE_COLLECTIONS, String.valueOf(userId)), 0, -1);
 
             List<Template> templates = null;
@@ -499,6 +519,9 @@ public class WxAppAllService {
     public Object findUserById(Integer id) {
 
         User user = userService.findById(id);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
 
         HashMap result = new HashMap();
         Condition activeCdkCon = new Condition(ActiveCdk.class);
