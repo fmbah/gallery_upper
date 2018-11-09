@@ -80,6 +80,10 @@ public class Template {
     @Transient
     @ApiModelProperty(value = "是否可用")
     private Boolean canUse;
+
+    @Transient
+    @ApiModelProperty(value = "模板分类")
+    private TemplateCategory templateCategory;
     /**
      * @return id
      */
@@ -248,5 +252,13 @@ public class Template {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public TemplateCategory getTemplateCategory() {
+        return templateCategory;
+    }
+
+    public void setTemplateCategory(TemplateCategory templateCategory) {
+        this.templateCategory = templateCategory;
     }
 }

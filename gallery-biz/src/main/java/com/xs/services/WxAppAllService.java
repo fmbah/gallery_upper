@@ -229,6 +229,11 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("用户数据不存在或已删除");
         }
 
+        TemplateCategory templateCategory = templateCategoryService.findById(template.getCategoryId());
+        if (templateCategory == null) {
+            return ResultGenerator.genFailResult("模板分类数据不存在或已删除");
+        }
+
         try (Jedis jedis = jedisPool.getResource()) {
             Long zrank = jedis.zrank(String.format(USER_TEMPLATE_COLLECTIONS, String.valueOf(userId)), String.valueOf(id));
             if (zrank == null) {
@@ -273,6 +278,7 @@ public class WxAppAllService {
         }
 
         template.setCanUse(canUse);
+        template.setTemplateCategory(templateCategory);
 
         this.templateIncr(userId, template.getId(), 3);
 
