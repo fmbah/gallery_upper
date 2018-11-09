@@ -29,7 +29,7 @@
 
     from tb_template as t inner join tb_template_category as tc on t.category_id = tc.id and
     t.is_enabled = true
-    where 1 <![CDATA[=]]> 0
+    where 1 <![CDATA[=]]> 1
 
 
     <if test="lNames != null and lNames != ''">
