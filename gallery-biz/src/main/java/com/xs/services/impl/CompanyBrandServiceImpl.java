@@ -77,8 +77,8 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
             Condition cdkCondition = new Condition(BrandCdkey.class);
             Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
             cdkConditionCriteria.andEqualTo("brandId", list.get(i).getId());
-            cdkConditionCriteria.andEqualTo("isUsed", 1);
-            cdkConditionCriteria.andNotEqualTo("usedUserId", 0);
+//            cdkConditionCriteria.andEqualTo("isUsed", 1);
+//            cdkConditionCriteria.andNotEqualTo("usedUserId", 0);
             List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(cdkCondition);
             if (brandCdkeys != null && brandCdkeys.size() > 0) {
                 HashSet<Integer> uIds = new HashSet<>();
