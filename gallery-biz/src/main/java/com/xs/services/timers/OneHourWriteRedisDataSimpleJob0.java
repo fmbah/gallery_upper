@@ -65,6 +65,7 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     templateStatistics.setUsedCount(0);
                     templateStatisticsMapper.insert(templateStatistics);
 
+                    jedis.del(visitor);
                 }
             }
 
@@ -91,6 +92,7 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     templateStatistics.setUsedCount(0);
                     templateStatisticsMapper.insert(templateStatistics);
 
+                    jedis.del(share);
                 }
             }
 
@@ -117,6 +119,7 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     templateStatistics.setUsedCount(Integer.valueOf(usedCount));
                     templateStatisticsMapper.insert(templateStatistics);
 
+                    jedis.del(used);
                 }
             }
 
