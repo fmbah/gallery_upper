@@ -18,10 +18,10 @@
   </resultMap>
 
 
-  <select id="searchTemplates" resultType="java.util.HashMap">
+  <select id="searchTemplates" resultType="java.util.HashMap"><!-- t.descri as descri,  -->
 
     select t.id as id, t.category_id as categoryId, t.name as name, t.brand_id as brandId,
-      t.descri as descri, t.preview_image_url as previewImageUrl, t.ratio as ratio,
+      t.preview_image_url as previewImageUrl, t.ratio as ratio,
 
       tc.title as title, tc.type as type, tc.background_image_url as backgroundImageUrl,
       tc.introduction as introduction, tc.is_hot as isHot, tc.template_filters as templateFilters,

@@ -248,6 +248,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 if (user.getMemberType().byteValue() == 0) {
                     user.setIsMemberStr("否");
                     user.setMemberTypeStr("");
+                    user.setMemberExpired(null);
                 } else {
                     user.setIsMemberStr("是");
                     if (user.getMemberType().byteValue() == 5) {

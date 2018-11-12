@@ -338,6 +338,9 @@ public class WxAppAllService {
 
         criteria.andEqualTo("enabled", true);
         List<Template> templates = templateService.findByCondition(condition);
+        for (int i = 0, j = templates.size(); i < j; i++) {
+            templates.get(i).setDescri(null);
+        }
         PageInfo pageInfo = new PageInfo(templates);
 
         result.put("categoryId", categoryId);
@@ -428,6 +431,8 @@ public class WxAppAllService {
                     Iterator<Template> iterator = templates.iterator();
                     while (iterator.hasNext()) {
                         Template next = iterator.next();
+
+                        next.setDescri(null);
 
                         if (!next.getEnabled()) {
                             iterator.remove();
