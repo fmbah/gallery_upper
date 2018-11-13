@@ -1,5 +1,7 @@
 package com.xs.services.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.github.pagehelper.PageHelper;
@@ -14,6 +16,7 @@ import com.xs.services.TemplateCategoryService;
 import com.xs.services.TemplateService;
 import com.xs.core.sservice.AbstractService;
 import com.xs.services.UpLoadService;
+import com.xs.utils.ImageBase64Utils;
 import com.xs.utils.OssUpLoadUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,10 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -265,6 +265,44 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
         if (template == null) {
             throw new ServiceException("模板数据不存在或已删除");
         }
+        if (!StringUtils.isEmpty(template.getDescri())) {
+            JSONObject jsonObject = JSON.parseObject(template.getDescri());
+            if (jsonObject != null) {
+                Object layerMain = jsonObject.get("layerMain");
+                if (layerMain != null) {
+                    JSONArray jsonArray = JSON.parseArray(layerMain.toString());
+                    if (jsonArray != null) {
+                        Iterator<Object> iterator = jsonArray.iterator();
+                        while (iterator.hasNext()) {
+                            Object next = iterator.next();
+                            if (next != null) {
+                                JSONObject layerMainJson = JSON.parseObject(next.toString());
+                                if (layerMainJson != null) {
+                                    Object imgInfo = layerMainJson.get("imgInfo");
+                                    if (imgInfo != null) {
+                                        JSONObject imgInfoJson = JSON.parseObject(imgInfo.toString());
+                                        Object url = imgInfoJson.get("url");
+                                        if (url != null) {
+                                            String s = url.toString();
+                                            if (s.indexOf("data:image/") < 0) {
+                                                String subfix = s.substring(s.lastIndexOf(".")+1, s.length());
+
+                                                String prefix = "data:image/" + subfix + ";base64,";
+                                                String allUrl = prefix;
+                                                allUrl += ImageBase64Utils.imgBase64(s);
+
+                                                template.setDescri(template.getDescri().replaceAll(s, allUrl));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Condition templateLabelsCondition = new Condition(TemplateLabels.class);
         Example.Criteria templateLabelsConditionCriteria = templateLabelsCondition.createCriteria();
         templateLabelsConditionCriteria.andEqualTo("templateId", template.getId());
