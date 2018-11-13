@@ -161,7 +161,7 @@ public class ImageBase64Utils {
         }
         // 对字节数组Base64编码
         BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(outPut.toByteArray());
+        return encoder.encode(outPut.toByteArray()).replaceAll("\r|\n", "");
     }
 
 //    public static void main (String args[]) {
