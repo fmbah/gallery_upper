@@ -1,5 +1,6 @@
 package com.xs.services;
 
+import com.xs.beans.Base64ToUrl;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,8 @@ public interface UpLoadService {
     String up(MultipartFile file) throws IOException;
 
     Object remove(String fileName);
+
+    Object base64ToUrl(Base64ToUrl base64ToUrl);
     
     /** 
     * @Description: 订单导出 

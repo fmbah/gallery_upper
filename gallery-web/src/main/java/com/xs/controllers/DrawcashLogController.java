@@ -80,7 +80,7 @@ public class DrawcashLogController extends BaseController{
     * @return
     */
     @ApiOperation(value = "审核操作/通过拒绝",notes = "审核操作/通过拒绝")
-    @GetMapping(value = "/auditor/{id}/{hasPass}",produces = "application/json;charset=utf-8")
+    @PostMapping(value = "/auditor/{id}/{hasPass}",produces = "application/json;charset=utf-8")
     public Object auditor(@ApiParam(name = "id", value = "当前数据id", required = true) @PathVariable Integer id,
                          @ApiParam(name = "hasPass", value = "是否通过", required = true) @PathVariable Boolean hasPass,
                          @ApiParam(name = "failMsg", value = "拒绝理由") @RequestParam(required = false) String failMsg) {

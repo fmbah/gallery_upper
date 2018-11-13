@@ -2,6 +2,7 @@ package com.xs.services.impl;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.SetBucketCORSRequest;
+import com.xs.beans.Base64ToUrl;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.ProjectConstant;
 import com.xs.core.ResultGenerator;
@@ -12,9 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -201,4 +206,37 @@ public class UpLoadServiceImpl implements UpLoadService {
         return null;
     }
 
+    @Override
+    public Object base64ToUrl(Base64ToUrl base64ToUrl) {
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        File template = null;
+        try {
+            String s1 = base64ToUrl.getBase64Var().split("data:image/")[1];
+            template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
+            FileOutputStream write = new FileOutputStream(template);
+            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
+            write.write(decoderBytes);
+            write.close();
+
+            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+            try {
+                ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+            if(url != null) {
+                base64ToUrl.setBase64Var(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (template != null) {
+                template.delete();
+            }
+        }
+
+        return ResultGenerator.genSuccessResult(base64ToUrl.getBase64Var());
+    }
 }

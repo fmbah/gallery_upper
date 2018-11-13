@@ -61,6 +61,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
         userPayment.seteTime(eTime);
         userPayment.setSp1Id(sp1Id);
         userPayment.setSp1Name(sp1Name);
+        userPayment.setUserId(userId);
         List<UserPayment> list = userpaymentMapper.queryWithPage(userPayment);
         PageInfo pageInfo = new PageInfo(list);
 

@@ -142,33 +142,33 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
         model.setGmtCreate(new Date());
         model.setGmtModified(new Date());
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        File template = null;
-        try {
-            String s1 = model.getPreviewImageUrl().split("data:image/")[1];
-            template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
-            FileOutputStream write = new FileOutputStream(template);
-            byte[] decoderBytes = decoder.decodeBuffer(model.getPreviewImageUrl().split(",")[1]);
-            write.write(decoderBytes);
-            write.close();
-
-            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-            try {
-                ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
-            if(url != null) {
-                model.setPreviewImageUrl(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (template != null) {
-                template.delete();
-            }
-        }
+//        BASE64Decoder decoder = new BASE64Decoder();
+//        File template = null;
+//        try {
+//            String s1 = model.getPreviewImageUrl().split("data:image/")[1];
+//            template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
+//            FileOutputStream write = new FileOutputStream(template);
+//            byte[] decoderBytes = decoder.decodeBuffer(model.getPreviewImageUrl().split(",")[1]);
+//            write.write(decoderBytes);
+//            write.close();
+//
+//            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+//            try {
+//                ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+//            if(url != null) {
+//                model.setPreviewImageUrl(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (template != null) {
+//                template.delete();
+//            }
+//        }
 
         super.save(model);
 
@@ -214,34 +214,34 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
 
         template.setGmtModified(new Date());
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        File templateFile = null;
-        try {
-            String s1 = model.getPreviewImageUrl().split("data:image/")[1];
-            templateFile = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
-            FileOutputStream write = new FileOutputStream(templateFile);
-            byte[] decoderBytes = decoder.decodeBuffer(model.getPreviewImageUrl().split(",")[1]);
-            write.write(decoderBytes);
-            write.close();
-
-            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-            try {
-                ossClient.putObject(ossConfig.getBucket(), templateFile.getName(), new FileInputStream(templateFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), templateFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
-
-            if(url != null) {
-                template.setPreviewImageUrl(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + templateFile.getName());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (templateFile != null) {
-                templateFile.delete();
-            }
-        }
+//        BASE64Decoder decoder = new BASE64Decoder();
+//        File templateFile = null;
+//        try {
+//            String s1 = model.getPreviewImageUrl().split("data:image/")[1];
+//            templateFile = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
+//            FileOutputStream write = new FileOutputStream(templateFile);
+//            byte[] decoderBytes = decoder.decodeBuffer(model.getPreviewImageUrl().split(",")[1]);
+//            write.write(decoderBytes);
+//            write.close();
+//
+//            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+//            try {
+//                ossClient.putObject(ossConfig.getBucket(), templateFile.getName(), new FileInputStream(templateFile));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), templateFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+//
+//            if(url != null) {
+//                template.setPreviewImageUrl(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + templateFile.getName());
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (templateFile != null) {
+//                templateFile.delete();
+//            }
+//        }
 
         super.update(template);
 

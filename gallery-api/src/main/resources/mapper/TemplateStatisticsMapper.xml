@@ -30,7 +30,7 @@ where 1=1
     <if test="eTime != null and eTime != ''">
       AND tb_template_statistics.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
     </if>
-group by category_id order by category_id;
+group by category_id order by category_id
   </select>
 
 
@@ -65,7 +65,7 @@ group by category_id order by category_id;
         and t.name like concat('%',#{name},'%')
       </if>
       <if test="categoryId != null and categoryId != ''">
-        and tc.id = #{categoryId};
+        and tc.id = #{categoryId}
       </if>
   </select>
 
@@ -99,7 +99,7 @@ group by category_id order by category_id;
             and t.name like concat('%',#{name},'%')
         </if>
         <if test="brandId != null and brandId != ''">
-            and cb.id = #{brandId};
+            and cb.id = #{brandId}
         </if>
     </select>
 

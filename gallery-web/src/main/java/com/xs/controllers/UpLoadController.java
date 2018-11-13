@@ -1,18 +1,20 @@
 package com.xs.controllers;
 
+import com.xs.beans.Base64ToUrl;
+import com.xs.beans.Template;
 import com.xs.configurer.sannotation.IgnoreAuth;
 import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.UpLoadService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -66,6 +68,12 @@ public class UpLoadController extends BaseController {
     @IgnoreAuth
     public Object remove(@ApiParam(value = "文件")@RequestParam String fileName) throws IOException {
         return upLoadService.remove(fileName);
+    }
+
+    @ApiOperation(value = "base64串转url地址",notes = "base64串转url地址")
+    @PutMapping(value = "/base64ToUrl",produces = "application/json;charset=utf-8")
+    public Object base64ToUrl(@Valid @RequestBody Base64ToUrl base64ToUrl) {
+        return upLoadService.base64ToUrl(base64ToUrl);
     }
 
 //    /**

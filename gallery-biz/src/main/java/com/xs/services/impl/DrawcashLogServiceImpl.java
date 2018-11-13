@@ -105,13 +105,14 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
         }
         User user = userMapper.selectByPrimaryKey(drawcashLog.getUserId());
         if (user == null) {
-            return ResultGenerator.genFailResult("该提现记录申请者数据不存在或已删除");
-        }
-        if (user.getCashBalance().compareTo(drawcashLog.getDrawCash()) < 0) {
-            return ResultGenerator.genFailResult("该提现记录申请者余额不足,请联系管理员进行处理");
+            return ResultGenerator.genFailResult("该提现记录的申请者数据不存在或已删除");
         }
 
+
         if (hasPass) {
+            if (user.getCashBalance().compareTo(drawcashLog.getDrawCash()) < 0) {
+                return ResultGenerator.genFailResult("该提现记录申请者余额不足,请联系管理员进行处理");
+            }
             user.setCashBalance(user.getCashBalance().subtract(drawcashLog.getDrawCash()));
             user.setGmtModified(new Date());
             userMapper.updateByPrimaryKey(user);
