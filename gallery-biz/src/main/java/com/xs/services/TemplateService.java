@@ -14,7 +14,6 @@ public interface TemplateService extends Service<Template> {
 
 
     /**
-     *
      * 功能描述: 模板数据集合
      *
      * @param:
@@ -24,4 +23,5 @@ public interface TemplateService extends Service<Template> {
      */
     Object queryWithPage(int page, int size, Boolean enabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand);
 
+    Template queryTemplateInfo(Integer id);
 }

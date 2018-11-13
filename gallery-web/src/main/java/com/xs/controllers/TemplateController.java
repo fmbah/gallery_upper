@@ -74,7 +74,7 @@ public class TemplateController extends BaseController{
     @ApiImplicitParams({@ApiImplicitParam(value = "ID",name="id",required = true,paramType = "query")})
     @GetMapping(value = "/detail",produces = "application/json;charset=utf-8")
     public Object detail(@RequestParam Integer id) {
-        Template template = templateService.findById(id);
+        Template template = templateService.queryTemplateInfo(id);
         return ResultGenerator.genSuccessResult(template);
     }
 

@@ -265,6 +265,34 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
         if (template == null) {
             throw new ServiceException("模板数据不存在或已删除");
         }
+
+        Condition templateLabelsCondition = new Condition(TemplateLabels.class);
+        Example.Criteria templateLabelsConditionCriteria = templateLabelsCondition.createCriteria();
+        templateLabelsConditionCriteria.andEqualTo("templateId", template.getId());
+        List<TemplateLabels> templateLabels = templateLabelsMapper.selectByCondition(templateLabelsCondition);
+        if (templateLabels != null) {
+            List<HashMap> lidsList = new ArrayList<>();
+            for(TemplateLabels tl : templateLabels) {
+                Label label = labelMapper.selectByPrimaryKey(tl.getLabelId());
+                if (label != null) {
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("name", label.getName());
+                    hashMap.put("id", label.getId());
+                    lidsList.add(hashMap);
+                }
+            }
+            if (!lidsList.isEmpty()) {
+                template.setLabelIds(JSONObject.toJSONString(lidsList));
+            }
+        }
+        return template;
+    }
+
+    @Override
+    public Template queryTemplateInfo(Integer id) {
+
+        Template template = this.findById(id);
+
         if (!StringUtils.isEmpty(template.getDescri())) {
             JSONObject jsonObject = JSON.parseObject(template.getDescri());
             if (jsonObject != null) {
@@ -303,25 +331,6 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
             }
         }
 
-        Condition templateLabelsCondition = new Condition(TemplateLabels.class);
-        Example.Criteria templateLabelsConditionCriteria = templateLabelsCondition.createCriteria();
-        templateLabelsConditionCriteria.andEqualTo("templateId", template.getId());
-        List<TemplateLabels> templateLabels = templateLabelsMapper.selectByCondition(templateLabelsCondition);
-        if (templateLabels != null) {
-            List<HashMap> lidsList = new ArrayList<>();
-            for(TemplateLabels tl : templateLabels) {
-                Label label = labelMapper.selectByPrimaryKey(tl.getLabelId());
-                if (label != null) {
-                    HashMap hashMap = new HashMap();
-                    hashMap.put("name", label.getName());
-                    hashMap.put("id", label.getId());
-                    lidsList.add(hashMap);
-                }
-            }
-            if (!lidsList.isEmpty()) {
-                template.setLabelIds(JSONObject.toJSONString(lidsList));
-            }
-        }
         return template;
     }
 }
