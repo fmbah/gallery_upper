@@ -113,6 +113,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                 Date expireTime = instance.getTime();
                 user.setMemberExpired(expireTime);
                 user.setMemberType(userPaymentList.get(i).getRechargeType());
+                user.setGmtModified(new Date());
                 userMapper.updateByPrimaryKey(user);
 
 
@@ -280,10 +281,12 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                                 if (isBrandMember2) {
                                                     hasShareProfit2 = true;
                                                 }
-                                            } else if (type2 == 6 || hasShareProfit2) {
+                                            } else if (type2 == 6 || type2 == 10) {
                                                 hasShareProfit2 = true;
-                                            } else if (type2 == 10) {
-                                                hasShareProfit2 = true;
+                                            } else if (type2 == 5) {
+                                                if (isBrandMember2) {
+                                                    hasShareProfit2 = true;
+                                                }
                                             }
 
                                             if (hasShareProfit2) {
