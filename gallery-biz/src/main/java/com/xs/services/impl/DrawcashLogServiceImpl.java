@@ -4,11 +4,13 @@ import com.aliyun.oss.OSSClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.DrawcashLog;
+import com.xs.beans.Incomexpense;
 import com.xs.beans.User;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sservice.AbstractService;
 import com.xs.daos.DrawcashLogMapper;
+import com.xs.daos.IncomexpenseMapper;
 import com.xs.daos.UserMapper;
 import com.xs.services.DrawcashLogService;
 import com.xs.utils.JxlsExportUtil;
@@ -23,6 +25,7 @@ import redis.clients.jedis.JedisPool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +53,8 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
     private OssConfig ossConfig;
     @Autowired
     private JedisPool jedisPool;
+    @Autowired
+    private IncomexpenseMapper incomexpenseMapper;
 
 
     @Override
@@ -115,7 +120,21 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             }
             user.setCashBalance(user.getCashBalance().subtract(drawcashLog.getDrawCash()));
             user.setGmtModified(new Date());
+
+            //收入支付记录数据
+            Incomexpense incomexpense = new Incomexpense();
+            incomexpense.setUserId(user.getId());
+            incomexpense.setType("WITHDRAW_CASH");
+            incomexpense.setIncome(BigDecimal.ZERO);
+            incomexpense.setExpense(drawcashLog.getDrawCash());
+            incomexpense.setBalance(user.getCashBalance());
+            incomexpense.setTradedate(new Date());
+            incomexpense.setGmtCreate(new Date());
+            incomexpense.setShareProfitId(0);
+            incomexpense.setRemark(user.getNickname() + "申请提现{" + drawcashLog.getDrawCash() + "}");
+
             userMapper.updateByPrimaryKey(user);
+            incomexpenseMapper.insert(incomexpense);
         } else {
             if (StringUtils.isEmpty(failMsg)) {
                 return ResultGenerator.genFailResult("拒绝申请提现时,请填写拒绝理由");

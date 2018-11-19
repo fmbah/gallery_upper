@@ -319,7 +319,7 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
                                                 String allUrl = prefix;
                                                 allUrl += ImageBase64Utils.imgBase64(s);
 
-                                                template.setDescri(template.getDescri().replaceAll(s, allUrl));
+                                                template.setDescri(template.getDescri().replaceFirst(s, allUrl));
                                             }
                                         }
                                     }

@@ -2,10 +2,12 @@ package com.xs.services.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xs.beans.ActiveCdk;
 import com.xs.beans.BrandCdkey;
 import com.xs.beans.Template;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
+import com.xs.daos.ActiveCdkMapper;
 import com.xs.daos.BrandCdkeyMapper;
 import com.xs.daos.CompanyBrandMapper;
 import com.xs.beans.CompanyBrand;
@@ -46,6 +48,8 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
     private JedisPool jedisPool;
     @Autowired
     private BrandCdkeyMapper brandCdkeyMapper;
+    @Autowired
+    private ActiveCdkMapper activeCdkMapper;
 
 
     @Override
@@ -184,6 +188,14 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
         List<Template> templates = templateMapper.selectByCondition(condition);
         if (templates != null && !templates.isEmpty()) {
             throw new ServiceException("该品牌已存在模板, 不可删除");
+        }
+
+        Condition cdkCondition = new Condition(ActiveCdk.class);
+        Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
+        cdkConditionCriteria.andEqualTo("brandId", id);
+        List<ActiveCdk> activeCdks = activeCdkMapper.selectByCondition(cdkCondition);
+        if (activeCdks != null && !activeCdks.isEmpty()) {
+            throw new ServiceException("该品牌已存在已激活激活码, 不可删除");
         }
 
         super.deleteById(id);
