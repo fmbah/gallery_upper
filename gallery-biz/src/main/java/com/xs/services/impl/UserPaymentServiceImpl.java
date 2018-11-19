@@ -49,10 +49,12 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
     private ShareProfitMapper shareProfitMapper;
     @Autowired
     private IncomexpenseMapper incomexpenseMapper;
+    @Autowired
+    private BrandCdkeyMapper brandCdkeyMapper;
 
 
     @Override
-    public Object queryWithPage(int page, int size, Integer userId, String userName, String sTime, String eTime, Integer sp1Id, String sp1Name, Boolean isExport) {
+    public Object queryWithPage(int page, int size, Integer userId, String userName, String sTime, String eTime, Integer sp1Id, String sp1Name, Byte type, Boolean isExport) {
 
         PageHelper.startPage(page, size);
         UserPayment userPayment = new UserPayment();
@@ -62,6 +64,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
         userPayment.setSp1Id(sp1Id);
         userPayment.setSp1Name(sp1Name);
         userPayment.setUserId(userId);
+        userPayment.setRechargeType(type);
         List<UserPayment> list = userpaymentMapper.queryWithPage(userPayment);
         PageInfo pageInfo = new PageInfo(list);
 
@@ -106,6 +109,29 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
             //计算分摊
             User user = userMapper.selectByPrimaryKey(userPaymentList.get(i).getUserId());
             if (user != null) {
+
+                if (userPaymentList.get(i).getRechargeType().byteValue() == 1) {
+
+                    if (!StringUtils.isEmpty(userPaymentList.get(i).getCdkCode())) {
+
+                        Condition condition = new Condition(BrandCdkey.class);
+                        Example.Criteria criteria = condition.createCriteria();
+                        criteria.andEqualTo("code", userPaymentList.get(i).getCdkCode());
+                        List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(condition);
+                        if (brandCdkeys == null || (brandCdkeys != null && !brandCdkeys.isEmpty())) {
+                            logger.info("未找到激活码数据,激活码[{}]", userPaymentList.get(i).getCdkCode());
+                            continue;
+                        }
+                        BrandCdkey brandCdkey = brandCdkeys.get(0);
+                        brandCdkey.setIsUsed(new Byte("1"));
+                        brandCdkey.setUsedTime(now);
+                        brandCdkey.setUsedUserId(user.getId());
+                        brandCdkey.setGmtModified(now);
+
+                        brandCdkeyMapper.updateByPrimaryKey(brandCdkey);
+                    }
+                    continue;
+                }
 
                 //改变当前用户的会员类别以及会员过期时间
                 Calendar instance = Calendar.getInstance();

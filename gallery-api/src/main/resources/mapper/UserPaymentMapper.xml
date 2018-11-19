@@ -26,6 +26,9 @@
     <result column="wxHeadImgurl" jdbcType="VARCHAR" property="wxHeadImgurl" />
     <result column="rechargeTypeStr" jdbcType="VARCHAR" property="rechargeTypeStr" />
 
+    <result column="cdk_code" jdbcType="VARCHAR" property="cdkCode" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+
   </resultMap>
 
 
@@ -36,6 +39,7 @@
                       when 5 then '半年会员'
                       when 6 then '一年会员'
                       when 10 then '终身会员'
+                      when 1 then '品牌会员'
                       else
                       '未知'
                       end as rechargeTypeStr,
@@ -56,6 +60,9 @@
 
     <if test="userId != null and userId != ''">
       AND tmp.user_id = #{userId}
+    </if>
+    <if test="rechargeType != null and rechargeType != ''">
+      AND tmp.recharge_type = #{rechargeType}
     </if>
     <if test="userName != null and userName != ''">
       <bind name="_userName" value="'%' + _parameter.userName + '%'" />

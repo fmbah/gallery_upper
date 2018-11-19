@@ -89,6 +89,7 @@ public class UserPaymentController extends BaseController{
             @ApiImplicitParam(value = "结束时间",name = "eTime",paramType = "query"),
             @ApiImplicitParam(value = "一级分益人id",name = "sp1Id",paramType = "query"),
             @ApiImplicitParam(value = "一级分益人名称",name = "sp1Name",paramType = "query"),
+            @ApiImplicitParam(value = "充值类型",name = "type",paramType = "query"),
             @ApiImplicitParam(value = "是否导出",name = "isExport",paramType = "query")
     })
     @GetMapping(value = "/list",produces = "application/json;charset=utf-8")
@@ -100,6 +101,7 @@ public class UserPaymentController extends BaseController{
                        @RequestParam(required = false) String eTime,
                        @RequestParam(required = false) Integer sp1Id,
                        @RequestParam(required = false) String sp1Name,
+                       @RequestParam(required = false) Byte type,
                        @RequestParam Boolean isExport
     ){
         return userPaymentService.queryWithPage(page, size, userId,
@@ -108,6 +110,7 @@ public class UserPaymentController extends BaseController{
                 eTime,
                 sp1Id,
                 sp1Name,
+                type,
                 isExport);
     }
 }

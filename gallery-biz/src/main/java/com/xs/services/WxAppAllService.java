@@ -488,7 +488,7 @@ public class WxAppAllService {
      * @auther: Fmbah
      * @date: 18-10-19 下午9:18
      */
-    public Object verifyBrandCode(Integer userId, String code) {
+    public synchronized Object verifyBrandCode(Integer userId, String code) {
 
         ActiveCdk activeCdk = activeCdkService.findBy("code", code);
         if (activeCdk != null) {
@@ -508,14 +508,61 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("用户数据不存在或已删除");
         }
 
-        brandCdkey.setIsUsed(new Byte("1"));
-        brandCdkey.setUsedTime(new Date());
-        brandCdkey.setUsedUserId(userId);
-        brandCdkey.setGmtModified(new Date());
 
-        brandCdkeyService.update(brandCdkey);
+        //update by zx on 20181116 11:31 start
+        //
 
-        return ResultGenerator.genSuccessResult();
+        Condition condition = new Condition(UserPayment.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("rechargeType", Byte.valueOf("1"));
+        criteria.andEqualTo("status", "paid");
+        List<UserPayment> userPayments = userPaymentMapper.selectByCondition(condition);
+
+        if (userPayments != null && !userPayments.isEmpty()) {//如果此用户已经购买过品牌会员,那么就直接激活其它品牌激活码
+
+            brandCdkey.setIsUsed(new Byte("1"));
+            brandCdkey.setUsedTime(new Date());
+            brandCdkey.setUsedUserId(userId);
+            brandCdkey.setGmtModified(new Date());
+
+            brandCdkeyService.update(brandCdkey);
+
+            return ResultGenerator.genSuccessResult();
+        } else {
+
+            //如果code存在订单中,并且已支付完成,那么提示激活码已被使用
+            Condition condition1 = new Condition(UserPayment.class);
+            Example.Criteria criteria1 = condition1.createCriteria();
+            criteria1.andEqualTo("cdkCode", code);
+            criteria1.andEqualTo("status", "paid");
+            criteria1.andEqualTo("rechargeType", Byte.valueOf("1"));
+            List<UserPayment> userPayments1 = userPaymentMapper.selectByCondition(condition1);
+            if (userPayments1 != null && !userPayments1.isEmpty()) {
+                return ResultGenerator.genFailResult("激活码已被使用,请联系客服进行处理");
+            } else {
+                Condition condition2 = new Condition(UserPayment.class);
+                Example.Criteria criteria2 = condition2.createCriteria();
+                criteria2.andEqualTo("cdkCode", code);
+                criteria2.andEqualTo("status", "unpay");
+                criteria2.andEqualTo("rechargeType", Byte.valueOf("1"));
+                condition2.setOrderByClause(" gmt_create desc");
+                List<UserPayment> userPayments2 = userPaymentMapper.selectByCondition(condition2);
+                if (userPayments2 != null && !userPayments2.isEmpty()) {
+                    Calendar gmtCreate = Calendar.getInstance();
+                    gmtCreate.setTime(userPayments2.get(0).getGmtCreate());
+                    gmtCreate.add(Calendar.HOUR, 1);
+                    if (gmtCreate.getTime().after(new Date())) {
+                        return ResultGenerator.genFailResult("激活码已被锁定,请联系客服进行处理");
+                    }
+                }
+
+                return orderDown(userId, Byte.valueOf("1"), code);
+            }
+
+        }
+
+
     }
 
     /**
@@ -579,7 +626,7 @@ public class WxAppAllService {
      * @auther: Fmbah
      * @date: 18-10-22 下午5:59
      */
-    public Object orderDown(Integer userId, Byte rechargeType){
+    public Object orderDown(Integer userId, Byte rechargeType, String code){
 
         Date now = new Date();
         User user = userService.findById(userId);
@@ -587,7 +634,7 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("用户数据不存在或已删除");
         }
 
-        if (user.getMemberExpired().after(now)) {//未过期,保证向上充值
+        if (user.getMemberExpired().after(now) && user.getMemberType().byteValue() != 1) {//未过期,保证向上充值
             if (user.getMemberType().byteValue() >= rechargeType) {
 
                 if (user.getMemberType().byteValue() == 5) {
@@ -640,11 +687,37 @@ public class WxAppAllService {
 
         if (rechargeType.byteValue() == 5) {
             userPayment.setAmount(new BigDecimal(268));
+            userPayment.setCdkCode(StringUtils.EMPTY);
+            userPayment.setRemark(StringUtils.EMPTY);
         } else if (rechargeType.byteValue() == 6) {
             userPayment.setAmount(new BigDecimal(365));
+            userPayment.setCdkCode(StringUtils.EMPTY);
+            userPayment.setRemark(StringUtils.EMPTY);
         } else if (rechargeType.byteValue() == 10) {
             userPayment.setAmount(new BigDecimal(899));
-        } else {
+            userPayment.setCdkCode(StringUtils.EMPTY);
+            userPayment.setRemark(StringUtils.EMPTY);
+        } else if (rechargeType.byteValue() == 1) {
+            userPayment.setAmount(new BigDecimal(100));
+
+            Condition condition = new Condition(BrandCdkey.class);
+            Example.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("code", code);
+            criteria.andEqualTo("isUsed", new Byte("0"));
+            List<BrandCdkey> brandCdkeys = brandCdkeyService.findByCondition(condition);
+            if (brandCdkeys == null || (brandCdkeys != null && brandCdkeys.isEmpty())) {
+                return ResultGenerator.genFailResult("激活码数据有误或已被使用");
+            }
+
+            Integer brandId = brandCdkeys.get(0).getBrandId();
+            CompanyBrand companyBrand = companyBrandService.findById(brandId);
+            if (companyBrand == null) {
+                return ResultGenerator.genFailResult("品牌数据不存在或已删除");
+            }
+
+            userPayment.setCdkCode(code);
+            userPayment.setRemark(companyBrand.getId() + "_" + companyBrand.getName());
+        }  else {
             return ResultGenerator.genFailResult("购买类型有误");
         }
         userPaymentMapper.insert(userPayment);

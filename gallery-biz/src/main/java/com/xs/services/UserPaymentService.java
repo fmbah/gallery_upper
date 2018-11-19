@@ -19,6 +19,7 @@ public interface UserPaymentService extends Service<UserPayment> {
                          String eTime,
                          Integer sp1Id,
                          String sp1Name,
+                         Byte type,
                          Boolean isExport);
 
     /**

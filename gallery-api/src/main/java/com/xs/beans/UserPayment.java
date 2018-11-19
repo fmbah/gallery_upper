@@ -46,6 +46,11 @@ public class UserPayment extends BaseBean {
     @Column(name = "recharge_type")
     private Byte rechargeType;
 
+    @Column(name = "cdk_code")
+    private String cdkCode;
+    @Column(name = "remark")
+    private String remark;
+
     @Transient
     @ApiModelProperty(value = "支付类型：5: 半年会员 6: 全年会员 10: 终身会员")
     private String rechargeTypeStr;
@@ -302,5 +307,21 @@ public class UserPayment extends BaseBean {
 
     public void setRechargeTypeStr(String rechargeTypeStr) {
         this.rechargeTypeStr = rechargeTypeStr;
+    }
+
+    public String getCdkCode() {
+        return cdkCode;
+    }
+
+    public void setCdkCode(String cdkCode) {
+        this.cdkCode = cdkCode;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
