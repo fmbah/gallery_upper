@@ -626,7 +626,7 @@ public class WxAppAllService {
      * @auther: Fmbah
      * @date: 18-10-22 下午5:59
      */
-    public Object orderDown(Integer userId, Byte rechargeType, String code){
+    public synchronized Object orderDown(Integer userId, Byte rechargeType, String code){
 
         Date now = new Date();
         User user = userService.findById(userId);
@@ -638,11 +638,11 @@ public class WxAppAllService {
             if (user.getMemberType().byteValue() >= rechargeType) {
 
                 if (user.getMemberType().byteValue() == 5) {
-                    user.setMemberTypeStr("半年会员");
+                    user.setMemberTypeStr("金卡会员");
                 } else if(user.getMemberType().byteValue() == 6) {
-                    user.setMemberTypeStr("全年会员");
+                    user.setMemberTypeStr("铂金会员");
                 } else if(user.getMemberType().byteValue() == 10) {
-                    user.setMemberTypeStr("终身会员");
+                    user.setMemberTypeStr("钻石会员");
                 } else {
                     user.setMemberTypeStr("");
                 }
@@ -650,13 +650,13 @@ public class WxAppAllService {
                 String rechargeTypeStr = "";
                 switch (rechargeType) {
                     case 5 :
-                        rechargeTypeStr = "半年会员";
+                        rechargeTypeStr = "金卡会员";
                         break;
                     case 6 :
-                        rechargeTypeStr = "全年会员";
+                        rechargeTypeStr = "铂金会员";
                         break;
                     case 10 :
-                        rechargeTypeStr = "终身会员";
+                        rechargeTypeStr = "钻石会员";
                         break;
                     default:
                         rechargeTypeStr = "";

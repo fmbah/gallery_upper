@@ -31,7 +31,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG;
-import static com.xs.core.ProjectConstant.WX_USER_TOKEN;
+import static com.xs.core.ProjectConstant.WX_MP_USER_TOKEN;
 
 /**
  \* 杭州桃子网络科技股份有限公司
@@ -102,9 +102,14 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                     }
                     if (user != null) {
                         try(Jedis jedis = jedisPool.getResource()) {
-                            String key = String.format(WX_USER_TOKEN, user.getId() + "");
+                            String key = String.format(WX_MP_USER_TOKEN, user.getId() + "");
                             String token = RandomStringUtils.randomAlphanumeric(9).concat("_").concat(user.getId().toString());
-                            jedis.set(key, token);
+                            Boolean exists = jedis.exists(key);
+                            if (exists) {
+                                token = jedis.get(key);
+                            } else {
+                                jedis.set(key, token);
+                            }
                             jedis.expire(key, 60 * 60 * 24 * 7);
 
                             result = "?userId=" + user.getId() +

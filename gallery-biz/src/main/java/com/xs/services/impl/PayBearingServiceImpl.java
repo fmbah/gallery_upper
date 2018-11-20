@@ -192,11 +192,11 @@ public class PayBearingServiceImpl implements PayBearingService {
                     Byte rechargeType = orderItem.getRechargeType();
                     String rechargeTypeStr = "";
                     if (rechargeType.byteValue() == 5) {
-                        rechargeTypeStr = "半年会员";
+                        rechargeTypeStr = "金卡会员";
                     } else if (rechargeType.byteValue() == 6) {
                         rechargeTypeStr = "一年会员";
                     } else if (rechargeType.byteValue() == 10) {
-                        rechargeTypeStr = "终身会员";
+                        rechargeTypeStr = "钻石会员";
                     } else {
                         rechargeTypeStr = "未知";
                     }

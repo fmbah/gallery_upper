@@ -7,6 +7,7 @@ import com.xs.core.ResultCode;
 import com.xs.utils.IpUtils;
 import com.xs.utils.RespUtil;
 import com.xs.utils.SpringBootBeanUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
+import static com.xs.core.ProjectConstant.WX_MP_USER_TOKEN;
 import static com.xs.core.ProjectConstant.WX_USER_FONT_TOKEN;
 import static com.xs.core.ProjectConstant.WX_USER_TOKEN;
 
@@ -77,6 +79,7 @@ public class WxHandler extends HandlerInterceptorAdapter {
                 if (StringUtil.isNotEmpty(token) && token.split("_").length == 2) {
                     try (Jedis jedis = jedisPool.getResource()) {
                         String key = String.format(WX_USER_TOKEN, token.split("_")[1]);
+                        key = StringUtils.isEmpty(key) ? String.format(WX_MP_USER_TOKEN, token.split("_")[1]) : key;
                         Boolean exists = jedis.exists(key);
                         if (exists) {
                             pass = true;

@@ -47,9 +47,9 @@ public class User {
 
     /**
      * 0: 非会员
-5: 半年会员
-6: 全年会员
-10: 终身会员
+5: 金卡会员
+6: 铂金会员
+10: 钻石会员
      */
     @Column(name = "member_type")
     private Byte memberType;
@@ -241,14 +241,14 @@ public class User {
 
     /**
      * 获取0: 非会员
-5: 半年会员
-6: 全年会员
-10: 终身会员
+5: 金卡会员
+6: 铂金会员
+10: 钻石会员
      *
      * @return member_type - 0: 非会员
-5: 半年会员
-6: 全年会员
-10: 终身会员
+5: 金卡会员
+6: 铂金会员
+10: 钻石会员
      */
     public Byte getMemberType() {
         return memberType;
@@ -256,14 +256,14 @@ public class User {
 
     /**
      * 设置0: 非会员
-5: 半年会员
-6: 全年会员
-10: 终身会员
+5: 金卡会员
+6: 铂金会员
+10: 钻石会员
      *
      * @param memberType 0: 非会员
-5: 半年会员
-6: 全年会员
-10: 终身会员
+5: 金卡会员
+6: 铂金会员
+10: 钻石会员
      */
     public void setMemberType(Byte memberType) {
         this.memberType = memberType;

@@ -159,9 +159,9 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                             Byte memberType = sp1User.getMemberType();
                             byte sp1UserMemberType = memberType == null ? 0 : memberType.byteValue();
 //                                0: 非会员
-//                                5: 半年会员
-//                                6: 全年会员
-//                                10: 终身会员
+//                                5: 金卡会员
+//                                6: 铂金会员
+//                                10: 钻石会员
                             Condition cdkCondition = new Condition(ActiveCdk.class);
                             Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
                             cdkConditionCriteria.andEqualTo("usedUserId", sp1User.getId());
@@ -173,15 +173,15 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                 if (isBrandMember) {
                                     hasShareProfit = true;
                                 }
-                            } else if (sp1UserMemberType == 6 || sp1UserMemberType == 10) {//一年会员或终身会员
+                            } else if (sp1UserMemberType == 6 || sp1UserMemberType == 10) {//一年会员或钻石会员
                                 hasShareProfit = true;
-                            } else if (sp1UserMemberType == 5) {//半年会员没钱分
+                            } else if (sp1UserMemberType == 5) {//金卡会员没钱分
                                 if (isBrandMember) {
                                     hasShareProfit = true;
                                 }
                             }
 
-                            if (type == 6) {//全年会员
+                            if (type == 6) {//铂金会员
 
 
                                 if (hasShareProfit) {
@@ -254,7 +254,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     }
                                 }
 
-                            } else if (type == 10) {//终身会员
+                            } else if (type == 10) {//钻石会员
 
                                 if (hasShareProfit) {
                                     //用户数据
@@ -317,7 +317,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
 
                                             if (hasShareProfit2) {
                                                 //用户数据
-                                                sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));//代理+终身会员=120 代理+会员/品牌=50
+                                                sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));//代理+钻石会员=120 代理+会员/品牌=50
 
                                                 //分享收益数据
                                                 ShareProfit shareProfit2 = new ShareProfit();

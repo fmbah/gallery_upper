@@ -252,11 +252,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 } else {
                     user.setIsMemberStr("是");
                     if (user.getMemberType().byteValue() == 5) {
-                        user.setMemberTypeStr("半年会员");
+                        user.setMemberTypeStr("金卡会员");
                     } else if(user.getMemberType().byteValue() == 6) {
-                        user.setMemberTypeStr("全年会员");
+                        user.setMemberTypeStr("铂金会员");
                     } else if(user.getMemberType().byteValue() == 10) {
-                        user.setMemberTypeStr("终身会员");
+                        user.setMemberTypeStr("钻石会员");
                     } else {
                         user.setMemberTypeStr("");
                     }

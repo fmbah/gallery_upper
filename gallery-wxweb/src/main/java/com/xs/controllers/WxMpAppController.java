@@ -40,8 +40,10 @@ public class WxMpAppController extends BaseController {
 
     @Autowired
     private SWxAuthService sWxAuthService;
-    @Value("${gallery.domain.url}")
-    private String url;
+    @Value("${gallery.domain.personUrl}")
+    private String personUrl;
+    @Value("${gallery.domain.recharageUrl}")
+    private String recharageUrl;
 
     @ApiIgnore
     @IgnoreAuth
@@ -136,16 +138,28 @@ public class WxMpAppController extends BaseController {
      * @auther: Fmbah
      * @date: 18-10-22 下午7:53
      */
-    @GetMapping(value = "distributionCenterAuth", produces = "application/json;charset=utf-8")
-    @ApiOperation(value = "分销中心授权url", notes = "分销中心授权url")
+    @GetMapping(value = "personCenter", produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "个人中心按钮", notes = "个人中心按钮")
     @ResponseBody
     @IgnoreAuth
-    public ModelAndView distributionCenterAuth() {
+    public ModelAndView personCenter() {
         Object result = sWxAuthService.distributionCenterAuth(this.request);
         if (result != null) {
-            return new ModelAndView(new RedirectView(this.url + result));
+            return new ModelAndView(new RedirectView(this.personUrl + result));
         }
-        return new ModelAndView(new RedirectView(this.url));
+        return new ModelAndView(new RedirectView(this.personUrl));
+    }
+
+    @GetMapping(value = "recharage", produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "充值按钮", notes = "充值按钮")
+    @ResponseBody
+    @IgnoreAuth
+    public ModelAndView recharage() {
+        Object result = sWxAuthService.distributionCenterAuth(this.request);
+        if (result != null) {
+            return new ModelAndView(new RedirectView(this.recharageUrl + result));
+        }
+        return new ModelAndView(new RedirectView(this.recharageUrl));
     }
 
     @GetMapping(value = "getPersonal/{userId}/", produces = "application/json;charset=utf-8")
