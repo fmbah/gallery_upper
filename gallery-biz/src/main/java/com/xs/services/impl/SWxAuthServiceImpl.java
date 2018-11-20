@@ -69,9 +69,9 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                 String result = "";
                 WxMpOAuth2AccessToken wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);
                 if (wxMpOAuth2AccessToken != null) {
-                    User user = userService.findBy("weixinOpenid", wxMpOAuth2AccessToken.getOpenId());
+                    User user = userService.findBy("wxOpenid", wxMpOAuth2AccessToken.getOpenId());
                     if (user == null && wxMpOAuth2AccessToken.getUnionId() != null) {
-                        user = userService.findBy("weixinUnionid", wxMpOAuth2AccessToken.getUnionId());
+                        user = userService.findBy("wxUnionid", wxMpOAuth2AccessToken.getUnionId());
                     }
                     if (user == null) {
                         WxMpUser wxMpUser = wxMpService.getUserService().userInfo(wxMpOAuth2AccessToken.getOpenId());

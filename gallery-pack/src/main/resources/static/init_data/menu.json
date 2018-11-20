@@ -3,18 +3,18 @@
     {
       "type": "view",
       "name": "充值",
-      "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3d912b758d72faa1&redirect_uri=https://gallery.mxth.com/api/wx/wechat/recharage&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
+      "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3d912b758d72faa1&redirect_uri=https://gallery.mxth.com/api/wx/app/wechat/recharage&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
     },
     {
       "type": "view",
       "name": "个人中心",
-      "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3d912b758d72faa1&redirect_uri=https://gallery.mxth.com/api/wx/wechat/personCenter&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
+      "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3d912b758d72faa1&redirect_uri=https://gallery.mxth.com/api/wx/app/wechat/personCenter&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
     },
     {
       "type": "miniprogram",
       "name": "小程序",
       "url": "http://mp.weixin.qq.com",
-      "appid": "wx45d98d2c8e80956f",
+      "appid": "wxe872cecbe6201aca",
       "pagepath": "pages/index/index"
     }
   ]
