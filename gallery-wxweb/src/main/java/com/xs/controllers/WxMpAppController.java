@@ -42,8 +42,8 @@ public class WxMpAppController extends BaseController {
     private SWxAuthService sWxAuthService;
     @Value("${gallery.domain.personUrl}")
     private String personUrl;
-    @Value("${gallery.domain.recharageUrl}")
-    private String recharageUrl;
+    @Value("${gallery.domain.rechargeUrl}")
+    private String rechargeUrl;
 
     @ApiIgnore
     @IgnoreAuth
@@ -157,9 +157,9 @@ public class WxMpAppController extends BaseController {
     public ModelAndView recharage() {
         Object result = sWxAuthService.distributionCenterAuth(this.request);
         if (result != null) {
-            return new ModelAndView(new RedirectView(this.recharageUrl + result));
+            return new ModelAndView(new RedirectView(this.rechargeUrl + result));
         }
-        return new ModelAndView(new RedirectView(this.recharageUrl));
+        return new ModelAndView(new RedirectView(this.rechargeUrl));
     }
 
     @GetMapping(value = "getPersonal/{userId}/", produces = "application/json;charset=utf-8")
