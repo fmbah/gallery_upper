@@ -81,5 +81,6 @@ logging:
 
 gallery:
   domain:
+    url: https://gallery.mxth.com
     personUrl: https://gallery.mxth.com/wechat/index.html
     recharageUrl: https://gallery.mxth.com/wechat/index.html
