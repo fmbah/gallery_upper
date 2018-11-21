@@ -9,6 +9,7 @@
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="brand_id" jdbcType="INTEGER" property="brandId" />
     <result column="ratio" jdbcType="TINYINT" property="ratio" />
+    <result column="gratis" jdbcType="TINYINT" property="gratis" />
     <result column="is_enabled" jdbcType="BIT" property="isEnabled" />
     <result column="preview_image_url" jdbcType="LONGVARCHAR" property="previewImageUrl" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -21,7 +22,7 @@
   <select id="searchTemplates" resultType="java.util.HashMap"><!-- t.descri as descri,  -->
 
     select t.id as id, t.category_id as categoryId, t.name as name, t.brand_id as brandId,
-      t.preview_image_url as previewImageUrl, t.ratio as ratio,
+      t.preview_image_url as previewImageUrl, t.ratio as ratio, t.gratis as gratis,
 
       tc.title as title, tc.type as type, tc.background_image_url as backgroundImageUrl,
       tc.introduction as introduction, tc.is_hot as isHot, tc.template_filters as templateFilters,

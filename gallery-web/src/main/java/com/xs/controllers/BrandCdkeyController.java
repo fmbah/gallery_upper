@@ -5,14 +5,14 @@ import com.xs.services.BrandCdkeyService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.core.scontroller.BaseController;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -55,16 +55,25 @@ public class BrandCdkeyController extends BaseController{
 //        return ResultGenerator.genSuccessResult();
 //    }
 //
-//    /***
-//    * 修改
-//    * @return
-//    */
-//    @ApiOperation(value = "修改",notes = "修改")
-//    @PostMapping(value = "/update",produces = "application/json;charset=utf-8")
-//    public Object update(@Valid @RequestBody BrandCdkey brandCdkey, BindingResult bindingResult) {
-//        brandCdkeyService.update(brandCdkey);
-//        return ResultGenerator.genSuccessResult();
-//    }
+    /***
+    * 激活码价格设置
+    * @return
+    */
+    @ApiOperation(value = "激活码价格设置",notes = "激活码价格设置")
+    @PostMapping(value = "/settingCodePrice/{price}/",produces = "application/json;charset=utf-8")
+    public Object settingCodePrice(@PathVariable BigDecimal price) {
+        return brandCdkeyService.settingCodePrice(price);
+    }
+
+    /***
+     * 获取激活码价格
+     * @return
+     */
+    @ApiOperation(value = "获取激活码价格",notes = "获取激活码价格")
+    @GetMapping(value = "/getCodePrice",produces = "application/json;charset=utf-8")
+    public Object getCodePrice() {
+        return brandCdkeyService.getCodePrice();
+    }
 
     /***
     * 详情

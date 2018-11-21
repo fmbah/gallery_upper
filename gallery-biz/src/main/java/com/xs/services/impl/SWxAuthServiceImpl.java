@@ -154,6 +154,12 @@ public class SWxAuthServiceImpl implements SWxAuthService {
         if (incomexpenseList != null && incomexpenseList.size() > 0) {
             for (int i = 0; i < incomexpenseList.size(); i++) {
                 incomeSum = incomeSum.add(incomexpenseList.get(i).getIncome());
+                if (incomexpenseList.get(i).getShareProfitId() != null && incomexpenseList.get(i).getShareProfitId() != 0) {
+                    User tmpUser = userService.findById(incomexpenseList.get(i).getShareProfitId());
+                    if (tmpUser != null) {
+                        incomexpenseList.get(i).setShareProfitName(tmpUser.getNickname());
+                    }
+                }
             }
         }
         result.put("incomeSum", incomeSum);

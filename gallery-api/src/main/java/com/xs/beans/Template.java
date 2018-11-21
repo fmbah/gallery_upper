@@ -38,6 +38,11 @@ public class Template extends BaseBean {
     @NotNull(message = "是否启用不能为空")
     private Boolean enabled;
 
+    @Column(name = "gratis")
+    @ApiModelProperty(value = "是否免费")
+    @NotNull(message = "是否免费不能为空")
+    private Boolean gratis;
+
     @Column(name = "preview_image_url")
     @ApiModelProperty(value = "预览图")
     @NotBlank(message = "预览图不能为空!")
@@ -261,5 +266,13 @@ public class Template extends BaseBean {
 
     public void setTemplateCategory(TemplateCategory templateCategory) {
         this.templateCategory = templateCategory;
+    }
+
+    public Boolean getGratis() {
+        return gratis;
+    }
+
+    public void setGratis(Boolean gratis) {
+        this.gratis = gratis;
     }
 }

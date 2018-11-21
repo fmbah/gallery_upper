@@ -17,17 +17,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.xs.core.ProjectConstant.CODE_PRICE;
 
 
 /**
@@ -46,6 +51,8 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
     private OssConfig ossConfig;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private JedisPool jedisPool;
 
 
     @Override
@@ -138,5 +145,20 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
             }
         }
         return null;
+    }
+
+    @Override
+    public Object settingCodePrice(BigDecimal price) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.set(CODE_PRICE, price.toString());
+        }
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @Override
+    public Object getCodePrice() {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return ResultGenerator.genSuccessResult(jedis.get(CODE_PRICE));
+        }
     }
 }

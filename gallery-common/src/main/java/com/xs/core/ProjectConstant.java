@@ -41,7 +41,7 @@ public final class ProjectConstant {
     public static final String WX_MP_USER_TOKEN = "wxMpUserToken:userId:%s";
     public static final String WX_USER_FONT_TOKEN = "TOKEN";
     public static final String WX_MSG = "wxMsg";
-
+    public static final String CODE_PRICE = "code_price";
 
 
 }

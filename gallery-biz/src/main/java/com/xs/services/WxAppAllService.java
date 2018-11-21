@@ -698,25 +698,35 @@ public class WxAppAllService {
             userPayment.setCdkCode(StringUtils.EMPTY);
             userPayment.setRemark(StringUtils.EMPTY);
         } else if (rechargeType.byteValue() == 1) {
-            userPayment.setAmount(new BigDecimal(100));
+            try (Jedis jedis = jedisPool.getResource()) {
+                String code_price = jedis.get(CODE_PRICE);
+                if (StringUtils.isEmpty(code_price)) {
+                    return ResultGenerator.genFailResult("激活码价格数据不存在或已删除");
+                }
+                try {
+                    userPayment.setAmount(new BigDecimal(code_price));
+                } catch (Exception e) {
+                    return ResultGenerator.genFailResult("激活码价格数据有误");
+                }
 
-            Condition condition = new Condition(BrandCdkey.class);
-            Example.Criteria criteria = condition.createCriteria();
-            criteria.andEqualTo("code", code);
-            criteria.andEqualTo("isUsed", new Byte("0"));
-            List<BrandCdkey> brandCdkeys = brandCdkeyService.findByCondition(condition);
-            if (brandCdkeys == null || (brandCdkeys != null && brandCdkeys.isEmpty())) {
-                return ResultGenerator.genFailResult("激活码数据有误或已被使用");
+                Condition condition = new Condition(BrandCdkey.class);
+                Example.Criteria criteria = condition.createCriteria();
+                criteria.andEqualTo("code", code);
+                criteria.andEqualTo("isUsed", new Byte("0"));
+                List<BrandCdkey> brandCdkeys = brandCdkeyService.findByCondition(condition);
+                if (brandCdkeys == null || (brandCdkeys != null && brandCdkeys.isEmpty())) {
+                    return ResultGenerator.genFailResult("激活码数据有误或已被使用");
+                }
+
+                Integer brandId = brandCdkeys.get(0).getBrandId();
+                CompanyBrand companyBrand = companyBrandService.findById(brandId);
+                if (companyBrand == null) {
+                    return ResultGenerator.genFailResult("品牌数据不存在或已删除");
+                }
+
+                userPayment.setCdkCode(code);
+                userPayment.setRemark(companyBrand.getId() + "_" + companyBrand.getName());
             }
-
-            Integer brandId = brandCdkeys.get(0).getBrandId();
-            CompanyBrand companyBrand = companyBrandService.findById(brandId);
-            if (companyBrand == null) {
-                return ResultGenerator.genFailResult("品牌数据不存在或已删除");
-            }
-
-            userPayment.setCdkCode(code);
-            userPayment.setRemark(companyBrand.getId() + "_" + companyBrand.getName());
         }  else {
             return ResultGenerator.genFailResult("购买类型有误");
         }

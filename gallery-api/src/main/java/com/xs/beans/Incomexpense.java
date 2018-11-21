@@ -1,6 +1,7 @@
 package com.xs.beans;
 
 import com.xs.core.sbean.BaseBean;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -30,6 +31,11 @@ public class Incomexpense extends BaseBean {
 
     @Column(name = "share_profit_id")
     private Integer shareProfitId;
+
+    @Transient
+    @ApiModelProperty(name = "分享获益名称")
+    private String shareProfitName;
+
 
     private String remark;
 
@@ -171,5 +177,13 @@ public class Incomexpense extends BaseBean {
      */
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getShareProfitName() {
+        return shareProfitName;
+    }
+
+    public void setShareProfitName(String shareProfitName) {
+        this.shareProfitName = shareProfitName;
     }
 }
