@@ -208,7 +208,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     incomexpense.setTradedate(now);
                                     incomexpense.setGmtCreate(now);
                                     incomexpense.setShareProfitId(userPaymentList.get(i).getUserId());
-                                    incomexpense.setRemark(user.getNickname() + "充值¥365,获得分成50");
+                                    incomexpense.setRemark(user.getNickname() + "-" + 365 + "-" + 150);
 
                                     userMapper.updateByPrimaryKey(sp1User);
                                     shareProfitMapper.insert(shareProfit);
@@ -245,7 +245,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                             incomexpense2.setTradedate(now);
                                             incomexpense2.setGmtCreate(now);
                                             incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
-                                            incomexpense2.setRemark(user.getNickname() + "充值¥365,获得间接分成50");
+                                            incomexpense2.setRemark(user.getNickname() + "-" + 365 + "-" + 50);
 
                                             userMapper.updateByPrimaryKey(sp2User);
                                             shareProfitMapper.insert(shareProfit2);
@@ -280,7 +280,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     incomexpense.setTradedate(now);
                                     incomexpense.setGmtCreate(now);
                                     incomexpense.setShareProfitId(userPaymentList.get(i).getUserId());
-                                    incomexpense.setRemark(user.getNickname() + "充值¥899,获得分成" + (sp1UserMemberType == 10 ? 350 : 150));
+                                    incomexpense.setRemark(user.getNickname() + "-" + 899 + "-" + (sp1UserMemberType == 10 ? 350 : 150));
 
                                     userMapper.updateByPrimaryKey(sp1User);
                                     shareProfitMapper.insert(shareProfit);
@@ -339,7 +339,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                                 incomexpense2.setTradedate(now);
                                                 incomexpense2.setGmtCreate(now);
                                                 incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
-                                                incomexpense2.setRemark(user.getNickname() + "充值¥899,获得间接分成" + (type2 == 10 ? 120 : 50));
+                                                incomexpense2.setRemark(user.getNickname() + "-" + 899 + "-" + (type2 == 10 ? 120 : 50));
 
                                                 userMapper.updateByPrimaryKey(sp2User);
                                                 shareProfitMapper.insert(shareProfit2);
