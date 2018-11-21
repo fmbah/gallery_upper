@@ -79,9 +79,10 @@ public class WxHandler extends HandlerInterceptorAdapter {
                 if (StringUtil.isNotEmpty(token) && token.split("_").length == 2) {
                     try (Jedis jedis = jedisPool.getResource()) {
                         String key = String.format(WX_USER_TOKEN, token.split("_")[1]);
-                        key = StringUtils.isEmpty(key) ? String.format(WX_MP_USER_TOKEN, token.split("_")[1]) : key;
+                        String key1 = String.format(WX_MP_USER_TOKEN, token.split("_")[1]);
                         Boolean exists = jedis.exists(key);
-                        if (exists) {
+                        Boolean exists1 = jedis.exists(key1);
+                        if (exists || exists1) {
                             pass = true;
                         }
                     }
