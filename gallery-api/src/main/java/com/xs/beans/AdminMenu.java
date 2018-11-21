@@ -1,5 +1,6 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -7,7 +8,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Table(name = "tb_admin_menu")
-public class AdminMenu {
+public class AdminMenu extends BaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

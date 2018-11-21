@@ -1,5 +1,6 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @ApiModel(description = "轮播图", value = "Slide")
 @Table(name = "tb_slide")
-public class Slide {
+public class Slide extends BaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

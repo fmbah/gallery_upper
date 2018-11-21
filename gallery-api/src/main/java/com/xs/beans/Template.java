@@ -1,5 +1,6 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
@@ -9,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Table(name = "tb_template")
-public class Template {
+public class Template extends BaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "新增时id不用传")

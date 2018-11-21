@@ -1,12 +1,13 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "tb_brand_cdkey")
-public class BrandCdkey {
+public class BrandCdkey extends BaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

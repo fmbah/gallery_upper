@@ -1,11 +1,13 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "vw_active_cdk")
-public class ActiveCdk {
+public class ActiveCdk extends BaseBean {
     @Column(name = "brand_id")
     private Integer brandId;
 

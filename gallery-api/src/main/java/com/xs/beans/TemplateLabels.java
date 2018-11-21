@@ -1,10 +1,12 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
+
 import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "tb_template_labels")
-public class TemplateLabels {
+public class TemplateLabels extends BaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

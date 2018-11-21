@@ -237,8 +237,25 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                 result.put("hasAlertMsg", false);
             } else {
                 result.put("hasAlertMsg", true);
+
+                jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60 * 60);
+
+                Condition dlCondition1 = new Condition(DrawcashLog.class);
+                Example.Criteria dlConditionCriteria1 = dlCondition1.createCriteria();
+                dlConditionCriteria1.andEqualTo("userId", userId);
+                HashSet<String> statuss = new HashSet<>();
+                statuss.add("FAIL");
+                dlConditionCriteria1.andIn("status", statuss);
+                dlCondition1.setOrderByClause(" id desc");
+                List<DrawcashLog> drawcashLogs1 = drawcashLogMapper.selectByCondition(dlCondition1);
+                if (drawcashLogs1 != null && !drawcashLogs1.isEmpty()) {
+                    DrawcashLog drawcashLog = drawcashLogs1.get(0);
+
+                    result.put("alertMsg", drawcashLog.getFailMsg());
+                } else {
+                    result.put("alertMsg", null);
+                }
             }
-            jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60 * 60);
         }
 
         return ResultGenerator.genSuccessResult(result);

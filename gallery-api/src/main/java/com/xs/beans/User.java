@@ -1,5 +1,6 @@
 package com.xs.beans;
 
+import com.xs.core.sbean.BaseBean;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -7,7 +8,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "tb_user")
-public class User {
+public class User extends BaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
