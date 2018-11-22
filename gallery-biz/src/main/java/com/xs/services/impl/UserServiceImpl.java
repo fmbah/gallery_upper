@@ -76,7 +76,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         Map<String, Object> infoMap = this.getSessionInfo(code, rawData, signature, encryptedData, iv);
         WxMaUserInfo userInfo = (WxMaUserInfo) infoMap.get("userInfo");
         User user = this.findBy("wxMiniOpenid", userInfo.getOpenId());
-        if (user == null) {
+        if (user == null && !StringUtils.isEmpty(userInfo.getUnionId())) {
             user = this.findBy("wxUnionid", userInfo.getUnionId());
         }
         user = saveUser(user, userInfo, recommendId);
