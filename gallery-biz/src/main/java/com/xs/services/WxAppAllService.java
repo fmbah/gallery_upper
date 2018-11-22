@@ -11,6 +11,8 @@ import com.xs.daos.TemplateMapper;
 import com.xs.daos.UserPaymentMapper;
 import com.xs.utils.GenerateOrderno;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,8 @@ import static com.xs.core.ProjectConstant.*;
 @Service
 @Transactional
 public class WxAppAllService {
+
+    public final Logger logger = LoggerFactory.getLogger(WxAppAllService.class);
 
     @Autowired
     private UserService userService;
@@ -701,11 +705,13 @@ public class WxAppAllService {
             try (Jedis jedis = jedisPool.getResource()) {
                 String code_price = jedis.get(CODE_PRICE);
                 if (StringUtils.isEmpty(code_price)) {
+                    logger.error("激活码价格数据不存在或已删除");
                     return ResultGenerator.genFailResult("激活码价格数据不存在或已删除");
                 }
                 try {
                     userPayment.setAmount(new BigDecimal(code_price));
                 } catch (Exception e) {
+                    logger.error("激活码价格数据有误");
                     return ResultGenerator.genFailResult("激活码价格数据有误");
                 }
 
@@ -715,12 +721,14 @@ public class WxAppAllService {
                 criteria.andEqualTo("isUsed", new Byte("0"));
                 List<BrandCdkey> brandCdkeys = brandCdkeyService.findByCondition(condition);
                 if (brandCdkeys == null || (brandCdkeys != null && brandCdkeys.isEmpty())) {
+                    logger.error("激活码数据有误或已被使用");
                     return ResultGenerator.genFailResult("激活码数据有误或已被使用");
                 }
 
                 Integer brandId = brandCdkeys.get(0).getBrandId();
                 CompanyBrand companyBrand = companyBrandService.findById(brandId);
                 if (companyBrand == null) {
+                    logger.error("品牌数据不存在或已删除");
                     return ResultGenerator.genFailResult("品牌数据不存在或已删除");
                 }
 
@@ -728,6 +736,7 @@ public class WxAppAllService {
                 userPayment.setRemark(companyBrand.getId() + "_" + companyBrand.getName());
             }
         }  else {
+            logger.error("购买类型有误");
             return ResultGenerator.genFailResult("购买类型有误");
         }
         userPaymentMapper.insert(userPayment);

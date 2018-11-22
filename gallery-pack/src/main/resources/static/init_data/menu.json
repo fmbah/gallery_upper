@@ -15,7 +15,7 @@
       "name": "小程序",
       "url": "http://mp.weixin.qq.com",
       "appid": "wxe872cecbe6201aca",
-      "pagepath": "pages/index/index"
+      "pagepath": "pages/indexFolder/index/main"
     }
   ]
 }
