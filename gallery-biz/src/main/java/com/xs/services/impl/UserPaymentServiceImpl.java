@@ -51,6 +51,8 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
     private IncomexpenseMapper incomexpenseMapper;
     @Autowired
     private BrandCdkeyMapper brandCdkeyMapper;
+    @Autowired
+    private CompanyBrandMapper companyBrandMapper;
 
 
     @Override
@@ -158,9 +160,13 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
 
                     String remark = userPaymentList.get(i).getRemark();//格式:brandId_brandName
                     if (remark != null && remark.split("_").length > 1) {
-                        user.setRecommendId(Integer.valueOf(remark.split("_")[0]));
-                        user.setGmtModified(new Date());
-                        userMapper.updateByPrimaryKey(user);
+                        Integer brandId = Integer.valueOf(remark.split("_")[0]);
+                        CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(brandId);
+                        if (companyBrand != null) {
+                            user.setRecommendId(companyBrand.getBrandPersonalUserid());
+                            user.setGmtModified(new Date());
+                            userMapper.updateByPrimaryKey(user);
+                        }
                     }
                 }
 

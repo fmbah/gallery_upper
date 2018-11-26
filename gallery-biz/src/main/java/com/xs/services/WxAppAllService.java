@@ -274,10 +274,10 @@ public class WxAppAllService {
                 throw new ServiceException("暂无权限查看此模板");
             }
         } else {//非品牌模板
-            if (isMember || !brandIds.isEmpty()) {
+            if (isMember || !brandIds.isEmpty() || template.getGratis()) {
                 canUse = true;
             } else {
-
+                throw new ServiceException("暂无权限查看此模板");
             }
         }
 
