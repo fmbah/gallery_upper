@@ -277,7 +277,7 @@ public class WxAppAllService {
             if (isMember || !brandIds.isEmpty() || template.getGratis()) {
                 canUse = true;
             } else {
-                throw new ServiceException("暂无权限查看此模板");
+                //查看权限不限制
             }
         }
 
