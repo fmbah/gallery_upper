@@ -5,6 +5,8 @@ import com.google.gson.reflect.TypeToken;
 import com.xs.beans.*;
 import com.xs.core.ResponseBean;
 import com.xs.core.ResultGenerator;
+import com.xs.daos.ActiveCdkMapper;
+import com.xs.daos.CompanyBrandMapper;
 import com.xs.daos.DrawcashLogMapper;
 import com.xs.daos.IncomexpenseMapper;
 import com.xs.services.SWxAuthService;
@@ -58,7 +60,10 @@ public class SWxAuthServiceImpl implements SWxAuthService {
     private WxAppAllService wxAppAllService;
     @Autowired
     private JedisPool jedisPool;
-
+    @Autowired
+    private CompanyBrandMapper companyBrandMapper;
+    @Autowired
+    private ActiveCdkMapper activeCdkMapper;
 
 
     @Override
@@ -244,7 +249,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
             } else {
                 result.put("hasAlertMsg", true);
 
-                jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60 * 60);
+                jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60 * 10);
 
                 Condition dlCondition1 = new Condition(DrawcashLog.class);
                 Example.Criteria dlConditionCriteria1 = dlCondition1.createCriteria();
@@ -263,6 +268,46 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                 }
             }
         }
+
+        //用户是否为品牌个人号,品牌个人号显示(付费激活数,品牌用户数)
+        Condition companyBrandCondition = new Condition(CompanyBrand.class);
+        Example.Criteria companyBrandConditionCriteria = companyBrandCondition.createCriteria();
+        companyBrandConditionCriteria.andEqualTo("brandPersonalUserid", userId);
+        List<CompanyBrand> companyBrands = companyBrandMapper.selectByCondition(companyBrandCondition);
+        if (companyBrands != null && companyBrands.size() > 0) {
+
+            result.put("isBrandPersonalNum", true);
+
+            Condition activeCdkCondition = new Condition(ActiveCdk.class);
+            Example.Criteria activeCdkConditionCriteria = activeCdkCondition.createCriteria();
+            Set<Integer> brandIds = new HashSet<>();
+            companyBrands.forEach(companyBrand -> {
+                brandIds.add(companyBrand.getId());
+            });
+            activeCdkConditionCriteria.andIn("brandId", brandIds);
+            List<ActiveCdk> activeCdks = activeCdkMapper.selectByCondition(activeCdkCondition);
+            if (activeCdks != null && !activeCdks.isEmpty()) {
+                result.put("brandUserNum", activeCdks.size());
+
+                Set<Integer> payBrandIds = new HashSet<>();
+                activeCdks.forEach(activeCdk -> {
+                    payBrandIds.add(activeCdk.getUsedUserId());
+                });
+
+                result.put("payBrandUserNum", payBrandIds.size());
+            } else {
+                result.put("brandUserNum", 0);
+                result.put("payBrandUserNum", 0);
+            }
+
+
+        } else {
+            result.put("isBrandPersonalNum", false);
+            result.put("brandUserNum", 0);
+            result.put("payBrandUserNum", 0);
+        }
+
+
 
         return ResultGenerator.genSuccessResult(result);
     }

@@ -133,14 +133,36 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                     continue;
                 }
 
-                //改变当前用户的会员类别以及会员过期时间
-                Calendar instance = Calendar.getInstance();
-                instance.add(Calendar.YEAR, 1);
-                Date expireTime = instance.getTime();
-                user.setMemberExpired(expireTime);
-                user.setMemberType(userPaymentList.get(i).getRechargeType());
-                user.setGmtModified(new Date());
-                userMapper.updateByPrimaryKey(user);
+                //改变当前用户的会员类别以及会员过期时间 , 不包含充值类型为品牌会员
+                if (userPaymentList.get(i).getRechargeType() != null
+                        && !userPaymentList.get(i).getRechargeType().equals(new Byte("1"))) {
+                    Calendar instance = Calendar.getInstance();
+                    switch (userPaymentList.get(i).getRechargeType()) {
+                        case 5:
+                            instance.add(Calendar.MONTH, 6);
+                            break;
+                        case 6:
+                            instance.add(Calendar.YEAR, 1);
+                            break;
+                        case 10:
+                            instance.add(Calendar.YEAR, 99);
+                            break;
+                    }
+                    Date expireTime = instance.getTime();
+                    user.setMemberExpired(expireTime);
+                    user.setMemberType(userPaymentList.get(i).getRechargeType());
+                    user.setGmtModified(new Date());
+                    userMapper.updateByPrimaryKey(user);
+                } else if (userPaymentList.get(i).getRechargeType() != null
+                        && userPaymentList.get(i).getRechargeType().equals(new Byte("1"))) {//充值类型为品牌会员(第一次使用激活码),则将充值用户的推荐人修改为品牌对应的个人号
+
+                    String remark = userPaymentList.get(i).getRemark();//格式:brandId_brandName
+                    if (remark != null && remark.split("_").length > 1) {
+                        user.setRecommendId(Integer.valueOf(remark.split("_")[0]));
+                        user.setGmtModified(new Date());
+                        userMapper.updateByPrimaryKey(user);
+                    }
+                }
 
 
                 if (user.getRecommendId() == null || user.getRecommendId() == 0) {//无直接邀请人,不需要分摊
@@ -166,9 +188,9 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                             Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
                             cdkConditionCriteria.andEqualTo("usedUserId", sp1User.getId());
                             List<ActiveCdk> activeCdks = activeCdkMapper.selectByCondition(cdkCondition);
-                            boolean isBrandMember = activeCdks != null && activeCdks.size() > 0 ? true : false;//品牌会员
+                            boolean isBrandMember = activeCdks != null && activeCdks.size() > 0 ? true : false;//品牌会员或品牌个人号
 
-                            boolean hasShareProfit = false;//需要进行分摊
+                            boolean hasShareProfit = false;//需要进行分摊标识
                             if (sp1UserMemberType == 0) {//非会员
                                 if (isBrandMember) {
                                     hasShareProfit = true;
@@ -214,14 +236,18 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     shareProfitMapper.insert(shareProfit);
                                     incomexpenseMapper.insert(incomexpense);
 
-                                    if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0) {
+                                    if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0
+                                            || sp1User.getIsAgent()) {//是代理或者无推荐人则不进行二级分成
 
                                     } else {
                                         User sp2User = userMapper.selectByPrimaryKey(sp1User.getRecommendId());
                                         while (sp2User != null && !sp2User.getIsAgent()) {
                                             sp2User = userMapper.selectByPrimaryKey(sp2User.getRecommendId());
                                         }
-                                        if (sp2User != null && sp2User.getIsAgent()) {
+                                        if (sp2User != null && sp2User.getIsAgent()
+                                                && sp2User.getMemberType() != null
+                                                && !sp2User.getMemberType().equals(new Byte("0"))
+                                                && !sp2User.getMemberType().equals(new Byte("5"))) {
                                             //用户数据
                                             sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(50)));//余额加50
 
@@ -286,7 +312,8 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     shareProfitMapper.insert(shareProfit);
                                     incomexpenseMapper.insert(incomexpense);
 
-                                    if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0) {
+                                    if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0
+                                            || sp1User.getIsAgent()) {
 
                                     } else {
                                         User sp2User = userMapper.selectByPrimaryKey(sp1User.getRecommendId());
@@ -294,7 +321,11 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                             sp2User = userMapper.selectByPrimaryKey(sp2User.getRecommendId());
                                         }
 
-                                        if (sp2User != null && sp2User.getIsAgent()) {
+                                        if (sp2User != null && sp2User.getIsAgent()
+                                                && sp2User.getMemberType() != null
+                                                && !sp2User.getMemberType().equals(new Byte("0"))
+                                                && !sp2User.getMemberType().equals(new Byte("5"))) {
+
                                             boolean hasShareProfit2 = false;
                                             Condition cdkCondition2 = new Condition(ActiveCdk.class);
                                             Example.Criteria cdkConditionCriteria2 = cdkCondition2.createCriteria();

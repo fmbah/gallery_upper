@@ -13,5 +13,7 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
     <result column="expired_time" jdbcType="TIMESTAMP" property="expiredTime" />
+
+    <result column="brand_personal_userid" jdbcType="INTEGER" property="brandPersonalUserid" />
   </resultMap>
 </mapper>

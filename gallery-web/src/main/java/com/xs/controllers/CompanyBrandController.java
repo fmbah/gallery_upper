@@ -1,19 +1,18 @@
 package com.xs.controllers;
-import com.xs.core.ResultGenerator;
+
 import com.xs.beans.CompanyBrand;
-import com.xs.services.CompanyBrandService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.xs.services.CompanyBrandService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
 \* User: zhaoxin
@@ -62,7 +61,12 @@ public class CompanyBrandController extends BaseController{
     })
     @DeleteMapping(value = "/delete",produces = "application/json;charset=utf-8")
     public Object delete(@RequestParam Integer id) {
+
+
         companyBrandService.deleteById(id);
+
+
+
         return ResultGenerator.genSuccessResult();
     }
 
@@ -85,7 +89,9 @@ public class CompanyBrandController extends BaseController{
     @ApiImplicitParams({@ApiImplicitParam(value = "ID",name="id",required = true,paramType = "query")})
     @GetMapping(value = "/detail",produces = "application/json;charset=utf-8")
     public Object detail(@RequestParam Integer id) {
+
         CompanyBrand companyBrand = companyBrandService.findById(id);
+
         return ResultGenerator.genSuccessResult(companyBrand);
     }
 

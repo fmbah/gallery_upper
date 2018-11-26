@@ -17,6 +17,11 @@ public class CompanyBrand extends BaseBean {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ApiModelProperty(value = "品牌个人号用户id")
+    private Integer brandPersonalUserid;
+    @ApiModelProperty(value = "品牌个人号用户名称")
+    private String brandPersonalUserName;
+
     @ApiModelProperty(value = "品牌名称")
     @NotBlank(message = "品牌名称不能为空!")
     @Length(min=1,max=45,message = "品牌名称不能超过45个字符!")
@@ -215,5 +220,21 @@ public class CompanyBrand extends BaseBean {
 
     public void setCkdNum(Integer ckdNum) {
         this.ckdNum = ckdNum;
+    }
+
+    public Integer getBrandPersonalUserid() {
+        return brandPersonalUserid;
+    }
+
+    public void setBrandPersonalUserid(Integer brandPersonalUserid) {
+        this.brandPersonalUserid = brandPersonalUserid;
+    }
+
+    public String getBrandPersonalUserName() {
+        return brandPersonalUserName;
+    }
+
+    public void setBrandPersonalUserName(String brandPersonalUserName) {
+        this.brandPersonalUserName = brandPersonalUserName;
     }
 }

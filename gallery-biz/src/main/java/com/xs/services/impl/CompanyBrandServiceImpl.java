@@ -2,18 +2,13 @@ package com.xs.services.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.xs.beans.ActiveCdk;
-import com.xs.beans.BrandCdkey;
-import com.xs.beans.Template;
+import com.xs.beans.*;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
-import com.xs.daos.ActiveCdkMapper;
-import com.xs.daos.BrandCdkeyMapper;
-import com.xs.daos.CompanyBrandMapper;
-import com.xs.beans.CompanyBrand;
-import com.xs.daos.TemplateMapper;
+import com.xs.daos.*;
 import com.xs.services.CompanyBrandService;
 import com.xs.core.sservice.AbstractService;
+import com.xs.services.UserService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -50,6 +45,10 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
     private BrandCdkeyMapper brandCdkeyMapper;
     @Autowired
     private ActiveCdkMapper activeCdkMapper;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserMapper userMapper;
 
 
     @Override
@@ -98,6 +97,8 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
                 list.get(i).setCkdNum(0);
             }
 
+            list.get(i).setBrandPersonalUserName(userService.findById(list.get(i).getBrandPersonalUserid()).getNickname());
+
         }
         PageInfo pageInfo = new PageInfo(list);
 
@@ -114,7 +115,43 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
         instance.add(Calendar.YEAR, 1);
         model.setExpiredTime(instance.getTime());
 
+        if (model.getBrandPersonalUserid() != null && model.getBrandPersonalUserid() != 0) {
+            User user = userService.findById(model.getBrandPersonalUserid());
+            if (user == null) {
+                throw new ServiceException("用户数据不存在或已删除!");
+            }
+            user.setMemberType(new Byte("10"));
+            user.setIsAgent(true);
+            user.setGmtModified(new Date());
+            instance = Calendar.getInstance();
+            instance.add(Calendar.YEAR, 99);
+            model.setExpiredTime(instance.getTime());
+            user.setMemberExpired(instance.getTime());
+            userMapper.updateByPrimaryKey(user);
+        }
+
         super.save(model);
+
+        this.addCdkey(model.getId(), 1);
+
+        Condition condition = new Condition(BrandCdkey.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("brandId", model.getId());
+        criteria.andEqualTo("isUsed", 0);
+        List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(condition);
+        if (brandCdkeys != null && brandCdkeys.size() >0) {
+
+            BrandCdkey brandCdkey = brandCdkeys.get(0);
+
+            brandCdkey.setIsUsed(new Byte("1"));
+            brandCdkey.setUsedTime(new Date());
+            brandCdkey.setUsedUserId(model.getBrandPersonalUserid());
+            brandCdkey.setGmtModified(new Date());
+
+            brandCdkeyMapper.updateByPrimaryKey(brandCdkey);
+        } else {
+            throw new ServiceException("该品牌激活码数量不足!");
+        }
     }
 
     @Override
@@ -127,15 +164,31 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
         if (model.getExpiredTime() == null) {
             throw new ServiceException("过期时间不可为空");
         }
+        if (companyBrand.getBrandPersonalUserid() != model.getBrandPersonalUserid()) {
+            throw new ServiceException("品牌个人号不可修改!");
+        }
+
 
         BeanUtils.copyProperties(model, companyBrand);
         companyBrand.setGmtModified(new Date());
-        super.update(model);
+
+        if (companyBrand.getBrandPersonalUserid() != null && companyBrand.getBrandPersonalUserid() != 0) {
+            User user = userService.findById(companyBrand.getBrandPersonalUserid());
+            if (user == null) {
+                throw new ServiceException("用户数据不存在或已删除!");
+            }
+        }
+
+        super.update(companyBrand);
     }
 
     @Override
     public CompanyBrand findById(Integer id) {
-        return super.findById(id);
+
+        CompanyBrand companyBrand = super.findById(id);
+
+        companyBrand.setBrandPersonalUserName(userService.findById(companyBrand.getBrandPersonalUserid()).getNickname());
+        return companyBrand;
     }
 
 

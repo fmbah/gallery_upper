@@ -276,7 +276,7 @@ public class WxAppAllService {
         } else {//非品牌模板
             if (isMember || !brandIds.isEmpty()) {
                 canUse = true;
-            } else {//对于类型为使用抛出异常
+            } else {
 
             }
         }
