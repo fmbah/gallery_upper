@@ -19,6 +19,7 @@ public class CompanyBrand extends BaseBean {
 
     @ApiModelProperty(value = "品牌个人号用户id")
     private Integer brandPersonalUserid;
+    @Transient
     @ApiModelProperty(value = "品牌个人号用户名称")
     private String brandPersonalUserName;
 
