@@ -97,7 +97,10 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
                 list.get(i).setCkdNum(0);
             }
 
-            list.get(i).setBrandPersonalUserName(userService.findById(list.get(i).getBrandPersonalUserid()).getNickname());
+            User user = userService.findById(list.get(i).getBrandPersonalUserid());
+            if (user != null) {
+                list.get(i).setBrandPersonalUserName(user.getNickname());
+            }
 
         }
         PageInfo pageInfo = new PageInfo(list);
@@ -187,7 +190,10 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
 
         CompanyBrand companyBrand = super.findById(id);
 
-        companyBrand.setBrandPersonalUserName(userService.findById(companyBrand.getBrandPersonalUserid()).getNickname());
+        User user = userService.findById(companyBrand.getBrandPersonalUserid());
+        if (user != null) {
+            companyBrand.setBrandPersonalUserName(user.getNickname());
+        }
         return companyBrand;
     }
 
