@@ -796,7 +796,7 @@ public class WxAppAllService {
                     canUse = true;
                 }
             } else {//非品牌模板
-                if (isMember || !brandIds.isEmpty()) {
+                if (isMember || !brandIds.isEmpty() || template.getGratis()) {
                     canUse = true;
                 } else {//对于类型为使用抛出异常
                     if (type != 2) {
