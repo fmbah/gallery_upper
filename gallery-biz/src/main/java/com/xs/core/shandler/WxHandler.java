@@ -53,17 +53,6 @@ public class WxHandler extends HandlerInterceptorAdapter {
             jedisPool = (JedisPool)SpringBootBeanUtil.getBean("jedisPool");
         }
 
-        //判断 是否是微信浏览器
-        String userAgent = request.getHeader("user-agent").toLowerCase();
-        if(userAgent.indexOf("micromessenger") == -1){//非微信客户端
-            logger.warn("非微信客户端，请求接口：{}，请求IP：{}，请求参数：{}",
-                    request.getRequestURI(), IpUtils.getIpAddr(request), JSON.toJSONString(request.getParameterMap()));
-            ResponseBean result = new ResponseBean();
-            result.setCode(ResultCode.UNAUTHORIZED).setMsg("请使用微信浏览器进行访问！");
-            RespUtil.responseResult(response, result);
-            return false;
-        }
-
         if((handler != null && !(handler instanceof HandlerMethod)) || (handler == null)) {
             return true;
         }
@@ -75,6 +64,18 @@ public class WxHandler extends HandlerInterceptorAdapter {
             IgnoreAuth annotation = method.getAnnotation(IgnoreAuth.class);
             boolean pass = false;
             if(null == annotation){
+
+                //判断 是否是微信浏览器
+                String userAgent = request.getHeader("user-agent").toLowerCase();
+                if(userAgent.indexOf("micromessenger") == -1){//非微信客户端
+                    logger.warn("非微信客户端，请求接口：{}，请求IP：{}，请求参数：{}",
+                            request.getRequestURI(), IpUtils.getIpAddr(request), JSON.toJSONString(request.getParameterMap()));
+                    ResponseBean result = new ResponseBean();
+                    result.setCode(ResultCode.UNAUTHORIZED).setMsg("请使用微信浏览器进行访问！");
+                    RespUtil.responseResult(response, result);
+                    return false;
+                }
+
                 String token = request.getHeader(WX_USER_FONT_TOKEN);
                 if (StringUtil.isNotEmpty(token) && token.split("_").length == 2) {
                     try (Jedis jedis = jedisPool.getResource()) {
