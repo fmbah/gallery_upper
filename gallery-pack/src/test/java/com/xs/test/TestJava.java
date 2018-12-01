@@ -3,7 +3,10 @@ package com.xs.test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -34,6 +37,18 @@ public class TestJava {
         jsonObject1.put("a", "av");
         System.out.println(jsonObject1);
 
+    }
+
+    @Test
+    public void guavaTest() {
+        long l = System.currentTimeMillis();
+        BloomFilter<Integer> filter = BloomFilter.create(Funnels.integerFunnel(), 10000000, 0.01);
+        for (int i = 0; i < 10000000; i++) {
+            filter.put(i);
+        }
+        Assert.assertTrue(filter.mightContain(1));
+        long s = System.currentTimeMillis();
+        System.out.println("执行时间: " + (s - l));
     }
 
 }

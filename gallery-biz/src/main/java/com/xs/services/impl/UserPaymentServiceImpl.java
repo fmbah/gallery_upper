@@ -112,29 +112,6 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
             User user = userMapper.selectByPrimaryKey(userPaymentList.get(i).getUserId());
             if (user != null) {
 
-                if (userPaymentList.get(i).getRechargeType().byteValue() == 1) {
-
-                    if (!StringUtils.isEmpty(userPaymentList.get(i).getCdkCode())) {
-
-                        Condition condition = new Condition(BrandCdkey.class);
-                        Example.Criteria criteria = condition.createCriteria();
-                        criteria.andEqualTo("code", userPaymentList.get(i).getCdkCode());
-                        List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(condition);
-                        if (brandCdkeys == null || (brandCdkeys != null && !brandCdkeys.isEmpty())) {
-                            logger.info("未找到激活码数据,激活码[{}]", userPaymentList.get(i).getCdkCode());
-                            continue;
-                        }
-                        BrandCdkey brandCdkey = brandCdkeys.get(0);
-                        brandCdkey.setIsUsed(new Byte("1"));
-                        brandCdkey.setUsedTime(now);
-                        brandCdkey.setUsedUserId(user.getId());
-                        brandCdkey.setGmtModified(now);
-
-                        brandCdkeyMapper.updateByPrimaryKey(brandCdkey);
-                    }
-                    continue;
-                }
-
                 //改变当前用户的会员类别以及会员过期时间 , 不包含充值类型为品牌会员
                 if (userPaymentList.get(i).getRechargeType() != null
                         && !userPaymentList.get(i).getRechargeType().equals(new Byte("1"))) {
@@ -168,6 +145,29 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                             userMapper.updateByPrimaryKey(user);
                         }
                     }
+                }
+
+                if (userPaymentList.get(i).getRechargeType().byteValue() == 1) {
+
+                    if (!StringUtils.isEmpty(userPaymentList.get(i).getCdkCode())) {
+
+                        Condition condition = new Condition(BrandCdkey.class);
+                        Example.Criteria criteria = condition.createCriteria();
+                        criteria.andEqualTo("code", userPaymentList.get(i).getCdkCode());
+                        List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(condition);
+                        if (brandCdkeys == null || (brandCdkeys != null && !brandCdkeys.isEmpty())) {
+                            logger.info("未找到激活码数据,激活码[{}]", userPaymentList.get(i).getCdkCode());
+                            continue;
+                        }
+                        BrandCdkey brandCdkey = brandCdkeys.get(0);
+                        brandCdkey.setIsUsed(new Byte("1"));
+                        brandCdkey.setUsedTime(now);
+                        brandCdkey.setUsedUserId(user.getId());
+                        brandCdkey.setGmtModified(now);
+
+                        brandCdkeyMapper.updateByPrimaryKey(brandCdkey);
+                    }
+                    continue;
                 }
 
 

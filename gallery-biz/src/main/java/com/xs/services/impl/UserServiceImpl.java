@@ -212,6 +212,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
             criteria.andLessThanOrEqualTo("gmtCreate", eTime);
         }
 
+        condition.setOrderByClause(" id desc");
         List<User> list = super.findByCondition(condition);
         if (list != null && !list.isEmpty()) {
             for (User user : list) {

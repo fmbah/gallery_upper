@@ -638,7 +638,7 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("用户数据不存在或已删除");
         }
 
-        if (user.getMemberExpired().after(now) && user.getMemberType().byteValue() != 1) {//未过期,保证向上充值
+        if (user.getMemberExpired().after(now)) {//未过期,保证向上充值
             if (user.getMemberType().byteValue() >= rechargeType) {
 
                 if (user.getMemberType().byteValue() == 5) {
@@ -668,6 +668,18 @@ public class WxAppAllService {
                 }
                 return ResultGenerator.genFailResult("您现在是"+ user.getMemberTypeStr() +"会员，无法充值"+ rechargeTypeStr +"会员！");
             }
+        }
+
+        //先从库里找下,用户支付记录中(用户id,未支付,相应支付类型),是否存在数据,如果存在,直接返回第一条数据,如果不存在,生成新订单
+        //保证每次下单不会生成垃圾数据
+        Condition userPaymentCondition = new Condition(UserPayment.class);
+        Example.Criteria userPaymentConditionCriteria = userPaymentCondition.createCriteria();
+        userPaymentConditionCriteria.andEqualTo("userId", userId);
+        userPaymentConditionCriteria.andEqualTo("status", "unpay");
+        userPaymentConditionCriteria.andEqualTo("rechargeType", rechargeType);
+        List<UserPayment> userPayments = userPaymentMapper.selectByCondition(userPaymentCondition);
+        if (userPayments != null && !userPayments.isEmpty()) {
+            return ResultGenerator.genSuccessResult(userPayments.get(0).getId());
         }
 
         Calendar.getInstance();
