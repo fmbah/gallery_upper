@@ -335,7 +335,12 @@ public class WxAppAllService {
         } else if (isBrand != null && isBrand.booleanValue()) {
             criteria.andIn("brandId", brandIds);
         } else if (isBrand != null && !isBrand.booleanValue()) {
-            criteria.andEqualTo("brandId", 0);
+            if (!brandIds.isEmpty()) {
+                brandIds.add(0);
+                criteria.andIn("brandId", brandIds);
+            } else {
+                criteria.andEqualTo("brandId", 0);
+            }
         } else {
             throw new ServiceException("系统故障,请联系管理员处理");
         }
