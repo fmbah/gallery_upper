@@ -100,7 +100,7 @@ public class DigestUtil implements Serializable {
 //		System.out.println("des 加密:" + encrypt);
 //		System.out.println("des 解密:" + decrypt(encrypt, key));
 
-		String data = "c10f65edd6acf375eef081a523f06674";
+		String data = "TojdFq0RzsLLcR3jO6KPIzvFYzs2vGCJ";
 		String encoded = encrypt(data);
 		System.out.println("加密:" + encoded);
 		String decoded = decrypt("s67hXzwVvfdxset12axMyPKo1-lMNeLbdRhMIUR52vI6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O");
