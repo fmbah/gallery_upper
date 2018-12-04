@@ -147,7 +147,7 @@ public class AdminServiceImpl extends AbstractService<Admin> implements AdminSer
                 Iterator<Admin> iterator = adminRoleList.iterator();
                 while (iterator.hasNext()) {
                     Admin next = iterator.next();
-                    if (next.getBrandName().indexOf(brandName) < 0) {
+                    if (next.getBrandName() == null || (next.getBrandName() != null && next.getBrandName().indexOf(brandName) < 0)) {
                         iterator.remove();
                     }
                 }
