@@ -177,7 +177,7 @@ public class PayBearingServiceImpl implements PayBearingService {
         String body = "火星图库";
         request.setBody(body);
         request.setSpbillCreateIp(IpUtils.getIpAddr(resp));
-        request.setNotifyUrl(WEB_BACK_DOMAIN + "/api/wx/payBearing/payNotify");
+        request.setNotifyUrl(WEB_BACK_DOMAIN + "/api/wx/app/payBearing/payNotify");
         request.setTradeType("JSAPI");
         request.setOpenid(user.getWxMiniOpenid());
         String outTradeNo = "";
