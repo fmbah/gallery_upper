@@ -499,11 +499,14 @@ public class WxAppAllService {
      */
     public synchronized Object verifyBrandCode(Integer userId, String code) {
 
+        User user = userService.findById(userId);
+        if (user == null) {
+            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        }
         ActiveCdk activeCdk = activeCdkService.findBy("code", code);
         if (activeCdk != null) {
             return ResultGenerator.genFailResult("品牌激活码已被其他用户使用");
         }
-
         BrandCdkey brandCdkey = brandCdkeyService.findBy("code", code);
         if (brandCdkey == null) {
             return ResultGenerator.genFailResult("品牌激活码数据不存在或已被删除");
@@ -511,15 +514,17 @@ public class WxAppAllService {
         if (brandCdkey.getIsUsed().byteValue() == 1) {
             return ResultGenerator.genFailResult("品牌激活码已被其他用户使用");
         }
-
-        User user = userService.findById(userId);
-        if (user == null) {
-            return ResultGenerator.genFailResult("用户数据不存在或已删除");
+        Condition condition3 = new Condition(BrandCdkey.class);
+        Example.Criteria criteria3 = condition3.createCriteria();
+        criteria3.andEqualTo("brandId", brandCdkey.getBrandId());
+        criteria3.andEqualTo("isUsed", 1);
+        criteria3.andEqualTo("usedUserId", userId);
+        List<BrandCdkey> brandCdkeys = brandCdkeyService.findByCondition(condition3);
+        if (brandCdkeys != null && !brandCdkeys.isEmpty()) {
+            return ResultGenerator.genFailResult("该品牌已验证!");
         }
 
-
         //update by zx on 20181116 11:31 start
-        //
 
         Condition condition = new Condition(UserPayment.class);
         Example.Criteria criteria = condition.createCriteria();
@@ -643,7 +648,7 @@ public class WxAppAllService {
             return ResultGenerator.genFailResult("用户数据不存在或已删除");
         }
 
-        if (user.getMemberExpired().after(now)) {//未过期,保证向上充值
+        if (user.getMemberExpired().after(now)  && rechargeType.byteValue() != 1) {//未过期,保证向上充值
             if (user.getMemberType().byteValue() >= rechargeType) {
 
                 if (user.getMemberType().byteValue() == 5) {
@@ -671,7 +676,7 @@ public class WxAppAllService {
                         rechargeTypeStr = "";
                         break;
                 }
-                return ResultGenerator.genFailResult("您现在是"+ user.getMemberTypeStr() +"会员，无法充值"+ rechargeTypeStr +"会员！");
+                return ResultGenerator.genFailResult("您现在是"+ user.getMemberTypeStr() +"，无法充值"+ rechargeTypeStr +"！");
             }
         }
 
