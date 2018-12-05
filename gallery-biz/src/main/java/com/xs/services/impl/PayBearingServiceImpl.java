@@ -169,8 +169,10 @@ public class PayBearingServiceImpl implements PayBearingService {
         StringBuffer stringBuffer = new StringBuffer();
         if (isMiniApp) {
             request.setAppid(this.miniappid);
+            request.setOpenid(user.getWxMiniOpenid());
         } else {
             request.setAppid(this.mpappId);
+            request.setOpenid(user.getWxOpenid());
         }
         request.setMchId(this.mchId);
         request.setNonceStr(DigestUtil.getRandomStringByLength(false, 32));
@@ -179,7 +181,7 @@ public class PayBearingServiceImpl implements PayBearingService {
         request.setSpbillCreateIp(IpUtils.getIpAddr(resp));
         request.setNotifyUrl(WEB_BACK_DOMAIN + "/api/wx/app/payBearing/payNotify");
         request.setTradeType("JSAPI");
-        request.setOpenid(user.getWxMiniOpenid());
+
         String outTradeNo = "";
         Integer totalFee = 0;
         for(UserPayment order : orders) {
