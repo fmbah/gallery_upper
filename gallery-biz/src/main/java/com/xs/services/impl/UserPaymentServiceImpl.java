@@ -139,7 +139,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                     if (remark != null && remark.split("_").length > 1) {
                         Integer brandId = Integer.valueOf(remark.split("_")[0]);
                         CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(brandId);
-                        if (companyBrand != null) {
+                        if (companyBrand != null && companyBrand.getBrandPersonalUserid() != null) {
                             user.setRecommendId(companyBrand.getBrandPersonalUserid());
                             user.setGmtModified(new Date());
                             userMapper.updateByPrimaryKey(user);
