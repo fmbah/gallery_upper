@@ -155,7 +155,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                         Example.Criteria criteria = condition.createCriteria();
                         criteria.andEqualTo("code", userPaymentList.get(i).getCdkCode());
                         List<BrandCdkey> brandCdkeys = brandCdkeyMapper.selectByCondition(condition);
-                        if (brandCdkeys == null || (brandCdkeys != null && !brandCdkeys.isEmpty())) {
+                        if (brandCdkeys == null || (brandCdkeys != null && brandCdkeys.isEmpty())) {
                             logger.info("未找到激活码数据,激活码[{}]", userPaymentList.get(i).getCdkCode());
                             continue;
                         }
