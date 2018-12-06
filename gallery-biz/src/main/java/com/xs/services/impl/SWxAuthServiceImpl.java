@@ -289,12 +289,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
             if (activeCdks != null && !activeCdks.isEmpty()) {
                 result.put("brandUserNum", activeCdks.size());
 
-                Set<Integer> payBrandIds = new HashSet<>();
-                activeCdks.forEach(activeCdk -> {
-                    payBrandIds.add(activeCdk.getUsedUserId());
-                });
-
-                result.put("payBrandUserNum", payBrandIds.size());
+                result.put("payBrandUserNum", activeCdks.size() - brandIds.size());
             } else {
                 result.put("brandUserNum", 0);
                 result.put("payBrandUserNum", 0);

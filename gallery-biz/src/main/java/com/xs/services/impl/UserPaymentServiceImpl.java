@@ -135,16 +135,25 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                 } else if (userPaymentList.get(i).getRechargeType() != null
                         && userPaymentList.get(i).getRechargeType().equals(new Byte("1"))) {//充值类型为品牌会员(第一次使用激活码),则将充值用户的推荐人修改为品牌对应的个人号
 
-                    String remark = userPaymentList.get(i).getRemark();//格式:brandId_brandName
-                    if (remark != null && remark.split("_").length > 1) {
-                        Integer brandId = Integer.valueOf(remark.split("_")[0]);
-                        CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(brandId);
-                        if (companyBrand != null && companyBrand.getBrandPersonalUserid() != null) {
-                            user.setRecommendId(companyBrand.getBrandPersonalUserid());
-                            user.setGmtModified(new Date());
-                            userMapper.updateByPrimaryKey(user);
+                    //如果用户已经是品牌个人号,验证其它品牌激活码(付费)后,不需要去改推荐人id,引用分摊逻辑到代理就结束了,品牌个人号对应用户是代理,还是终身会员
+                    Condition companyBrandCondition = new Condition(CompanyBrand.class);
+                    Example.Criteria companyBrandConditionCriteria = companyBrandCondition.createCriteria();
+                    companyBrandConditionCriteria.andEqualTo("brandPersonalUserid", user.getId());
+                    List<CompanyBrand> companyBrands = companyBrandMapper.selectByCondition(companyBrandCondition);
+                    if (companyBrands == null || (companyBrands != null && companyBrands.isEmpty())) {
+                        String remark = userPaymentList.get(i).getRemark();//格式:brandId_brandName
+                        if (remark != null && remark.split("_").length > 1) {
+                            Integer brandId = Integer.valueOf(remark.split("_")[0]);
+                            CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(brandId);
+
+                            if (companyBrand != null && companyBrand.getBrandPersonalUserid() != null) {
+                                user.setRecommendId(companyBrand.getBrandPersonalUserid());
+                                user.setGmtModified(new Date());
+                                userMapper.updateByPrimaryKey(user);
+                            }
                         }
                     }
+
                 }
 
                 if (userPaymentList.get(i).getRechargeType().byteValue() == 1) {
