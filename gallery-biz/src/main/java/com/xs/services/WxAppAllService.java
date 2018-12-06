@@ -649,7 +649,7 @@ public class WxAppAllService {
         }
 
         if (user.getMemberExpired().after(now)  && rechargeType.byteValue() != 1) {//未过期,保证向上充值
-            if (user.getMemberType().byteValue() >= rechargeType) {
+            if (user.getMemberType().byteValue() > rechargeType) {
 
                 if (user.getMemberType().byteValue() == 5) {
                     user.setMemberTypeStr("金卡会员");
