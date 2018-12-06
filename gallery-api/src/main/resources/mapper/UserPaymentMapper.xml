@@ -86,7 +86,7 @@
 
   </select>
 
-  <select id="getPayBrandUserCount" resultMap="int">
+  <select id="getPayBrandUserCount" resultType="java.lang.Integer">
   select count(*) from tb_user_payment as tup where
   tup.cdk_code != ''
   and
