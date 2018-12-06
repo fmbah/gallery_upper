@@ -5,10 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xs.beans.*;
 import com.xs.core.ResponseBean;
 import com.xs.core.ResultGenerator;
-import com.xs.daos.ActiveCdkMapper;
-import com.xs.daos.CompanyBrandMapper;
-import com.xs.daos.DrawcashLogMapper;
-import com.xs.daos.IncomexpenseMapper;
+import com.xs.daos.*;
 import com.xs.services.SWxAuthService;
 import com.xs.services.SlideService;
 import com.xs.services.UserService;
@@ -64,6 +61,8 @@ public class SWxAuthServiceImpl implements SWxAuthService {
     private CompanyBrandMapper companyBrandMapper;
     @Autowired
     private ActiveCdkMapper activeCdkMapper;
+    @Autowired
+    private UserPaymentMapper userPaymentMapper;
 
 
     @Override
@@ -287,9 +286,10 @@ public class SWxAuthServiceImpl implements SWxAuthService {
             activeCdkConditionCriteria.andIn("brandId", brandIds);
             List<ActiveCdk> activeCdks = activeCdkMapper.selectByCondition(activeCdkCondition);
             if (activeCdks != null && !activeCdks.isEmpty()) {
-                result.put("brandUserNum", activeCdks.size());
+                result.put("brandUserNum", activeCdks.size() - brandIds.size());
 
-                result.put("payBrandUserNum", activeCdks.size() - brandIds.size());
+                Integer payBrandUserCount = userPaymentMapper.getPayBrandUserCount(new ArrayList<>(brandIds));
+                result.put("payBrandUserNum", payBrandUserCount == null ? 0 : payBrandUserCount);
             } else {
                 result.put("brandUserNum", 0);
                 result.put("payBrandUserNum", 0);

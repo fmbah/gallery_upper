@@ -119,18 +119,26 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
         model.setExpiredTime(instance.getTime());
 
         if (model.getBrandPersonalUserid() != null && model.getBrandPersonalUserid() != 0) {
-            User user = userService.findById(model.getBrandPersonalUserid());
-            if (user == null) {
-                throw new ServiceException("用户数据不存在或已删除!");
+            Condition companyBrandCondition = new Condition(CompanyBrand.class);
+            Example.Criteria companyBrandConditionCriteria = companyBrandCondition.createCriteria();
+            companyBrandConditionCriteria.andEqualTo("brandPersonalUserid", model.getBrandPersonalUserid());
+            List<CompanyBrand> companyBrands = mapper.selectByCondition(companyBrandCondition);
+            if (companyBrands == null || (companyBrands != null && companyBrands.isEmpty())) {
+                User user = userService.findById(model.getBrandPersonalUserid());
+                if (user == null) {
+                    throw new ServiceException("用户数据不存在或已删除!");
+                }
+                user.setMemberType(new Byte("10"));
+                user.setIsAgent(true);
+                user.setGmtModified(new Date());
+                instance = Calendar.getInstance();
+                instance.add(Calendar.YEAR, 99);
+                model.setExpiredTime(instance.getTime());
+                user.setMemberExpired(instance.getTime());
+                userMapper.updateByPrimaryKey(user);
+            } else {
+                throw new ServiceException("该用户已绑定品牌!");
             }
-            user.setMemberType(new Byte("10"));
-            user.setIsAgent(true);
-            user.setGmtModified(new Date());
-            instance = Calendar.getInstance();
-            instance.add(Calendar.YEAR, 99);
-            model.setExpiredTime(instance.getTime());
-            user.setMemberExpired(instance.getTime());
-            userMapper.updateByPrimaryKey(user);
         }
 
         super.save(model);

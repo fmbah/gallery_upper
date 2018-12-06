@@ -86,4 +86,17 @@
 
   </select>
 
+  <select id="getPayBrandUserCount" resultMap="int">
+  select count(*) from tb_user_payment as tup where
+  tup.cdk_code != ''
+  and
+  tup.cdk_code in (select code from tb_brand_cdkey where brand_id in
+
+    <foreach collection="brandIds" item="brandId" index="index" open="(" separator="," close=")">
+      #{brandId}
+    </foreach>
+
+  and is_used = 1)
+  </select>
+
 </mapper>
