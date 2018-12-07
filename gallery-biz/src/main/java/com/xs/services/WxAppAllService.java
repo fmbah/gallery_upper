@@ -445,6 +445,15 @@ public class WxAppAllService {
 
                         if (!next.getEnabled()) {
                             iterator.remove();
+                            continue;
+                        }
+
+                        if (next.getBrandId() != null && next.getBrandId().intValue() != 0) {
+                            CompanyBrand companyBrand = companyBrandService.findById(next.getBrandId());
+                            if (companyBrand == null || (companyBrand != null && companyBrand.getExpiredTime().before(new Date()))) {
+                                iterator.remove();
+                                continue;
+                            }
                         }
 
                         if (next.getName().indexOf(searchText) >= 0) {

@@ -2,10 +2,12 @@ package com.xs.services.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xs.beans.TemplateLabels;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
 import com.xs.daos.LabelMapper;
 import com.xs.beans.Label;
+import com.xs.daos.TemplateLabelsMapper;
 import com.xs.services.LabelService;
 import com.xs.core.sservice.AbstractService;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +34,8 @@ import java.util.List;
 public class LabelServiceImpl extends AbstractService<Label> implements LabelService {
     @Autowired
     private LabelMapper labelMapper;
+    @Autowired
+    private TemplateLabelsMapper templateLabelsMapper;
 
 
     @Override
@@ -74,5 +78,19 @@ public class LabelServiceImpl extends AbstractService<Label> implements LabelSer
         PageInfo pageInfo = new PageInfo(list);
 
         return ResultGenerator.genSuccessResult(pageInfo);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+
+        Condition condition = new Condition(TemplateLabels.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("labelId", id);
+        List<TemplateLabels> templateLabels = templateLabelsMapper.selectByCondition(condition);
+        if (templateLabels != null && !templateLabels.isEmpty()) {
+            throw new ServiceException("标签数据已绑定模板");
+        }
+
+        super.deleteById(id);
     }
 }
