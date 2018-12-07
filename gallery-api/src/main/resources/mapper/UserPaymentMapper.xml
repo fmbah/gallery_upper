@@ -84,6 +84,8 @@
       AND tmp.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
     </if>
 
+    order by tmp.gmt_create desc
+
   </select>
 
   <select id="getPayBrandUserCount" resultType="java.lang.Integer">
