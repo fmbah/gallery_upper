@@ -52,6 +52,7 @@
       AND dl.status = #{status}
     </if>
 
+    order by dl.gmt_create desc
   </select>
 
 </mapper>
