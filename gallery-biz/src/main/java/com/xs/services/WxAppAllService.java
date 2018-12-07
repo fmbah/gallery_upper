@@ -698,7 +698,17 @@ public class WxAppAllService {
         userPaymentConditionCriteria.andEqualTo("rechargeType", rechargeType);
         List<UserPayment> userPayments = userPaymentMapper.selectByCondition(userPaymentCondition);
         if (userPayments != null && !userPayments.isEmpty()) {
-            return ResultGenerator.genSuccessResult(userPayments.get(0).getId());
+            UserPayment userPayment = userPayments.get(0);
+            boolean needModify = true;
+            if (!StringUtils.isEmpty(userPayment.getCdkCode()) && userPayment.getCdkCode().equals(code)) {
+                needModify = false;
+            }
+            if (needModify) {
+                userPayment.setCdkCode(code);
+                userPayment.setGmtModified(new Date());
+                userPaymentMapper.updateByPrimaryKey(userPayment);
+            }
+            return ResultGenerator.genSuccessResult(userPayment.getId());
         }
 
         Calendar.getInstance();
