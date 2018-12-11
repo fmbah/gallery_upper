@@ -19,7 +19,7 @@ public final class ProjectConstant {
     public static final String WEB_BACK_DOMAIN = "https://gallery.mxth.com";//后台域名
 
     //阿里配置
-    public static final String ALIYUN_OSS_IMG_ADDRESS="https://daily-test.mxth.com";
+    public static final String ALIYUN_OSS_IMG_ADDRESS="https://daily-test.mxth.com/";
 
 
     //后台配置
