@@ -261,49 +261,51 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     shareProfitMapper.insert(shareProfit);
                                     incomexpenseMapper.insert(incomexpense);
 
-                                    if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0
-                                            || sp1User.getIsAgent()) {//是代理或者无推荐人则不进行二级分成
+                                }
 
-                                    } else {
-                                        User sp2User = userMapper.selectByPrimaryKey(sp1User.getRecommendId());
-                                        while (sp2User != null && !sp2User.getIsAgent()) {
-                                            sp2User = userMapper.selectByPrimaryKey(sp2User.getRecommendId());
-                                        }
-                                        if (sp2User != null && sp2User.getIsAgent()
-                                                && sp2User.getMemberType() != null
-                                                && !sp2User.getMemberType().equals(new Byte("0"))
-                                                && !sp2User.getMemberType().equals(new Byte("5"))) {
-                                            //用户数据
-                                            sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(50)));//余额加50
+                                if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0
+                                        || sp1User.getIsAgent()) {//是代理或者无推荐人则不进行二级分成
 
-                                            //分享收益数据
-                                            ShareProfit shareProfit2 = new ShareProfit();
-                                            shareProfit2.setGmtCreate(now);
-                                            shareProfit2.setGmtModified(now);
-                                            shareProfit2.setRemark(StringUtils.EMPTY);
-                                            shareProfit2.setSubType(new Byte("2"));
-                                            shareProfit2.setProfit(new BigDecimal(50));
-                                            shareProfit2.setPaymnetId(userPaymentList.get(i).getId());
-                                            shareProfit2.setUserId(sp2User.getId());
+                                } else {
+                                    User sp2User = userMapper.selectByPrimaryKey(sp1User.getRecommendId());
+                                    while (sp2User != null && !sp2User.getIsAgent()) {
+                                        sp2User = userMapper.selectByPrimaryKey(sp2User.getRecommendId());
+                                    }
+                                    if (sp2User != null && sp2User.getIsAgent()
+                                            && sp2User.getMemberType() != null
+                                            && !sp2User.getMemberType().equals(new Byte("0"))
+                                            && !sp2User.getMemberType().equals(new Byte("5"))) {
+                                        //用户数据
+                                        sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(50)));//余额加50
 
-                                            //收入支付记录数据
-                                            Incomexpense incomexpense2 = new Incomexpense();
-                                            incomexpense2.setUserId(sp2User.getId());
-                                            incomexpense2.setType("SHARE_PROFIT");
-                                            incomexpense2.setIncome(new BigDecimal(50));
-                                            incomexpense2.setExpense(new BigDecimal(0));
-                                            incomexpense2.setBalance(sp2User.getCashBalance().add(new BigDecimal(50)));
-                                            incomexpense2.setTradedate(now);
-                                            incomexpense2.setGmtCreate(now);
-                                            incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
-                                            incomexpense2.setRemark(user.getNickname() + "-" + 365 + "-" + 50);
+                                        //分享收益数据
+                                        ShareProfit shareProfit2 = new ShareProfit();
+                                        shareProfit2.setGmtCreate(now);
+                                        shareProfit2.setGmtModified(now);
+                                        shareProfit2.setRemark(StringUtils.EMPTY);
+                                        shareProfit2.setSubType(new Byte("2"));
+                                        shareProfit2.setProfit(new BigDecimal(50));
+                                        shareProfit2.setPaymnetId(userPaymentList.get(i).getId());
+                                        shareProfit2.setUserId(sp2User.getId());
 
-                                            userMapper.updateByPrimaryKey(sp2User);
-                                            shareProfitMapper.insert(shareProfit2);
-                                            incomexpenseMapper.insert(incomexpense2);
-                                        }
+                                        //收入支付记录数据
+                                        Incomexpense incomexpense2 = new Incomexpense();
+                                        incomexpense2.setUserId(sp2User.getId());
+                                        incomexpense2.setType("SHARE_PROFIT");
+                                        incomexpense2.setIncome(new BigDecimal(50));
+                                        incomexpense2.setExpense(new BigDecimal(0));
+                                        incomexpense2.setBalance(sp2User.getCashBalance().add(new BigDecimal(50)));
+                                        incomexpense2.setTradedate(now);
+                                        incomexpense2.setGmtCreate(now);
+                                        incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
+                                        incomexpense2.setRemark(user.getNickname() + "-" + 365 + "-" + 50);
+
+                                        userMapper.updateByPrimaryKey(sp2User);
+                                        shareProfitMapper.insert(shareProfit2);
+                                        incomexpenseMapper.insert(incomexpense2);
                                     }
                                 }
+
 
                             } else if (type == 10) {//钻石会员
 
@@ -337,72 +339,73 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     shareProfitMapper.insert(shareProfit);
                                     incomexpenseMapper.insert(incomexpense);
 
-                                    if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0
-                                            || sp1User.getIsAgent()) {
+                                }
 
-                                    } else {
-                                        User sp2User = userMapper.selectByPrimaryKey(sp1User.getRecommendId());
-                                        while (sp2User != null && !sp2User.getIsAgent()) {
-                                            sp2User = userMapper.selectByPrimaryKey(sp2User.getRecommendId());
-                                        }
+                                if (sp1User.getRecommendId() == null || sp1User.getRecommendId() == 0
+                                        || sp1User.getIsAgent()) {
 
-                                        if (sp2User != null && sp2User.getIsAgent()
-                                                && sp2User.getMemberType() != null
-                                                && !sp2User.getMemberType().equals(new Byte("0"))
-                                                && !sp2User.getMemberType().equals(new Byte("5"))) {
+                                } else {
+                                    User sp2User = userMapper.selectByPrimaryKey(sp1User.getRecommendId());
+                                    while (sp2User != null && !sp2User.getIsAgent()) {
+                                        sp2User = userMapper.selectByPrimaryKey(sp2User.getRecommendId());
+                                    }
 
-                                            boolean hasShareProfit2 = false;
-                                            Condition cdkCondition2 = new Condition(ActiveCdk.class);
-                                            Example.Criteria cdkConditionCriteria2 = cdkCondition2.createCriteria();
-                                            cdkConditionCriteria2.andEqualTo("usedUserId", sp2User.getId());
-                                            List<ActiveCdk> activeCdks2 = activeCdkMapper.selectByCondition(cdkCondition2);
-                                            boolean isBrandMember2 = activeCdks2 != null && activeCdks2.size() > 0 ? true : false;//品牌会员
+                                    if (sp2User != null && sp2User.getIsAgent()
+                                            && sp2User.getMemberType() != null
+                                            && !sp2User.getMemberType().equals(new Byte("0"))
+                                            && !sp2User.getMemberType().equals(new Byte("5"))) {
 
-                                            byte type2 = sp2User.getMemberType() == null ? 0 : sp2User.getMemberType().byteValue();
-                                            if (type2 == 0) {
-                                                if (isBrandMember2) {
-                                                    hasShareProfit2 = true;
-                                                }
-                                            } else if (type2 == 6 || type2 == 10) {
+                                        boolean hasShareProfit2 = false;
+                                        Condition cdkCondition2 = new Condition(ActiveCdk.class);
+                                        Example.Criteria cdkConditionCriteria2 = cdkCondition2.createCriteria();
+                                        cdkConditionCriteria2.andEqualTo("usedUserId", sp2User.getId());
+                                        List<ActiveCdk> activeCdks2 = activeCdkMapper.selectByCondition(cdkCondition2);
+                                        boolean isBrandMember2 = activeCdks2 != null && activeCdks2.size() > 0 ? true : false;//品牌会员
+
+                                        byte type2 = sp2User.getMemberType() == null ? 0 : sp2User.getMemberType().byteValue();
+                                        if (type2 == 0) {
+                                            if (isBrandMember2) {
                                                 hasShareProfit2 = true;
-                                            } else if (type2 == 5) {
-                                                if (isBrandMember2) {
-                                                    hasShareProfit2 = true;
-                                                }
                                             }
-
-                                            if (hasShareProfit2) {
-                                                //用户数据
-                                                sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));//代理+钻石会员=120 代理+会员/品牌=50
-
-                                                //分享收益数据
-                                                ShareProfit shareProfit2 = new ShareProfit();
-                                                shareProfit2.setGmtCreate(now);
-                                                shareProfit2.setGmtModified(now);
-                                                shareProfit2.setRemark(StringUtils.EMPTY);
-                                                shareProfit2.setSubType(new Byte("2"));
-                                                shareProfit2.setProfit(new BigDecimal(type2 == 10 ? 120 : 50));
-                                                shareProfit2.setPaymnetId(userPaymentList.get(i).getId());
-                                                shareProfit2.setUserId(sp2User.getId());
-
-                                                //收入支付记录数据
-                                                Incomexpense incomexpense2 = new Incomexpense();
-                                                incomexpense2.setUserId(sp2User.getId());
-                                                incomexpense2.setType("SHARE_PROFIT");
-                                                incomexpense2.setIncome(new BigDecimal(type2 == 10 ? 120 : 50));
-                                                incomexpense2.setExpense(new BigDecimal(0));
-                                                incomexpense2.setBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));
-                                                incomexpense2.setTradedate(now);
-                                                incomexpense2.setGmtCreate(now);
-                                                incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
-                                                incomexpense2.setRemark(user.getNickname() + "-" + 899 + "-" + (type2 == 10 ? 120 : 50));
-
-                                                userMapper.updateByPrimaryKey(sp2User);
-                                                shareProfitMapper.insert(shareProfit2);
-                                                incomexpenseMapper.insert(incomexpense2);
+                                        } else if (type2 == 6 || type2 == 10) {
+                                            hasShareProfit2 = true;
+                                        } else if (type2 == 5) {
+                                            if (isBrandMember2) {
+                                                hasShareProfit2 = true;
                                             }
-
                                         }
+
+                                        if (hasShareProfit2) {
+                                            //用户数据
+                                            sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));//代理+钻石会员=120 代理+会员/品牌=50
+
+                                            //分享收益数据
+                                            ShareProfit shareProfit2 = new ShareProfit();
+                                            shareProfit2.setGmtCreate(now);
+                                            shareProfit2.setGmtModified(now);
+                                            shareProfit2.setRemark(StringUtils.EMPTY);
+                                            shareProfit2.setSubType(new Byte("2"));
+                                            shareProfit2.setProfit(new BigDecimal(type2 == 10 ? 120 : 50));
+                                            shareProfit2.setPaymnetId(userPaymentList.get(i).getId());
+                                            shareProfit2.setUserId(sp2User.getId());
+
+                                            //收入支付记录数据
+                                            Incomexpense incomexpense2 = new Incomexpense();
+                                            incomexpense2.setUserId(sp2User.getId());
+                                            incomexpense2.setType("SHARE_PROFIT");
+                                            incomexpense2.setIncome(new BigDecimal(type2 == 10 ? 120 : 50));
+                                            incomexpense2.setExpense(new BigDecimal(0));
+                                            incomexpense2.setBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));
+                                            incomexpense2.setTradedate(now);
+                                            incomexpense2.setGmtCreate(now);
+                                            incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
+                                            incomexpense2.setRemark(user.getNickname() + "-" + 899 + "-" + (type2 == 10 ? 120 : 50));
+
+                                            userMapper.updateByPrimaryKey(sp2User);
+                                            shareProfitMapper.insert(shareProfit2);
+                                            incomexpenseMapper.insert(incomexpense2);
+                                        }
+
                                     }
                                 }
                             }
