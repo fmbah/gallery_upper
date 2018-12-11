@@ -100,6 +100,7 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
             User user = userService.findById(list.get(i).getBrandPersonalUserid());
             if (user != null) {
                 list.get(i).setBrandPersonalUserName(user.getNickname());
+                list.get(i).setBrandPersonalUserPic(user.getWxHeadimgurl());
             }
 
         }

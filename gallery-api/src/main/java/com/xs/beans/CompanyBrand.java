@@ -22,6 +22,9 @@ public class CompanyBrand extends BaseBean {
     @Transient
     @ApiModelProperty(value = "品牌个人号用户名称")
     private String brandPersonalUserName;
+    @Transient
+    @ApiModelProperty(value = "品牌个人号用户头像")
+    private String brandPersonalUserPic;
 
     @ApiModelProperty(value = "品牌名称")
     @NotBlank(message = "品牌名称不能为空!")
@@ -237,5 +240,13 @@ public class CompanyBrand extends BaseBean {
 
     public void setBrandPersonalUserName(String brandPersonalUserName) {
         this.brandPersonalUserName = brandPersonalUserName;
+    }
+
+    public String getBrandPersonalUserPic() {
+        return brandPersonalUserPic;
+    }
+
+    public void setBrandPersonalUserPic(String brandPersonalUserPic) {
+        this.brandPersonalUserPic = brandPersonalUserPic;
     }
 }
