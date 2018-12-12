@@ -70,6 +70,15 @@ public class UpLoadController extends BaseController {
         return upLoadService.remove(fileName);
     }
 
+    /**
+     *
+     * 功能描述: base64串转url地址
+     *
+     * @param: 
+     * @return: 
+     * @auther: Fmbah
+     * @date: 18-12-12 上午10:44
+     */
     @ApiOperation(value = "base64串转url地址",notes = "base64串转url地址")
     @PutMapping(value = "/base64ToUrl",produces = "application/json;charset=utf-8")
     public Object base64ToUrl(@Valid @RequestBody Base64ToUrl base64ToUrl) {

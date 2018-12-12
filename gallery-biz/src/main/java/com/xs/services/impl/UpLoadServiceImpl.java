@@ -82,39 +82,8 @@ public class UpLoadServiceImpl implements UpLoadService {
                 ossClient.putObject(ossConfig.getBucket(), fileName, file.getInputStream());
                 SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
 
-// 跨域资源共享规则的容器，每个存储空间最多允许10条规则。
-                ArrayList<SetBucketCORSRequest.CORSRule> putCorsRules = new ArrayList<SetBucketCORSRequest.CORSRule>();
+                setParams(request);
 
-                SetBucketCORSRequest.CORSRule corRule = new SetBucketCORSRequest.CORSRule();
-
-                ArrayList<String> allowedOrigin = new ArrayList<String>();
-// 指定允许跨域请求的来源。
-                allowedOrigin.add(url);
-
-                ArrayList<String> allowedMethod = new ArrayList<String>();
-// 指定允许的跨域请求方法(GET/PUT/DELETE/POST/HEAD)。
-                allowedMethod.add("GET");
-
-                ArrayList<String> allowedHeader = new ArrayList<String>();
-// 是否允许预取指令（OPTIONS）中Access-Control-Request-Headers头中指定的Header。
-                allowedHeader.add("x-oss-test");
-
-                ArrayList<String> exposedHeader = new ArrayList<String>();
-// 指定允许用户从应用程序中访问的响应头。
-                exposedHeader.add("x-oss-test1");
-// AllowedOrigins和AllowedMethods最多支持一个星号（*）通配符。星号（*）表示允许所有的域来源或者操作。
-                corRule.setAllowedMethods(allowedMethod);
-                corRule.setAllowedOrigins(allowedOrigin);
-// AllowedHeaders和ExposeHeaders不支持通配符。
-                corRule.setAllowedHeaders(allowedHeader);
-                corRule.setExposeHeaders(exposedHeader);
-// 指定浏览器对特定资源的预取（OPTIONS）请求返回结果的缓存时间，单位为秒。
-                corRule.setMaxAgeSeconds(10);
-
-// 最多允许10条规则。
-                putCorsRules.add(corRule);
-// 已存在的规则将被覆盖。
-                request.setCorsRules(putCorsRules);
                 ossClient.setBucketCORS(request);
 
                 URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
@@ -125,6 +94,43 @@ public class UpLoadServiceImpl implements UpLoadService {
             throw  new RuntimeException("图片太大，最大200KB");
         }
         throw  new ServiceException("上传文件为空，请重新上传");
+    }
+
+    public void setParams(SetBucketCORSRequest request) {
+        // 跨域资源共享规则的容器，每个存储空间最多允许10条规则。
+        ArrayList<SetBucketCORSRequest.CORSRule> putCorsRules = new ArrayList<SetBucketCORSRequest.CORSRule>();
+
+        SetBucketCORSRequest.CORSRule corRule = new SetBucketCORSRequest.CORSRule();
+
+        ArrayList<String> allowedOrigin = new ArrayList<String>();
+// 指定允许跨域请求的来源。
+        allowedOrigin.add(url);
+
+        ArrayList<String> allowedMethod = new ArrayList<String>();
+// 指定允许的跨域请求方法(GET/PUT/DELETE/POST/HEAD)。
+        allowedMethod.add("GET");
+
+        ArrayList<String> allowedHeader = new ArrayList<String>();
+// 是否允许预取指令（OPTIONS）中Access-Control-Request-Headers头中指定的Header。
+        allowedHeader.add("x-oss-test");
+
+        ArrayList<String> exposedHeader = new ArrayList<String>();
+// 指定允许用户从应用程序中访问的响应头。
+        exposedHeader.add("x-oss-test1");
+// AllowedOrigins和AllowedMethods最多支持一个星号（*）通配符。星号（*）表示允许所有的域来源或者操作。
+        corRule.setAllowedMethods(allowedMethod);
+        corRule.setAllowedOrigins(allowedOrigin);
+// AllowedHeaders和ExposeHeaders不支持通配符。
+        corRule.setAllowedHeaders(allowedHeader);
+        corRule.setExposeHeaders(exposedHeader);
+// 指定浏览器对特定资源的预取（OPTIONS）请求返回结果的缓存时间，单位为秒。
+        corRule.setMaxAgeSeconds(10);
+
+// 最多允许10条规则。
+        putCorsRules.add(corRule);
+// 已存在的规则将被覆盖。
+        request.setCorsRules(putCorsRules);
+
     }
 
     public Object remove(String fileName){
@@ -222,6 +228,11 @@ public class UpLoadServiceImpl implements UpLoadService {
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
             try {
                 ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
+
+                SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
+                setParams(request);
+                ossClient.setBucketCORS(request);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

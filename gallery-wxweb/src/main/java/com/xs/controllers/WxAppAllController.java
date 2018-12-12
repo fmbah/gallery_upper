@@ -1,5 +1,6 @@
 package com.xs.controllers;
 
+import com.xs.beans.Base64ToUrl;
 import com.xs.beans.SearchTemplates;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.UserService;
@@ -117,6 +118,22 @@ public class WxAppAllController extends BaseController {
                                @ApiParam(name = "type", value="类型(1:分享 2:使用 3:查看)", type = "query",required = true) @PathVariable Integer type) {
         return wxAppAllService.templateIncr(userId, templateId, type);
     }
+
+    /**
+     *
+     * 功能描述: base64串转url地址
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-12-12 上午10:44
+     */
+    @ApiOperation(value = "base64串转url地址",notes = "base64串转url地址")
+    @PutMapping(value = "/base64ToUrl",produces = "application/json;charset=utf-8")
+    public Object base64ToUrl(@Valid @RequestBody Base64ToUrl base64ToUrl) {
+        return wxAppAllService.base64ToUrl(base64ToUrl);
+    }
+
 
 
 }

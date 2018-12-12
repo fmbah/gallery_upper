@@ -66,6 +66,8 @@ public class WxAppAllService {
     private TemplateLabelsMapper templateLabelsMapper;
     @Autowired
     private LabelMapper labelMapper;
+    @Autowired
+    private UpLoadService upLoadService;
 
     /**
      *
@@ -876,4 +878,10 @@ public class WxAppAllService {
 
         return ResultGenerator.genSuccessResult();
     }
+
+
+    public Object base64ToUrl(Base64ToUrl base64ToUrl) {
+        return upLoadService.base64ToUrl(base64ToUrl);
+    }
+
 }
