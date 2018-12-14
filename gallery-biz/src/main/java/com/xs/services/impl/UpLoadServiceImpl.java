@@ -1,5 +1,6 @@
 package com.xs.services.impl;
 
+import com.alibaba.fastjson.util.Base64;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.xs.beans.Base64ToUrl;
@@ -215,13 +216,14 @@ public class UpLoadServiceImpl implements UpLoadService {
     @Override
     public Object base64ToUrl(Base64ToUrl base64ToUrl) {
 
-        BASE64Decoder decoder = new BASE64Decoder();
+//        BASE64Decoder decoder = new BASE64Decoder();
         File template = null;
         try {
             String s1 = base64ToUrl.getBase64Var().split("data:image/")[1];
             template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
             FileOutputStream write = new FileOutputStream(template);
-            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
+//            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
+            byte[] decoderBytes = Base64.decodeFast(base64ToUrl.getBase64Var().split(",")[1]);
             write.write(decoderBytes);
             write.close();
 
