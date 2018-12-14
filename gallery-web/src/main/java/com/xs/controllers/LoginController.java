@@ -83,6 +83,13 @@ public class LoginController extends BaseController {
                 return ResultGenerator.genFailResult("验证码有误或验证码失效");
             }
 
+            if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+                return ResultGenerator.genFailResult("帐号或密码不能为空");
+            }
+
+            username = username.trim();
+            password = password.trim();
+
             Condition condition = new Condition(Admin.class);
             Example.Criteria criteria = condition.createCriteria();
             criteria.andEqualTo("username", username);
