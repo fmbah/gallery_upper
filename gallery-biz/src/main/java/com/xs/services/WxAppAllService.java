@@ -348,6 +348,7 @@ public class WxAppAllService {
         }
 
         criteria.andEqualTo("enabled", true);
+        condition.setOrderByClause(" id desc");
         List<Template> templates = templateService.findByCondition(condition);
         for (int i = 0, j = templates.size(); i < j; i++) {
             templates.get(i).setDescri(null);
