@@ -129,7 +129,7 @@ public class WxAppAllController extends BaseController {
      * @date: 18-12-12 上午10:44
      */
     @ApiOperation(value = "base64串转url地址",notes = "base64串转url地址")
-    @PutMapping(value = "/base64ToUrl",produces = "application/json;charset=utf-8")
+    @PostMapping(value = "/base64ToUrl",produces = "application/json;charset=utf-8")
     public Object base64ToUrl(@Valid @RequestBody Base64ToUrl base64ToUrl) {
         return wxAppAllService.base64ToUrl(base64ToUrl);
     }
