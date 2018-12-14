@@ -49,21 +49,24 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String categoryId = visitor.split(":")[4];
                     String brandId = visitor.split(":")[6];
 
-                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId)) {
-                        continue;
-                    }
-
                     String visitorCount = jedis.get(visitor);
 
-                    TemplateStatistics templateStatistics = new TemplateStatistics();
-                    templateStatistics.setTemplateId(Integer.valueOf(templateId));
-                    templateStatistics.setCategoryId(Integer.valueOf(categoryId));
-                    templateStatistics.setBrandId(Integer.valueOf(brandId));
-                    templateStatistics.setGmtCreate(new Date());
-                    templateStatistics.setVisitorCount(Integer.valueOf(visitorCount));
-                    templateStatistics.setShareCount(0);
-                    templateStatistics.setUsedCount(0);
-                    templateStatisticsMapper.insert(templateStatistics);
+                    boolean flag = true;
+                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId)) {
+                        flag = false;
+                    }
+
+                    if (!StringUtils.isEmpty(visitorCount) && flag) {
+                        TemplateStatistics templateStatistics = new TemplateStatistics();
+                        templateStatistics.setTemplateId(Integer.valueOf(templateId));
+                        templateStatistics.setCategoryId(Integer.valueOf(categoryId));
+                        templateStatistics.setBrandId(Integer.valueOf(StringUtils.isEmpty(brandId) ? "0" : brandId));
+                        templateStatistics.setGmtCreate(new Date());
+                        templateStatistics.setVisitorCount(Integer.valueOf(visitorCount));
+                        templateStatistics.setShareCount(0);
+                        templateStatistics.setUsedCount(0);
+                        templateStatisticsMapper.insert(templateStatistics);
+                    }
 
                     jedis.del(visitor);
                 }
@@ -76,21 +79,24 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String categoryId = share.split(":")[4];
                     String brandId = share.split(":")[6];
 
-                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId)) {
-                        continue;
-                    }
-
                     String shareCount = jedis.get(share);
 
-                    TemplateStatistics templateStatistics = new TemplateStatistics();
-                    templateStatistics.setTemplateId(Integer.valueOf(templateId));
-                    templateStatistics.setCategoryId(Integer.valueOf(categoryId));
-                    templateStatistics.setBrandId(Integer.valueOf(brandId));
-                    templateStatistics.setGmtCreate(new Date());
-                    templateStatistics.setVisitorCount(0);
-                    templateStatistics.setShareCount(Integer.valueOf(shareCount));
-                    templateStatistics.setUsedCount(0);
-                    templateStatisticsMapper.insert(templateStatistics);
+                    boolean flag = true;
+                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId)) {
+                        flag = false;
+                    }
+
+                    if (!StringUtils.isEmpty(shareCount) && flag) {
+                        TemplateStatistics templateStatistics = new TemplateStatistics();
+                        templateStatistics.setTemplateId(Integer.valueOf(templateId));
+                        templateStatistics.setCategoryId(Integer.valueOf(categoryId));
+                        templateStatistics.setBrandId(Integer.valueOf(StringUtils.isEmpty(brandId) ? "0" : brandId));
+                        templateStatistics.setGmtCreate(new Date());
+                        templateStatistics.setVisitorCount(0);
+                        templateStatistics.setShareCount(Integer.valueOf(shareCount));
+                        templateStatistics.setUsedCount(0);
+                        templateStatisticsMapper.insert(templateStatistics);
+                    }
 
                     jedis.del(share);
                 }
@@ -103,21 +109,24 @@ public class OneHourWriteRedisDataSimpleJob0 {
                     String categoryId = used.split(":")[4];
                     String brandId = used.split(":")[6];
 
-                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId)) {
-                        continue;
-                    }
-
                     String usedCount = jedis.get(used);
 
-                    TemplateStatistics templateStatistics = new TemplateStatistics();
-                    templateStatistics.setTemplateId(Integer.valueOf(templateId));
-                    templateStatistics.setCategoryId(Integer.valueOf(categoryId));
-                    templateStatistics.setBrandId(Integer.valueOf(brandId));
-                    templateStatistics.setGmtCreate(new Date());
-                    templateStatistics.setVisitorCount(0);
-                    templateStatistics.setShareCount(0);
-                    templateStatistics.setUsedCount(Integer.valueOf(usedCount));
-                    templateStatisticsMapper.insert(templateStatistics);
+                    boolean flag = true;
+                    if (StringUtils.isEmpty(templateId) || StringUtils.isEmpty(categoryId)) {
+                        flag = false;
+                    }
+
+                    if (!StringUtils.isEmpty(usedCount) && flag) {
+                        TemplateStatistics templateStatistics = new TemplateStatistics();
+                        templateStatistics.setTemplateId(Integer.valueOf(templateId));
+                        templateStatistics.setCategoryId(Integer.valueOf(categoryId));
+                        templateStatistics.setBrandId(Integer.valueOf(StringUtils.isEmpty(brandId) ? "0" : brandId));
+                        templateStatistics.setGmtCreate(new Date());
+                        templateStatistics.setVisitorCount(0);
+                        templateStatistics.setShareCount(0);
+                        templateStatistics.setUsedCount(Integer.valueOf(usedCount));
+                        templateStatisticsMapper.insert(templateStatistics);
+                    }
 
                     jedis.del(used);
                 }
