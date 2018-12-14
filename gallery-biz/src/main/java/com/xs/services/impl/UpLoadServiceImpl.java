@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * \* 杭州桃子网络科技股份有限公司
@@ -224,8 +228,14 @@ public class UpLoadServiceImpl implements UpLoadService {
             FileOutputStream write = new FileOutputStream(template);
 //            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
             String base64Str = base64ToUrl.getBase64Var().split(",")[1];
+
+            ExecutorService executorService = Executors.newFixedThreadPool(3);
+            Future<byte[]> submit = executorService.submit(() -> java.util.Base64.getDecoder().decode(base64Str));
+            executorService.shutdown();
+
 //            byte[] decoderBytes = Base64.decodeFast(base64Str);
-            byte[] decoderBytes = java.util.Base64.getDecoder().decode(base64Str);
+//            byte[] decoderBytes = java.util.Base64.getDecoder().decode(base64Str);
+            byte[] decoderBytes = submit.get();
             write.write(decoderBytes);
             write.close();
 
@@ -244,7 +254,12 @@ public class UpLoadServiceImpl implements UpLoadService {
             if(url != null) {
                 base64ToUrl.setBase64Var(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
             }
+
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         } finally {
             if (template != null) {
@@ -252,6 +267,8 @@ public class UpLoadServiceImpl implements UpLoadService {
             }
         }
 
+
         return ResultGenerator.genSuccessResult(base64ToUrl.getBase64Var());
+
     }
 }
