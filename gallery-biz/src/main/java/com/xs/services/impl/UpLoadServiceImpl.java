@@ -1,6 +1,5 @@
 package com.xs.services.impl;
 
-import com.alibaba.fastjson.util.Base64;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.SetBucketCORSRequest;
 import com.xs.beans.Base64ToUrl;
@@ -10,11 +9,12 @@ import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
 import com.xs.services.UpLoadService;
 import com.xs.utils.OssUpLoadUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +42,8 @@ import java.util.concurrent.Future;
 
 @Service("upLoadService")
 public class UpLoadServiceImpl implements UpLoadService {
+
+    public final Logger logger = LoggerFactory.getLogger(UpLoadServiceImpl.class);
 
     @Autowired
     private OssConfig ossConfig;
@@ -229,6 +231,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 //            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
             String base64Str = base64ToUrl.getBase64Var().split(",")[1];
 
+            logger.warn("executorService start:" + System.currentTimeMillis());
             ExecutorService executorService = Executors.newFixedThreadPool(3);
             Future<byte[]> submit = executorService.submit(() -> java.util.Base64.getDecoder().decode(base64Str));
             executorService.shutdown();
@@ -238,7 +241,9 @@ public class UpLoadServiceImpl implements UpLoadService {
             byte[] decoderBytes = submit.get();
             write.write(decoderBytes);
             write.close();
+            logger.warn("executorService end:" + System.currentTimeMillis());
 
+            logger.warn("oss start:" + System.currentTimeMillis());
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
             try {
                 ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
@@ -254,7 +259,7 @@ public class UpLoadServiceImpl implements UpLoadService {
             if(url != null) {
                 base64ToUrl.setBase64Var(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
             }
-
+            logger.warn("oss end:" + System.currentTimeMillis());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
