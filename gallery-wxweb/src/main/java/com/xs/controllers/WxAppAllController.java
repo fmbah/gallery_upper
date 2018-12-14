@@ -134,6 +134,4 @@ public class WxAppAllController extends BaseController {
         return wxAppAllService.base64ToUrl(base64ToUrl);
     }
 
-
-
 }

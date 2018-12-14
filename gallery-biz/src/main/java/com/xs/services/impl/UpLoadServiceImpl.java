@@ -223,7 +223,9 @@ public class UpLoadServiceImpl implements UpLoadService {
             template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
             FileOutputStream write = new FileOutputStream(template);
 //            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
-            byte[] decoderBytes = Base64.decodeFast(base64ToUrl.getBase64Var().split(",")[1]);
+            String base64Str = base64ToUrl.getBase64Var().split(",")[1];
+//            byte[] decoderBytes = Base64.decodeFast(base64Str);
+            byte[] decoderBytes = java.util.Base64.getDecoder().decode(base64Str);
             write.write(decoderBytes);
             write.close();
 
