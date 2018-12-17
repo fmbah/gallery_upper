@@ -215,7 +215,7 @@ public class PayBearingServiceImpl implements PayBearingService {
             //TODO 测试所以订单金额为1分钱，上线后还原为订单实际价格
              totalFee = 1;
         }
-        request.setOutTradeNo(outTradeNo.substring(0,outTradeNo.length()-1));
+        request.setOutTradeNo((isMiniApp ? "mini_" : "mp_") + outTradeNo.substring(0,outTradeNo.length()-1));
         request.setTotalFee(totalFee);
         String sign = SignUtils.createSign(request, null, this.mchKey, false);
         request.setSign(sign);
