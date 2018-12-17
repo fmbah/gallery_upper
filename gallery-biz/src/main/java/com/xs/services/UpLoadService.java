@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -61,5 +62,7 @@ public interface UpLoadService {
     * @Date: 2018/6/20 
     **/
     Object orderImport(MultipartFile file);
+
+    Object upFile(File file);
 
 }

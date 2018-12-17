@@ -18,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,6 +70,28 @@ public class UpLoadServiceImpl implements UpLoadService {
         return ResultGenerator.genFailResult("文件数量为空，请重新上传");
     }
 
+    public String upFile(File file) {
+        if(file == null || !file.exists()){
+            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+            String fileName = new Date().getTime() + "_" + file.getName();
+            try {
+                ossClient.putObject(ossConfig.getBucket(), fileName, new FileInputStream(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
+
+            setParams(request);
+
+            ossClient.setBucketCORS(request);
+
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+            if(null!=url){
+                return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
+            }
+        }
+        throw  new ServiceException("上传文件为空，请重新上传");
+    }
 
     /***
      * 图片上传

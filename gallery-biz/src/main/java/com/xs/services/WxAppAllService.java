@@ -3,6 +3,7 @@ package com.xs.services;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.*;
+import com.xs.beans.Label;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sexception.ServiceException;
 import com.xs.daos.LabelMapper;
@@ -22,9 +23,13 @@ import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.List;
 
 import static com.xs.core.ProjectConstant.*;
 
@@ -889,6 +894,53 @@ public class WxAppAllService {
 
     public Object fileToUrl(MultipartFile file) throws IOException {
         return ResultGenerator.genSuccessResult(upLoadService.up(file));
+    }
+
+    public Object drawFonts() {
+
+        File temp = null;
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            String[] fontFamilies = ge.getAvailableFontFamilyNames();
+            for (String f : fontFamilies) {
+                System.out.println(f);
+            }
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("汉仪大宋简.ttf")));
+
+            Font font = Font.createFont(Font.TRUETYPE_FONT, new File("汉仪大宋简.ttf"));
+
+            font = font.deriveFont(12f);
+
+            BufferedImage bufferedImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
+
+            Graphics2D graphics = bufferedImage.createGraphics();
+
+            graphics.setColor(Color.BLACK);
+            graphics.fillRect(0, 0, 500, 500);
+
+            graphics.setColor(Color.WHITE);
+            graphics.fillOval(0, 0, 500, 500);
+
+            graphics.setFont(font);
+            graphics.setColor(Color.BLUE);
+            graphics.drawString("汉仪大宋简.ttf", 100, 240);
+
+            graphics.dispose();
+
+            temp = File.createTempFile("temp", ".png");
+
+            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (temp.exists()) {
+                temp.delete();
+            }
+        }
+
+        return null;
     }
 
 }

@@ -9,6 +9,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.awt.*;
+
 /**
  * @ClassName TestJava
  * @Description
@@ -49,6 +51,15 @@ public class TestJava {
         Assert.assertTrue(filter.mightContain(1));
         long s = System.currentTimeMillis();
         System.out.println("执行时间: " + (s - l));
+    }
+
+    @Test
+    public void testFont() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        String[] fontFamilies = ge.getAvailableFontFamilyNames();
+        for (String f : fontFamilies) {
+            System.out.println(f);
+        }
     }
 
 }

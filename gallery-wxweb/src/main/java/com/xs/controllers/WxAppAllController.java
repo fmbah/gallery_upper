@@ -2,6 +2,7 @@ package com.xs.controllers;
 
 import com.xs.beans.Base64ToUrl;
 import com.xs.beans.SearchTemplates;
+import com.xs.configurer.sannotation.IgnoreAuth;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.UserService;
 import com.xs.services.WxAppAllService;
@@ -151,4 +152,10 @@ public class WxAppAllController extends BaseController {
         return wxAppAllService.fileToUrl(base64Var);
     }
 
+    @IgnoreAuth
+    @ApiOperation(value = "画图",notes = "画图")
+    @PostMapping(value = "/drawFonts",produces = "application/json;charset=utf-8")
+    public Object drawFonts(){
+        return wxAppAllService.drawFonts();
+    }
 }
