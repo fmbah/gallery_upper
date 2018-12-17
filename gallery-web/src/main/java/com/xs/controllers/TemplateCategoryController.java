@@ -99,7 +99,7 @@ public class TemplateCategoryController extends BaseController{
      */
     @ApiOperation(value = "品牌中心数据保存",notes = "品牌中心数据保存")
     @PostMapping(value = "/saveBrandCenterData",produces = "application/json;charset=utf-8")
-    public Object saveBrandCenterData(TemplateCategory1 templateCategory1) {
+    public Object saveBrandCenterData(@Valid @RequestBody TemplateCategory1 templateCategory1) {
         return templateCategoryService.saveBrandCenterData(templateCategory1.getTitle(), templateCategory1.getIntroduction(), templateCategory1.getBackgroundImageUrl(), templateCategory1.getId());
     }
 
