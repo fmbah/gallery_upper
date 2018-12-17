@@ -23,6 +23,7 @@ import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -928,6 +929,8 @@ public class WxAppAllService {
             graphics.dispose();
 
             temp = File.createTempFile("temp", ".png");
+            ImageIO.write(bufferedImage, "png", temp);
+
 
             return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
         } catch (FontFormatException e) {
