@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
@@ -906,9 +907,11 @@ public class WxAppAllService {
             for (String f : fontFamilies) {
                 System.out.println(f);
             }
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("汉仪大宋简.ttf")));
+            String pathString = this.getClass().getClassLoader().getResource("/font/汉仪大宋简.ttf").getFile();
+            File dynamicFile = new File(pathString);
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile));
 
-            Font font = Font.createFont(Font.TRUETYPE_FONT, new File("汉仪大宋简.ttf"));
+            Font font = Font.createFont(Font.TRUETYPE_FONT, dynamicFile);
 
             font = font.deriveFont(12f);
 
