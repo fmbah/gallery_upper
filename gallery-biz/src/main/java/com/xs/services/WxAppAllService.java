@@ -913,7 +913,7 @@ public class WxAppAllService {
 
             Font font = Font.createFont(Font.TRUETYPE_FONT, dynamicFile);
 
-            font = font.deriveFont(12f);
+            font = font.deriveFont(36f);
 
             BufferedImage bufferedImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
 
@@ -927,7 +927,7 @@ public class WxAppAllService {
 
             graphics.setFont(font);
             graphics.setColor(Color.BLUE);
-            graphics.drawString("汉仪大宋简.ttf", 100, 240);
+            graphics.drawString("绽放汉字之美", 100, 240);
 
             graphics.dispose();
 
