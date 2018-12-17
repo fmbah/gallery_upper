@@ -71,7 +71,7 @@ public class UpLoadServiceImpl implements UpLoadService {
     }
 
     public String upFile(File file) {
-        if(file == null || !file.exists()){
+        if(file != null && file.exists()){
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
             String fileName = new Date().getTime() + "_" + file.getName();
             try {
