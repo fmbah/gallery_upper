@@ -908,12 +908,19 @@ public class WxAppAllService {
                 System.out.println(f);
             }
             String pathString = this.getClass().getClassLoader().getResource("/font/汉仪大宋简.ttf").getFile();
+            String pathString1 = this.getClass().getClassLoader().getResource("/font/汉仪大黑简.ttf").getFile();
             File dynamicFile = new File(pathString);
+            File dynamicFile1 = new File(pathString1);
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile1));
 
             Font font = Font.createFont(Font.TRUETYPE_FONT, dynamicFile);
 
             font = font.deriveFont(36f);
+
+            Font font1 = Font.createFont(Font.TRUETYPE_FONT, dynamicFile1);
+
+            font1 = font1.deriveFont(36f);
 
             BufferedImage bufferedImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
 
@@ -927,7 +934,11 @@ public class WxAppAllService {
 
             graphics.setFont(font);
             graphics.setColor(Color.BLUE);
-            graphics.drawString("绽放汉字之美", 100, 240);
+            graphics.drawString("绽放汉字之美", 100, 160);
+
+            graphics.setFont(font1);
+            graphics.setColor(Color.BLUE);
+            graphics.drawString("绽放汉字之美", 300, 360);
 
             graphics.dispose();
 
