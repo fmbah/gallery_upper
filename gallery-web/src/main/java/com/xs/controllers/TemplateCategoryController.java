@@ -1,4 +1,5 @@
 package com.xs.controllers;
+import com.xs.beans.TemplateCategory1;
 import com.xs.core.ResultGenerator;
 import com.xs.beans.TemplateCategory;
 import com.xs.services.TemplateCategoryService;
@@ -97,11 +98,9 @@ public class TemplateCategoryController extends BaseController{
      * @return
      */
     @ApiOperation(value = "品牌中心数据保存",notes = "品牌中心数据保存")
-    @PostMapping(value = "/saveBrandCenterData/{title}/{introduction}/{backgroundImageUrl}",produces = "application/json;charset=utf-8")
-    public Object saveBrandCenterData(@PathVariable String title,
-                                      @PathVariable String introduction,
-                                      @PathVariable String backgroundImageUrl, @RequestParam(required = false) Integer id) {
-        return templateCategoryService.saveBrandCenterData(title, introduction, backgroundImageUrl, id);
+    @PostMapping(value = "/saveBrandCenterData",produces = "application/json;charset=utf-8")
+    public Object saveBrandCenterData(TemplateCategory1 templateCategory1) {
+        return templateCategoryService.saveBrandCenterData(templateCategory1.getTitle(), templateCategory1.getIntroduction(), templateCategory1.getBackgroundImageUrl(), templateCategory1.getId());
     }
 
     /***

@@ -98,7 +98,7 @@ public class UpLoadServiceImpl implements UpLoadService {
                     return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
                 }
             }
-            throw  new RuntimeException("图片太大，最大200KB");
+            throw  new RuntimeException("图片太大，最大10MB");
         }
         throw  new ServiceException("上传文件为空，请重新上传");
     }

@@ -16,11 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -883,6 +885,10 @@ public class WxAppAllService {
 
     public Object base64ToUrl(Base64ToUrl base64ToUrl) {
         return upLoadService.base64ToUrl(base64ToUrl);
+    }
+
+    public Object fileToUrl(MultipartFile file) throws IOException {
+        return ResultGenerator.genSuccessResult(upLoadService.up(file));
     }
 
 }

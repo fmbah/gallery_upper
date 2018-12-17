@@ -11,9 +11,11 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.validation.Valid;
+import java.io.IOException;
 
 /**
  * @Auther: Fmbah
@@ -132,6 +134,21 @@ public class WxAppAllController extends BaseController {
     @PostMapping(value = "/base64ToUrl",produces = "application/json;charset=utf-8")
     public Object base64ToUrl(@Valid @RequestBody Base64ToUrl base64ToUrl) {
         return wxAppAllService.base64ToUrl(base64ToUrl);
+    }
+
+    /**
+     *
+     * 功能描述:  file转url地址
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-12-17 上午10:02
+     */
+    @ApiOperation(value = "file转url地址",notes = "base64串转url地址")
+    @PostMapping(value = "/fileToUrl",produces = "application/json;charset=utf-8")
+    public Object fileToUrl(@ApiParam(value = "文件") @RequestParam(name = "base64Var") MultipartFile base64Var) throws IOException {
+        return wxAppAllService.fileToUrl(base64Var);
     }
 
 }
