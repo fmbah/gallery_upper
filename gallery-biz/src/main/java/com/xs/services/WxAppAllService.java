@@ -707,7 +707,7 @@ public class WxAppAllService {
                 needModify = false;
             }
             if (needModify) {
-                userPayment.setCdkCode(code);
+                userPayment.setCdkCode(StringUtils.isEmpty(code) ? StringUtils.EMPTY : code);
                 userPayment.setGmtModified(new Date());
                 userPaymentMapper.updateByPrimaryKey(userPayment);
             }
