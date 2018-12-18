@@ -157,8 +157,7 @@ public class WxAppAllController extends BaseController {
     @ApiOperation(value = "画图",notes = "画图")
     @PostMapping(value = "/drawFonts",produces = "application/json;charset=utf-8")
     public Object drawFonts(){
-        return wxAppAllService.getFont();
-//        return wxAppAllService.drawFonts();
+        return wxAppAllService.drawFonts();
     }
 
     @IgnoreAuth
@@ -166,5 +165,12 @@ public class WxAppAllController extends BaseController {
     @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
     public Object drawFontsToPic(@Valid @RequestBody FontToPic[] fontToPics, @RequestParam String pic){
         return wxAppAllService.drawFonts();
+    }
+
+    @IgnoreAuth
+    @ApiOperation(value = "获取网络字体",notes = "获取网络字体")
+    @GetMapping(value = "/webFont",produces = "application/json;charset=utf-8")
+    public Object webFont(){
+        return wxAppAllService.getFont();
     }
 }
