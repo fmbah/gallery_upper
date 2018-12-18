@@ -937,6 +937,7 @@ public class WxAppAllService {
             graphics.drawString("绽放汉字之美", 100, 160);
 
             graphics.setFont(font1);
+            graphics.rotate(0.5);
             graphics.setColor(Color.BLUE);
             graphics.drawString("绽放汉字之美", 300, 360);
 
