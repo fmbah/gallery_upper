@@ -1,7 +1,10 @@
 package com.xs.services;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 import com.xs.beans.*;
 import com.xs.beans.Label;
 import com.xs.core.ResultGenerator;
@@ -12,12 +15,18 @@ import com.xs.daos.TemplateMapper;
 import com.xs.daos.UserPaymentMapper;
 import com.xs.utils.GenerateOrderno;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
@@ -25,9 +34,12 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
@@ -907,10 +919,35 @@ public class WxAppAllService {
             for (String f : fontFamilies) {
                 System.out.println(f);
             }
-            String pathString = this.getClass().getClassLoader().getResource("/font/汉仪大宋简.ttf").getFile();
-            String pathString1 = this.getClass().getClassLoader().getResource("/font/汉仪大黑简.ttf").getFile();
-            File dynamicFile = new File(pathString);
-            File dynamicFile1 = new File(pathString1);
+            URL url1 = this.getClass().getClassLoader().getResource("/font/ff36c1b5b09d25073107197263597513.ttf");
+            URL url2 = this.getClass().getClassLoader().getResource("/font/汉仪大黑简.ttf");
+            String pathString = null;
+            String pathString1 = null;
+            File dynamicFile = null;
+            File dynamicFile1 = null;
+            if (url1 != null) {
+                pathString = url1.getFile();
+                dynamicFile = new File(pathString);
+            } else {
+                ClassPathResource classPathResource = new ClassPathResource("/font/ff36c1b5b09d25073107197263597513.ttf");
+                if (classPathResource != null) {
+                    dynamicFile = classPathResource.getFile();
+                }
+            }
+            if (url2 != null) {
+                pathString1 = url2.getFile();
+                dynamicFile1 = new File(pathString1);
+            } else {
+                ClassPathResource classPathResource = new ClassPathResource("/font/汉仪大黑简.ttf");
+                if (classPathResource != null) {
+                    dynamicFile1 = classPathResource.getFile();
+                }
+            }
+
+            if (dynamicFile1== null || dynamicFile == null) {
+                return ResultGenerator.genFailResult("未获取到字体文件");
+            }
+
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile));
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile1));
 
@@ -926,25 +963,137 @@ public class WxAppAllService {
 
             Graphics2D graphics = bufferedImage.createGraphics();
 
-            graphics.setColor(Color.BLACK);
+            graphics.setColor(Color.BLUE);
             graphics.fillRect(0, 0, 500, 500);
 
-            graphics.setColor(Color.WHITE);
-            graphics.fillOval(0, 0, 500, 500);
+//            graphics.setColor(Color.WHITE);
+//            graphics.fillOval(0, 0, 500, 500);
+//
+//            graphics.setFont(font);
+//            graphics.setColor(Color.BLUE);
+//            graphics.drawString("绽放汉字之美1", 100, 160);
+//
+//            graphics.setFont(font1);
+//            AffineTransform toCenterAt = new AffineTransform();
+//            toCenterAt.rotate(30, 0, 0);
+//            graphics.transform(toCenterAt);
+//            graphics.setColor(Color.BLUE);
+//            graphics.drawString("绽放汉字之美2", 100, 210);
+//
+//
+//            Font ftmp = new Font("default", Font.BOLD, 36);
+//            graphics.setFont(ftmp);
+//            graphics.setColor(Color.BLUE);
+//            graphics.drawString("绽放汉字之美3", 100, 310);
+//
+//            ftmp = new Font("default", Font.PLAIN, 36);
+//            graphics.setFont(ftmp);
+//            graphics.setColor(Color.BLUE);
+//            graphics.drawString("绽放汉字之美3", 100, 380);
 
-            graphics.setFont(font);
-            graphics.setColor(Color.BLUE);
-            graphics.drawString("绽放汉字之美", 100, 160);
+            //1. 背景图
+            BufferedImage backPic = ImageIO.read(new URL("https://daily-test.mxth.com/1545102996778_temp7317092677352562376.png"));
+            Graphics2D backPicGraphics = backPic.createGraphics();
+            //2. 画文字图片, 居中
+            BufferedImage fontImage = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2DFont = fontImage.createGraphics();
+            graphics2DFont.setColor(Color.BLUE);
+            graphics2DFont.fillRect(0, 0, 100, 50);
 
-            graphics.setFont(font1);
-            graphics.rotate(0.5);
-            graphics.setColor(Color.BLUE);
-            graphics.drawString("绽放汉字之美", 300, 360);
+            FontMetrics fontMetrics = graphics2DFont.getFontMetrics();
+            int x = (100 - fontMetrics.stringWidth("绽放汉字之美2")) / 2;
+            int y = (fontMetrics.getAscent() + (50 - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);
+            graphics2DFont.setColor(Color.white);
+            graphics2DFont.drawString("绽放汉字之美2", x, y);
+            graphics2DFont.dispose();
+            backPicGraphics.drawImage(fontImage, 0, 0, null);
+
+            //2. 画文字图片, 左对齐
+            BufferedImage fontImage1 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2DFont1 = fontImage1.createGraphics();
+            graphics2DFont1.setColor(Color.BLUE);
+            graphics2DFont1.fillRect(0, 0, 100, 50);
+            FontMetrics fontMetrics1 = graphics2DFont1.getFontMetrics();
+            int len = fontMetrics.stringWidth("123");
+            System.out.println("len: " + len);
+            int x1 = 0;
+            int y1 = (fontMetrics1.getAscent() + (50 - (fontMetrics1.getAscent() + fontMetrics1.getDescent())) / 2);
+            graphics2DFont1.setColor(Color.yellow);
+            graphics2DFont1.drawString("123", x1, y1);
+            graphics2DFont1.dispose();
+            backPicGraphics.drawImage(fontImage1, 0, 70, null);
+
+            //2. 画文字图片, 右对齐
+            BufferedImage fontImage2 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2DFont2 = fontImage2.createGraphics();
+            graphics2DFont2.setColor(Color.BLUE);
+            graphics2DFont2.fillRect(0, 0, 100, 50);
+            FontMetrics fontMetrics2 = graphics2DFont2.getFontMetrics();
+            String s = "456";
+            int len1 = fontMetrics2.stringWidth(s);
+            System.out.println("len1: " + len1);
+            int x2 = 100 - len1;
+            int y2 = (fontMetrics2.getAscent() + (50 - (fontMetrics2.getAscent() + fontMetrics2.getDescent())) / 2);
+            graphics2DFont2.setPaint(new Color(255, 255, 255, (int)Math.round(1 / 1 * 255)));
+            graphics2DFont2.drawString(s, x2, y2);
+            graphics2DFont2.dispose();
+
+            int tx = 0 + fontImage2.getMinX() + fontImage2.getWidth() / 2;
+            int ty = 140 + fontImage2.getMinY() + fontImage2.getHeight() / 2;
+//            AffineTransform transform = new AffineTransform();
+//            transform.rotate(Math.toRadians(45), tx, ty);
+            System.out.println("tx: " + tx + ", ty: " + ty);
+//            backPicGraphics.transform(transform);
+//            backPicGraphics.rotate(30 * Math.PI / 180, tx, ty);
+            backPicGraphics.drawImage(fontImage2, 0, 140, null);
+
+//            backPicGraphics.rotate(-30 * Math.PI / 180, 50 - tx, ty - 210);
+
+            BufferedImage fontImage3 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
+            Graphics2D fontImage3Graphics = fontImage3.createGraphics();
+            fontImage3Graphics.setColor(Color.BLUE);
+            fontImage3Graphics.fillRect(0, 0, 100, 50);
+            fontImage3Graphics.setColor(new Color(0, 0, 0, (int)Math.round(1 / 1 * 255)));
+            String str = "1231111";
+            FontMetrics fontMetrics3 = fontImage3Graphics.getFontMetrics();
+            int i = fontMetrics3.stringWidth(str);
+            int x3 = i / 2;
+            int y3 = (fontMetrics3.getAscent() + (50 - (fontMetrics3.getAscent() + fontMetrics3.getDescent())) / 2);
+            fontImage3Graphics.rotate(Math.toRadians(45), x3, y3);
+            fontImage3Graphics.drawString(str, 0, y3);
+            Graphics2D fontImage3Graphics1 = fontImage3.createGraphics();
+            String hrStr = "你好,Fmbah,我要换行了,我要换行了,我要换行了,我要换行了,我要换行了,我要换行了";
+            int size = 0;
+
+            FontMetrics fontMetrics4 = fontImage3Graphics.getFontMetrics();
+            int i2 = fontMetrics4.stringWidth(hrStr);
+            int sizey = 10;
+            for (int j = 0; j < i2; j++) {
+                String s1 = String.valueOf(hrStr.charAt(j));
+                int i1 = fontMetrics4.stringWidth(s1);
+                if (size + i1 <= 100) {
+                    fontImage3Graphics1.drawString(s1, size, sizey);
+                    size += i1;
+                } else {
+                    sizey += fontMetrics4.getHeight();
+                    if (sizey > 50) {
+                        break;
+                    }
+                    fontImage3Graphics1.drawString(s1, 0, sizey);
+                    size = i1;
+                }
+
+            }
+//            fontImage3Graphics1.drawString("第二行...", size, sizey);
+            fontImage3Graphics.dispose();
+            backPicGraphics.drawImage(fontImage3, 0, 210, null);
+
+
+            backPicGraphics.dispose();
 
             graphics.dispose();
-
             temp = File.createTempFile("temp", ".png");
-            ImageIO.write(bufferedImage, "png", temp);
+            ImageIO.write(backPic, "png", temp);
 
 
             return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
@@ -959,6 +1108,27 @@ public class WxAppAllService {
         }
 
         return null;
+    }
+
+    public Object getFont() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "https://www.hanyi.studio/webfontmanagement/webfontmanagerhandler.ashx";
+        JSONObject json = new JSONObject();
+        json.put("userGuid","698F3099-E62F-4C3B-B30A-04FB735069FE");
+        json.put("productId","1269");
+        json.put("chas","中华人民共和国");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> entity = new HttpEntity(headers);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("opera", "GetWebFontItem")
+                .queryParam("json", json.toString());
+
+        ResponseEntity<String> exchange = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, String.class);
+        return ResultGenerator.genSuccessResult(JSONObject.parseObject(exchange.getBody()));
     }
 
 }

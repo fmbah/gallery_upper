@@ -1,6 +1,7 @@
 package com.xs.controllers;
 
 import com.xs.beans.Base64ToUrl;
+import com.xs.beans.FontToPic;
 import com.xs.beans.SearchTemplates;
 import com.xs.configurer.sannotation.IgnoreAuth;
 import com.xs.core.scontroller.BaseController;
@@ -156,6 +157,14 @@ public class WxAppAllController extends BaseController {
     @ApiOperation(value = "画图",notes = "画图")
     @PostMapping(value = "/drawFonts",produces = "application/json;charset=utf-8")
     public Object drawFonts(){
+        return wxAppAllService.getFont();
+//        return wxAppAllService.drawFonts();
+    }
+
+    @IgnoreAuth
+    @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
+    @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
+    public Object drawFontsToPic(@Valid @RequestBody FontToPic[] fontToPics, @RequestParam String pic){
         return wxAppAllService.drawFonts();
     }
 }
