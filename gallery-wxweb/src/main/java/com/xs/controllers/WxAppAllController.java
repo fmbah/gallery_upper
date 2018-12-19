@@ -163,7 +163,7 @@ public class WxAppAllController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
-    public Object drawFontsToPic(@RequestBody FontToPic[] fontToPics, @RequestParam String pic){
+    public Object drawFontsToPic(String fontToPics, @RequestParam String pic){
         return wxAppAllService.drawFontsToPic(fontToPics, pic);
     }
 

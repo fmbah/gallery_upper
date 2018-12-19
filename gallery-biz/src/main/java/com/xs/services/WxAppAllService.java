@@ -1111,9 +1111,10 @@ public class WxAppAllService {
         return null;
     }
 
-    public Object drawFontsToPic(FontToPic[] fontToPics, String pic) {
+    public Object drawFontsToPic(String fontToPics, String pic) {
 
-
+        System.out.println("fontToPics: " + fontToPics);
+        System.out.println("pic: " + pic);
 
 
         return ResultGenerator.genSuccessResult();
