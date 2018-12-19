@@ -170,7 +170,7 @@ public class WxAppAllController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "获取网络字体",notes = "获取网络字体")
     @GetMapping(value = "/webFont",produces = "application/json;charset=utf-8")
-    public Object webFont(){
-        return wxAppAllService.getFont();
+    public Object webFont(@RequestParam String text, @RequestParam String fontName){
+        return wxAppAllService.getFont(text, fontName);
     }
 }

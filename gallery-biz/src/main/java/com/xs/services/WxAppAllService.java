@@ -1205,6 +1205,9 @@ public class WxAppAllService {
 
                 String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
 
+                JSONObject fontJsonObject = getFontUtil(text, family);
+                logger.info("fontJsonObject: {}", fontJsonObject);
+
                 //加载字体
                 File fileFamily = writeInputStreamToFile("http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf");
                 if (fileFamily == null) {
@@ -1288,14 +1291,19 @@ public class WxAppAllService {
         return file;
     }
 
-    public Object getFont() {
+    public Object getFont(String text, String fontName) {
+        return ResultGenerator.genSuccessResult(getFontUtil(text, fontName));
+    }
+
+    private JSONObject getFontUtil(String text, String fontName) {
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "https://www.hanyi.studio/webfontmanagement/webfontmanagerhandler.ashx";
         JSONObject json = new JSONObject();
         json.put("userGuid","698F3099-E62F-4C3B-B30A-04FB735069FE");
-        json.put("productId","1269");
-        json.put("chas","中华人民共和国仿宋字体");
+//        json.put("productId","1269");
+        json.put("FontName",fontName);
+        json.put("chas",text);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -1308,8 +1316,7 @@ public class WxAppAllService {
         ResponseEntity<String> exchange = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, String.class);
 
         JSONObject object = JSONObject.parseObject(exchange.getBody());
-
-        return ResultGenerator.genSuccessResult(object);
+        return object;
     }
 
 }
