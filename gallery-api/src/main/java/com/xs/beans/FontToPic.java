@@ -16,6 +16,7 @@ public class FontToPic extends BaseBean {
     private String align;
     private String color;
     private String family;
+    private String source;
     private float h;
     private float w;
     private float t;
@@ -24,6 +25,8 @@ public class FontToPic extends BaseBean {
     private int size;
     private String text;
     private String weight;
+
+    private int textW;
 
 
     public String getAlign() {
@@ -112,5 +115,23 @@ public class FontToPic extends BaseBean {
 
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+
+
+    public int getTextW() {
+        return textW;
+    }
+
+    public void setTextW(int textW) {
+        this.textW = textW;
+    }
+
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

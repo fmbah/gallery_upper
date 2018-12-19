@@ -1,6 +1,5 @@
 package com.xs.services;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -16,7 +15,6 @@ import com.xs.daos.TemplateMapper;
 import com.xs.daos.UserPaymentMapper;
 import com.xs.utils.GenerateOrderno;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,20 +30,17 @@ import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.xs.core.ProjectConstant.*;
 
@@ -923,7 +917,7 @@ public class WxAppAllService {
             for (String f : fontFamilies) {
                 System.out.println(f);
             }
-            URL url1 = this.getClass().getClassLoader().getResource("/font/ff36c1b5b09d25073107197263597513.ttf");
+            URL url1 = this.getClass().getClassLoader().getResource("/font/211A27DCD8C3B645.ttf");
             URL url2 = this.getClass().getClassLoader().getResource("/font/汉仪大黑简.ttf");
             String pathString = null;
             String pathString1 = null;
@@ -933,7 +927,7 @@ public class WxAppAllService {
                 pathString = url1.getFile();
                 dynamicFile = new File(pathString);
             } else {
-                ClassPathResource classPathResource = new ClassPathResource("/font/ff36c1b5b09d25073107197263597513.ttf");
+                ClassPathResource classPathResource = new ClassPathResource("/font/211A27DCD8C3B645.ttf");
                 if (classPathResource != null) {
                     dynamicFile = classPathResource.getFile();
                 }
@@ -1005,11 +999,11 @@ public class WxAppAllService {
             graphics2DFont.fillRect(0, 0, 100, 50);
 
             FontMetrics fontMetrics = graphics2DFont.getFontMetrics();
-            int x = (100 - fontMetrics.stringWidth("绽放汉字之美2")) / 2;
+            int x = (100 - fontMetrics.stringWidth("中华人民共和国")) / 2;
             int y = (fontMetrics.getAscent() + (50 - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);
             graphics2DFont.setFont(font);
             graphics2DFont.setColor(Color.white);
-            graphics2DFont.drawString("绽放汉字之美2", x, y);
+            graphics2DFont.drawString("中华人民共和国", x, y);
             graphics2DFont.dispose();
             backPicGraphics.drawImage(fontImage.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 0, null);
 
@@ -1112,7 +1106,7 @@ public class WxAppAllService {
 
             BufferedImage fontImage4 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
             Graphics2D fontImage4Graphics = fontImage4.createGraphics();
-            fontImage4Graphics.setColor(Color.BLUE);
+            fontImage4Graphics.setColor(new Color(255, 255, 255, (int)(Math.round(0 / 1 * 255))));
             fontImage4Graphics.fillRect(0, 0, 100, 50);
             fontImage4Graphics.setColor(new Color(255, 255, 255, (int)(Math.round(1 / 1 * 255))));
             String fontImage4Str = "旋转失真了";
@@ -1152,17 +1146,86 @@ public class WxAppAllService {
 
     public Object drawFontsToPic(String fontToPics, String pic) {
 
-        System.out.println("fontToPics: " + fontToPics);
-        System.out.println("pic: " + pic);
+        if (StringUtils.isEmpty(fontToPics) || StringUtils.isEmpty(pic)) {
+            return ResultGenerator.genFailResult("文字描述或图片地址数据为空");
+        }
+
+        logger.info("fontToPics: {}", fontToPics);
+        logger.info("pic: {}", pic);
 
         Gson gson = new Gson();
-        List<FontToPic> fontToPicList = gson.fromJson(fontToPics, new TypeToken<List<FontToPic>>(){}.getType());
-        System.out.println("fontToPicList size: " + fontToPicList.size());
+        JSONObject jsonObject = JSONObject.parseObject(fontToPics);
+        Object fontToPicsObject = jsonObject.get("fontToPics");
+        if (fontToPicsObject == null || (fontToPicsObject != null && fontToPicsObject.toString().length() == 0)) {
+            return ResultGenerator.genSuccessResult(pic);
+        }
+
+        List<FontToPic> fontToPicList = gson.fromJson(fontToPicsObject.toString(), new TypeToken<List<FontToPic>>(){}.getType());
+
+        if (fontToPicList == null || (fontToPicList != null && fontToPicList.isEmpty())) {
+            return ResultGenerator.genSuccessResult(pic);
+        }
+
+        logger.info("fontToPicList size: {}", fontToPicList.size());
+
+        StringBuilder errMsg = new StringBuilder();
+
+        try {
+            //加载前端已生成图片
+            BufferedImage backPic = ImageIO.read(new URL(pic));
+            Graphics2D backPicGraphics = backPic.createGraphics();
+
+            AtomicInteger index = new AtomicInteger();
+            long startT = System.currentTimeMillis();
+            logger.info("开始处理文字描述.....");
+            for(FontToPic fontToPic: fontToPicList) {
+                logger.info("开始处理第{}个文字描述,并合并图片....", index.get());
+
+                String text = fontToPic.getText();
+                float rotate = fontToPic.getRotate();//旋转角度
+                float w = fontToPic.getW();//div宽
+                float h = fontToPic.getH();//div高
+                float l = fontToPic.getL();//div距离原点左侧距离
+                float t = fontToPic.getT();//div距离原点上侧距离
+                String align = fontToPic.getAlign();//'left', 'right', 'center'
+                String weight = fontToPic.getWeight();//'normal', 'bold'
+                int size = fontToPic.getSize();
+                String color = fontToPic.getColor();//"rgba(234, 12, 12, 1)"
+                String family = fontToPic.getFamily();
+                String source = fontToPic.getSource();//ttf文件路径
+
+                if (StringUtils.isEmpty(text) || StringUtils.isEmpty(align)
+                        || StringUtils.isEmpty(weight) || StringUtils.isEmpty(color)
+                        || StringUtils.isEmpty(family) || StringUtils.isEmpty(source)) {
+                    logger.warn("字体描述中有值为空.....");
+                    continue;
+                }
+
+                String[] colors = color.substring(color.indexOf("(", color.indexOf(")"))).split(",");
+                //加载字体
+                File fileFamily = new File(source);
+
+
+                index.getAndIncrement();
+            }
+            logger.info("结束处理文字描述.....共耗时:{}s", (System.currentTimeMillis() - startT) / 1000);
+            backPicGraphics.dispose();
+
+
+        } catch (MalformedURLException e) {
+            logger.error(e.getMessage());
+            errMsg.append(e.getMessage() + "\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            errMsg.append(e.getMessage() + "\n");
+        } finally {
+
+        }
 
 
 
 
-        return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genFailResult(errMsg.length() == 0 ? "图片保存失败": errMsg.toString());
     }
 
 
