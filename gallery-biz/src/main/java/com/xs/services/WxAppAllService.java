@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -1110,6 +1111,16 @@ public class WxAppAllService {
         return null;
     }
 
+    public Object drawFontsToPic(FontToPic[] fontToPics, String pic) {
+
+
+
+
+        return ResultGenerator.genSuccessResult();
+    }
+
+
+
     public Object getFont() {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -1128,7 +1139,10 @@ public class WxAppAllService {
                 .queryParam("json", json.toString());
 
         ResponseEntity<String> exchange = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, String.class);
-        return ResultGenerator.genSuccessResult(JSONObject.parseObject(exchange.getBody()));
+
+        JSONObject object = JSONObject.parseObject(exchange.getBody());
+
+        return ResultGenerator.genSuccessResult(object);
     }
 
 }
