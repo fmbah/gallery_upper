@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xs.beans.*;
 import com.xs.beans.Label;
 import com.xs.core.ResultGenerator;
@@ -1115,6 +1116,12 @@ public class WxAppAllService {
 
         System.out.println("fontToPics: " + fontToPics);
         System.out.println("pic: " + pic);
+
+        Gson gson = new Gson();
+        List<FontToPic> fontToPicList = gson.fromJson(fontToPics, new TypeToken<List<FontToPic>>(){}.getType());
+        System.out.println("fontToPicList size: " + fontToPicList.size());
+
+
 
 
         return ResultGenerator.genSuccessResult();
