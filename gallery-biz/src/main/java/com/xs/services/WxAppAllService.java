@@ -33,6 +33,7 @@ import redis.clients.jedis.JedisPool;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -915,6 +916,7 @@ public class WxAppAllService {
     public Object drawFonts() {
 
         File temp = null;
+        File temp1 = null;
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             String[] fontFamilies = ge.getAvailableFontFamilyNames();
@@ -955,11 +957,11 @@ public class WxAppAllService {
 
             Font font = Font.createFont(Font.TRUETYPE_FONT, dynamicFile);
 
-            font = font.deriveFont(36f);
+            font = font.deriveFont(18f);
 
             Font font1 = Font.createFont(Font.TRUETYPE_FONT, dynamicFile1);
 
-            font1 = font1.deriveFont(36f);
+            font1 = font1.deriveFont(18f);
 
             BufferedImage bufferedImage = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
 
@@ -1005,10 +1007,11 @@ public class WxAppAllService {
             FontMetrics fontMetrics = graphics2DFont.getFontMetrics();
             int x = (100 - fontMetrics.stringWidth("绽放汉字之美2")) / 2;
             int y = (fontMetrics.getAscent() + (50 - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);
+            graphics2DFont.setFont(font);
             graphics2DFont.setColor(Color.white);
             graphics2DFont.drawString("绽放汉字之美2", x, y);
             graphics2DFont.dispose();
-            backPicGraphics.drawImage(fontImage, 0, 0, null);
+            backPicGraphics.drawImage(fontImage.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 0, null);
 
             //2. 画文字图片, 左对齐
             BufferedImage fontImage1 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
@@ -1020,34 +1023,51 @@ public class WxAppAllService {
             System.out.println("len: " + len);
             int x1 = 0;
             int y1 = (fontMetrics1.getAscent() + (50 - (fontMetrics1.getAscent() + fontMetrics1.getDescent())) / 2);
-            graphics2DFont1.setColor(Color.yellow);
-            graphics2DFont1.drawString("123", x1, y1);
+
+            graphics2DFont1.setColor(Color.WHITE);
+            graphics2DFont1.drawString("123456四五六", x1, y1);
+            graphics2DFont1.setFont(font1);
+            graphics2DFont1.drawString("123456四五六", x1, y1 + fontMetrics.getHeight());
             graphics2DFont1.dispose();
-            backPicGraphics.drawImage(fontImage1, 0, 70, null);
+            backPicGraphics.drawImage(fontImage1.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 70, null);
 
             //2. 画文字图片, 右对齐
             BufferedImage fontImage2 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2DFont2 = fontImage2.createGraphics();
             graphics2DFont2.setColor(Color.BLUE);
             graphics2DFont2.fillRect(0, 0, 100, 50);
-            FontMetrics fontMetrics2 = graphics2DFont2.getFontMetrics();
-            String s = "456";
+            graphics2DFont2.dispose();
+
+
+//            temp1 = File.createTempFile("temp", ".png");
+//            ImageIO.write(fontImage2, "png", temp1);
+//            BufferedImage temp1BufferedImage = ImageIO.read(temp1);
+
+            int tx = 0 + fontImage2.getMinX() + fontImage2.getWidth() / 2;
+            int ty = 140 + fontImage2.getMinY() + fontImage2.getHeight() / 2;
+            Graphics2D backPicGraphics1 = backPic.createGraphics();
+//            AffineTransform transform = new AffineTransform();
+//            transform.rotate(Math.toRadians(45), tx, ty);
+            System.out.println("tx: " + tx + ", ty: " + ty);
+//            backPicGraphics1.transform(transform);
+            backPicGraphics1.rotate(45 * Math.PI / 180, tx, ty);
+            backPicGraphics1.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,1.0f)); //透明度设置开始
+            backPicGraphics1.drawImage(fontImage2.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 140, null);
+            backPicGraphics1.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER)); //透明度设置 结束
+
+            Graphics2D temp1BufferedImageGraphics = fontImage2.createGraphics();
+            FontMetrics fontMetrics2 = temp1BufferedImageGraphics.getFontMetrics();
+            String s = "旋转失真了";
             int len1 = fontMetrics2.stringWidth(s);
             System.out.println("len1: " + len1);
             int x2 = 100 - len1;
             int y2 = (fontMetrics2.getAscent() + (50 - (fontMetrics2.getAscent() + fontMetrics2.getDescent())) / 2);
-            graphics2DFont2.setPaint(new Color(255, 255, 255, (int)Math.round(1 / 1 * 255)));
-            graphics2DFont2.drawString(s, x2, y2);
-            graphics2DFont2.dispose();
+            temp1BufferedImageGraphics.setPaint(new Color(255, 255, 255, (int)Math.round(1 / 1 * 255)));
+//            temp1BufferedImageGraphics.rotate(Math.toRadians(45), x2 + len1 / 2, y2);
+            backPicGraphics1.drawString(s, 0 + x2, 140 + y2);
+            temp1BufferedImageGraphics.dispose();
 
-            int tx = 0 + fontImage2.getMinX() + fontImage2.getWidth() / 2;
-            int ty = 140 + fontImage2.getMinY() + fontImage2.getHeight() / 2;
-//            AffineTransform transform = new AffineTransform();
-//            transform.rotate(Math.toRadians(45), tx, ty);
-            System.out.println("tx: " + tx + ", ty: " + ty);
-//            backPicGraphics.transform(transform);
-//            backPicGraphics.rotate(30 * Math.PI / 180, tx, ty);
-            backPicGraphics.drawImage(fontImage2, 0, 140, null);
+            backPicGraphics1.dispose();
 
 //            backPicGraphics.rotate(-30 * Math.PI / 180, 50 - tx, ty - 210);
 
@@ -1086,9 +1106,24 @@ public class WxAppAllService {
                 }
 
             }
-//            fontImage3Graphics1.drawString("第二行...", size, sizey);
+            fontImage3Graphics1.dispose();
             fontImage3Graphics.dispose();
-            backPicGraphics.drawImage(fontImage3, 0, 210, null);
+            backPicGraphics.drawImage(fontImage3, 0, 230, null);
+
+            BufferedImage fontImage4 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
+            Graphics2D fontImage4Graphics = fontImage4.createGraphics();
+            fontImage4Graphics.setColor(Color.BLUE);
+            fontImage4Graphics.fillRect(0, 0, 100, 50);
+            fontImage4Graphics.setColor(new Color(255, 255, 255, (int)(Math.round(1 / 1 * 255))));
+            String fontImage4Str = "旋转失真了";
+            FontMetrics fontMetrics5 = fontImage4Graphics.getFontMetrics();
+            int font4Width = fontMetrics5.stringWidth(fontImage4Str);
+            int x4 = font4Width / 2;
+            int y4 = (fontMetrics5.getAscent() + (50 - (fontMetrics5.getAscent() + fontMetrics5.getDescent())) / 2);
+            fontImage4Graphics.rotate(Math.toRadians(45), x4, y4);
+            fontImage4Graphics.drawString(fontImage4Str, 0, y4);
+            fontImage4Graphics.dispose();
+            backPicGraphics.drawImage(fontImage4, 0, 310, null);
 
 
             backPicGraphics.dispose();
@@ -1104,8 +1139,11 @@ public class WxAppAllService {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (temp.exists()) {
+            if (temp != null && temp.exists()) {
                 temp.delete();
+            }
+            if (temp1 != null && temp1.exists()) {
+                temp1.delete();
             }
         }
 
