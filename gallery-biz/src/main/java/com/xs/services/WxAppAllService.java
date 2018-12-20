@@ -1292,9 +1292,9 @@ public class WxAppAllService {
                         sizex += i1;
                     } else {
                         sizey += fontMetrics.getHeight();
-                        if (sizey > sizey_max) {
-                            break;
-                        }
+//                        if (sizey > sizey_max) {
+//                            break;
+//                        }
                         divGraphics2D_A.drawString(s1, fx, sizey);
                         sizex = i1;
                     }
