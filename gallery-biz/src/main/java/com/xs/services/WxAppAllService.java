@@ -13,6 +13,7 @@ import com.xs.daos.LabelMapper;
 import com.xs.daos.TemplateLabelsMapper;
 import com.xs.daos.TemplateMapper;
 import com.xs.daos.UserPaymentMapper;
+import com.xs.utils.CalendarUtil;
 import com.xs.utils.GenerateOrderno;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -914,10 +915,7 @@ public class WxAppAllService {
         File temp1 = null;
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            String[] fontFamilies = ge.getAvailableFontFamilyNames();
-            for (String f : fontFamilies) {
-                System.out.println(f);
-            }
+
             URL url1 = this.getClass().getClassLoader().getResource("/font/211A27DCD8C3B645.ttf");
             URL url2 = this.getClass().getClassLoader().getResource("/font/汉仪大黑简.ttf");
             String pathString = null;
@@ -949,8 +947,16 @@ public class WxAppAllService {
 
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile));
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, dynamicFile1));
+            File writeInputStreamToFile = writeInputStreamToFile("http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf");
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, writeInputStreamToFile));
 
-            Font font = Font.createFont(Font.TRUETYPE_FONT, writeInputStreamToFile("http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf"));
+            String[] fontFamilies = ge.getAvailableFontFamilyNames();
+            System.out.println("fontFamilies length: " + fontFamilies.length);
+            for (String f : fontFamilies) {
+                System.out.println(f);
+            }
+
+            Font font = Font.createFont(Font.TRUETYPE_FONT, writeInputStreamToFile);
 
             font = font.deriveFont(18f);
 
@@ -1169,6 +1175,8 @@ public class WxAppAllService {
 
         logger.info("fontToPicList size: {}", fontToPicList.size());
 
+        Date now = new Date();
+        File temp = null;
         StringBuilder errMsg = new StringBuilder();
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
@@ -1180,6 +1188,23 @@ public class WxAppAllService {
             AtomicInteger index = new AtomicInteger();
             long startT = System.currentTimeMillis();
             logger.info("开始处理文字描述.....");
+
+//            for (int i = 0; i < 4; i++) {
+//                BufferedImage fontImage = new BufferedImage(600, 50, BufferedImage.TYPE_INT_RGB);
+//                Graphics2D graphics2DFont = fontImage.createGraphics();
+//                fontImage = graphics2DFont.getDeviceConfiguration().createCompatibleImage(600, 50, Transparency.TRANSLUCENT);
+//                graphics2DFont = fontImage.createGraphics();
+//
+//                FontMetrics fontMetrics = graphics2DFont.getFontMetrics();
+//                int x = (600 - fontMetrics.stringWidth("中华人民共和国")) / 2;
+//                int y = (fontMetrics.getAscent() + (50 - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);
+//                graphics2DFont.setFont(new Font("default", Font.BOLD, 36));
+//                graphics2DFont.setColor(Color.BLACK);
+//                graphics2DFont.drawString("中华人民共和国", x, y);
+//                graphics2DFont.dispose();
+//                backPicGraphics.drawImage(fontImage.getScaledInstance(600, 50, Image.SCALE_SMOOTH), 0, 100 + i * 50, null);
+//            }
+
             for(FontToPic fontToPic: fontToPicList) {
                 logger.info("开始处理第{}个文字描述,并合并图片....", index.get());
 
@@ -1194,11 +1219,10 @@ public class WxAppAllService {
                 int size = fontToPic.getSize();
                 String color = fontToPic.getColor();//"rgba(234, 12, 12, 1)"
                 String family = fontToPic.getFamily();
-                String source = fontToPic.getSource();//ttf文件路径
 
                 if (StringUtils.isEmpty(text) || StringUtils.isEmpty(align)
                         || StringUtils.isEmpty(weight) || StringUtils.isEmpty(color)
-                        || StringUtils.isEmpty(family) || StringUtils.isEmpty(source)) {
+                        || StringUtils.isEmpty(family)) {
                     logger.warn("字体描述中有值为空.....");
                     continue;
                 }
@@ -1208,8 +1232,10 @@ public class WxAppAllService {
                 JSONObject fontJsonObject = getFontUtil(text, family);
                 logger.info("fontJsonObject: {}", fontJsonObject);
 
+                String source = "https://www.hanyi.studio/WebFonts/" + fontJsonObject.get("UserGuid") + "/" + CalendarUtil.getYear(now) + CalendarUtil.getMonth(now) + "/" + fontJsonObject.get("FontFamily") + ".ttf";
+
                 //加载字体
-                File fileFamily = writeInputStreamToFile("http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf");
+                File fileFamily = writeInputStreamToFile(source);//"http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf"
                 if (fileFamily == null) {
                     logger.warn("字体加载失败.....,当前ttf路径为: {}", source);
                     continue;
@@ -1217,19 +1243,72 @@ public class WxAppAllService {
                 //注册字体
                 graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, fileFamily));
                 //创建相应字体
-                Font font = Font.createFont(Font.TRUETYPE_FONT, fileFamily);
-                font = font.deriveFont(size);
+                Font font = new Font(family, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
+
                 //画div框
+                int wr = Math.round(w);
+                int hr = Math.round(h);
+                int lr = Math.round(l);
+                int tr = Math.round(t);
 
+                BufferedImage divBufferedImage = new BufferedImage(wr, hr, BufferedImage.TYPE_INT_RGB);
+                Graphics2D divGraphics2D = divBufferedImage.createGraphics();
+                divBufferedImage = divGraphics2D.getDeviceConfiguration().createCompatibleImage(wr, hr, Transparency.TRANSLUCENT);
+                Graphics2D divGraphics2D_A = divBufferedImage.createGraphics();
+//                divGraphics2D = divBufferedImage.createGraphics();
+                FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+                divGraphics2D_A.setFont(font);
+                divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
 
+                int textWidth = fontMetrics.stringWidth(text);
+                int fx = 0;
+                int fy = 0;
+                if ("center".equals(align)) {
+                    fx = (wr - textWidth) / 2;//文字距离左侧距离
+                    fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离顶侧距离
+                } else if ("left".equals(align)) {
+                    fx = 0;//文字距离左侧距离
+                    fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离顶侧距离
+                } else {
+                    fx = wr - textWidth;//文字距离左侧距离
+                    fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离顶侧距离
+                }
 
+                int sizex = fx;
+                int sizey = fy;
+                int sizex_max = sizex + wr;
+                int sizey_max = tr + hr;
+                int textLength = text.length();
 
+                for (int j = 0; j < textLength; j++) {
+                    String s1 = String.valueOf(text.charAt(j));
+                    int i1 = fontMetrics.stringWidth(s1);
+                    if (sizex + i1 <= sizex_max) {
+                        divGraphics2D_A.drawString(s1, sizex, sizey);
+                        sizex += i1;
+                    } else {
+                        sizey += fontMetrics.getHeight();
+                        if (sizey > sizey_max) {
+                            break;
+                        }
+                        divGraphics2D_A.drawString(s1, fx, sizey);
+                        sizex = i1;
+                    }
+                }
+//                divGraphics2D_A.drawString(text, fx, fy);
+                divGraphics2D.dispose();
+
+                backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
                 index.getAndIncrement();
             }
-            logger.info("结束处理文字描述.....共耗时:{}s", (System.currentTimeMillis() - startT) / 1000);
+
+            logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
             backPicGraphics.dispose();
 
+            temp = File.createTempFile("temp", ".png");
+            ImageIO.write(backPic, "png", temp);
 
+            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
@@ -1237,15 +1316,12 @@ public class WxAppAllService {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
         } catch (FontFormatException e) {
-            logger.error(e.getMessage(), e);
-            errMsg.append(e.getMessage() + "\n");
+            e.printStackTrace();
         } finally {
-
+            if (temp != null && temp.exists()) {
+                temp.delete();
+            }
         }
-
-
-
-
         return ResultGenerator.genFailResult(errMsg.length() == 0 ? "图片保存失败": errMsg.toString());
     }
 
