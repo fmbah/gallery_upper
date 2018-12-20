@@ -996,8 +996,8 @@ public class WxAppAllService {
 //            graphics.setColor(Color.BLUE);
 //            graphics.drawString("绽放汉字之美3", 100, 380);
 
-            //1. 背景图
-            BufferedImage backPic = ImageIO.read(new URL("https://daily-test.mxth.com/1545102996778_temp7317092677352562376.png"));
+            //1. 背景图https://daily-test.mxth.com/1545285278119_tmp_c87a81ccfcd064903137a01920539db2.png
+            BufferedImage backPic = ImageIO.read(new URL("https://daily-test.mxth.com/1545285278119_tmp_c87a81ccfcd064903137a01920539db2.png"));
             Graphics2D backPicGraphics = backPic.createGraphics();
             //2. 画文字图片, 居中
             BufferedImage fontImage = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
@@ -1182,7 +1182,9 @@ public class WxAppAllService {
 
         try {
             //加载前端已生成图片
+            logger.info("图片路径参数: {}", pic);
             BufferedImage backPic = ImageIO.read(new URL(pic));
+            System.out.println(backPic.getWidth() + ", " + backPic.getHeight());
             Graphics2D backPicGraphics = backPic.createGraphics();
 
             AtomicInteger index = new AtomicInteger();
@@ -1240,6 +1242,8 @@ public class WxAppAllService {
                     logger.warn("字体加载失败.....,当前ttf路径为: {}", source);
                     continue;
                 }
+
+
                 //注册字体
                 graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, fileFamily));
                 //创建相应字体
