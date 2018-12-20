@@ -1299,8 +1299,10 @@ public class WxAppAllService {
                         sizex = i1;
                     }
                 }
-//                divGraphics2D_A.drawString(text, fx, fy);
                 divGraphics2D.dispose();
+                if (fileFamily != null && fileFamily.exists()) {
+                    fileFamily.delete();
+                }
 
                 backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
                 index.getAndIncrement();
@@ -1360,7 +1362,7 @@ public class WxAppAllService {
         //得到图片的二进制数据，以二进制封装得到数据，具有通用性
         byte[] data = readInputStream(inStream);
         //new一个文件对象用来保存图片，默认保存当前工程根目录
-        File file = new File("HYMiaoHunZiYouTiW.ttf");
+        File file = File.createTempFile("fontFamily", ".ttf");
         //创建输出流
         FileOutputStream outStream = new FileOutputStream(file);
         //写入数据
