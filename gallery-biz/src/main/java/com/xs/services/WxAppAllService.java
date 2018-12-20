@@ -595,11 +595,13 @@ public class WxAppAllService {
                 condition2.setOrderByClause(" gmt_create desc");
                 List<UserPayment> userPayments2 = userPaymentMapper.selectByCondition(condition2);
                 if (userPayments2 != null && !userPayments2.isEmpty()) {
-                    Calendar gmtCreate = Calendar.getInstance();
-                    gmtCreate.setTime(userPayments2.get(0).getGmtCreate());
-                    gmtCreate.add(Calendar.HOUR, 1);
-                    if (gmtCreate.getTime().after(new Date())) {
-                        return ResultGenerator.genFailResult("激活码已被锁定,请联系客服进行处理");
+                    if (userPayments2.get(0).getUserId() != null && userPayments2.get(0).getUserId() != userId) {
+                        Calendar gmtCreate = Calendar.getInstance();
+                        gmtCreate.setTime(userPayments2.get(0).getGmtCreate());
+                        gmtCreate.add(Calendar.HOUR, 1);
+                        if (gmtCreate.getTime().after(new Date())) {
+                            return ResultGenerator.genFailResult("激活码已被锁定,请联系客服进行处理");
+                        }
                     }
                 }
 

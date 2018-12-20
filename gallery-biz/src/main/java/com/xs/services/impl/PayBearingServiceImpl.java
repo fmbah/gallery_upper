@@ -114,9 +114,10 @@ public class PayBearingServiceImpl implements PayBearingService {
                         Condition condition_o = new Condition(UserPayment.class);
                         Example.Criteria criteria_o = condition_o.createCriteria();
                         Iterable<String> orderNos = new ArrayList<>();
-                        for(String orderno : out_trade_nos) {
-                            ((ArrayList<String>) orderNos).add(orderno);
-                        }
+//                        for(String orderno : out_trade_nos) {
+//                            ((ArrayList<String>) orderNos).add(orderno);
+//                        }
+                        ((ArrayList<String>) orderNos).add(out_trade_nos[1]);
                         criteria_o.andIn("orderNo", orderNos);
                         List<UserPayment> orders = userPaymentService.findByCondition(condition_o);
                         Date modifyDate = new Date();
