@@ -1151,10 +1151,13 @@ public class WxAppAllService {
         return null;
     }
 
-    public Object drawFontsToPic(String fontToPics, String pic) {
+    public Object drawFontsToPic(String fontToPics, String pic, String filterPic) {
 
-        if (StringUtils.isEmpty(fontToPics) || StringUtils.isEmpty(pic)) {
-            return ResultGenerator.genFailResult("文字描述或图片地址数据为空");
+        if (StringUtils.isEmpty(fontToPics)) {
+            return ResultGenerator.genFailResult("文字描述数据为空");
+        }
+        if (StringUtils.isEmpty(pic)) {
+            return ResultGenerator.genFailResult("背景图片地址数据为空");
         }
 
         logger.info("fontToPics: {}", fontToPics);
@@ -1184,7 +1187,9 @@ public class WxAppAllService {
             //加载前端已生成图片
             logger.info("图片路径参数: {}", pic);
             BufferedImage backPic = ImageIO.read(new URL(pic));
-            System.out.println(backPic.getWidth() + ", " + backPic.getHeight());
+            int backPicWidth = backPic.getWidth();
+            int backPicHeight = backPic.getHeight();
+            System.out.println(backPicWidth + ", " + backPicHeight);
             Graphics2D backPicGraphics = backPic.createGraphics();
 
             AtomicInteger index = new AtomicInteger();
@@ -1308,11 +1313,20 @@ public class WxAppAllService {
                 index.getAndIncrement();
             }
 
+            if (!StringUtils.isEmpty(filterPic)) {
+                BufferedImage filterPIcBufferedImage = ImageIO.read(new URL(filterPic));
+                backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_SMOOTH), 0, 0, null);
+            }
+
             logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
             backPicGraphics.dispose();
 
             temp = File.createTempFile("temp", ".png");
-            ImageIO.write(backPic, "png", temp);
+//            ImageIO.write(backPic, "JPG", temp);//faster 不支持透明度
+            //Mildly faster
+            BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
+            ImageIO.write(backPic, "PNG", imageOutputStream);
+            imageOutputStream.close();
 
             return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
         } catch (MalformedURLException e) {
