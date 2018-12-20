@@ -1267,15 +1267,15 @@ public class WxAppAllService {
                 int textWidth = fontMetrics.stringWidth(text);
                 int fx = 0;
                 int fy = 0;
+//                fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离div上侧边界居中
+                fy = fontMetrics.getAscent();
                 if ("center".equals(align)) {
                     fx = (wr - textWidth) / 2;//文字距离左侧距离
-                    fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离顶侧距离
                 } else if ("left".equals(align)) {
                     fx = 0;//文字距离左侧距离
-                    fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离顶侧距离
                 } else {
                     fx = wr - textWidth;//文字距离左侧距离
-                    fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离顶侧距离
+
                 }
 
                 int sizex = fx;
