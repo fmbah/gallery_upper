@@ -1153,6 +1153,17 @@ public class WxAppAllService {
         return null;
     }
 
+    private static final HashMap<String, String> fontMap;
+    static {
+        fontMap = new HashMap<>();
+
+        fontMap.put("汉仪大宋简", "HYDaSongJ");
+        fontMap.put("汉仪大黑简", "HYDaHeiJ");
+        fontMap.put("汉仪仿宋简", "HYFangSongJ");
+        fontMap.put("汉仪旗黑-35S", "HYQiHei-35S");
+        fontMap.put("汉仪旗黑-50S", "HYQiHei-50S");
+    }
+
     public Object drawFontsToPic(String fontToPics, String pic, String filterPic) {
 
         if (StringUtils.isEmpty(fontToPics)) {
@@ -1180,10 +1191,10 @@ public class WxAppAllService {
 
         logger.info("fontToPicList size: {}", fontToPicList.size());
 
-        Date now = new Date();
+//        Date now = new Date();
         File temp = null;
         StringBuilder errMsg = new StringBuilder();
-        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
         try {
             //加载前端已生成图片
@@ -1197,22 +1208,6 @@ public class WxAppAllService {
             AtomicInteger index = new AtomicInteger();
             long startT = System.currentTimeMillis();
             logger.info("开始处理文字描述.....");
-
-//            for (int i = 0; i < 4; i++) {
-//                BufferedImage fontImage = new BufferedImage(600, 50, BufferedImage.TYPE_INT_RGB);
-//                Graphics2D graphics2DFont = fontImage.createGraphics();
-//                fontImage = graphics2DFont.getDeviceConfiguration().createCompatibleImage(600, 50, Transparency.TRANSLUCENT);
-//                graphics2DFont = fontImage.createGraphics();
-//
-//                FontMetrics fontMetrics = graphics2DFont.getFontMetrics();
-//                int x = (600 - fontMetrics.stringWidth("中华人民共和国")) / 2;
-//                int y = (fontMetrics.getAscent() + (50 - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);
-//                graphics2DFont.setFont(new Font("default", Font.BOLD, 36));
-//                graphics2DFont.setColor(Color.BLACK);
-//                graphics2DFont.drawString("中华人民共和国", x, y);
-//                graphics2DFont.dispose();
-//                backPicGraphics.drawImage(fontImage.getScaledInstance(600, 50, Image.SCALE_SMOOTH), 0, 100 + i * 50, null);
-//            }
 
             for(FontToPic fontToPic: fontToPicList) {
                 logger.info("开始处理第{}个文字描述,并合并图片....", index.get());
@@ -1238,23 +1233,28 @@ public class WxAppAllService {
 
                 String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
 
-                JSONObject fontJsonObject = getFontUtil(text, family);
-                logger.info("fontJsonObject: {}", fontJsonObject);
-
-                String source = "https://www.hanyi.studio/WebFonts/" + fontJsonObject.get("UserGuid") + "/" + CalendarUtil.getYear(now) + CalendarUtil.getMonth(now) + "/" + fontJsonObject.get("FontFamily") + ".ttf";
-
-                //加载字体
-                File fileFamily = writeInputStreamToFile(source);//"http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf"
-                if (fileFamily == null) {
-                    logger.warn("字体加载失败.....,当前ttf路径为: {}", source);
-                    continue;
-                }
+//                JSONObject fontJsonObject = getFontUtil(text, family);
+//                logger.info("fontJsonObject: {}", fontJsonObject);
+//
+//                String source = "https://www.hanyi.studio/WebFonts/" + fontJsonObject.get("UserGuid") + "/" + CalendarUtil.getYear(now) + CalendarUtil.getMonth(now) + "/" + fontJsonObject.get("FontFamily") + ".ttf";
+//
+//                //加载字体
+//                File fileFamily = writeInputStreamToFile(source);//"http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf"
+//                if (fileFamily == null) {
+//                    logger.warn("字体加载失败.....,当前ttf路径为: {}", source);
+//                    continue;
+//                }
 
 
                 //注册字体
-                graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, fileFamily));
+//                graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, fileFamily));
                 //创建相应字体
-                Font font = new Font(family, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
+                String tmpFamily = fontMap.get(family);
+                if (tmpFamily == null) {
+                    logger.warn("字体描述有误,系统中不存在此字体!, {}", family);
+                    continue;
+                }
+                Font font = new Font(tmpFamily, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
 
                 //画div框
                 int wr = Math.round(w);
@@ -1288,7 +1288,7 @@ public class WxAppAllService {
                 int sizex = fx;
                 int sizey = fy;
                 int sizex_max = sizex + wr;
-                int sizey_max = tr + hr;
+//                int sizey_max = tr + hr;
                 int textLength = text.length();
 
                 for (int j = 0; j < textLength; j++) {
@@ -1307,9 +1307,9 @@ public class WxAppAllService {
                     }
                 }
                 divGraphics2D.dispose();
-                if (fileFamily != null && fileFamily.exists()) {
-                    fileFamily.delete();
-                }
+//                if (fileFamily != null && fileFamily.exists()) {
+//                    fileFamily.delete();
+//                }
 
                 backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
                 index.getAndIncrement();
@@ -1337,9 +1337,11 @@ public class WxAppAllService {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
-        } catch (FontFormatException e) {
-            e.printStackTrace();
-        } finally {
+        }
+//        catch (FontFormatException e) {
+//            e.printStackTrace();
+//        }
+        finally {
             if (temp != null && temp.exists()) {
                 temp.delete();
             }
