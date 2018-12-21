@@ -1,4 +1,4 @@
-# 开发环境配置
+# 生产环境配置
 http:
   encoding:
     charset: UTF-8
@@ -8,9 +8,9 @@ http:
 spring:
   datasource:
     drivername: com.mysql.jdbc.Driver
-    url: DES@s67hXzwVvfdxset12axMyPKo1-lMNeLbdRhMIUR52vI6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O
-    username: root
-    password: 123456
+    url: jdbc:mysql://rm-bp14kl99s9a87t72m.mysql.rds.aliyuncs.com:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8
+    username: gallery
+    password: rY5l23TZtv
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
@@ -29,10 +29,10 @@ spring:
     maxOpenPreparedStatements: 20
 
   redis:
-      database: 8
-      host: 10.220.110.228
+      database: 2
+      host: r-bp1472eca156f0e4.redis.rds.aliyuncs.com
       port: 6379
-      pass: none
+      pass: a0rnXvfeJ9
       pool:
         max-active: 8
         max-wait: -1
@@ -54,15 +54,15 @@ wechat:
   miniapp:
     appid: wxe872cecbe6201aca
     secret: DES@Bn_ar_N4296pY9B2Pkqr76I4_dIn1ACNX0x8TZLn57FScQbh0Kls4A
-    mchId: 1488332072
-    mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
+    mchId: 1517295821
+    mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
     token: gOcTDdBFEI
     aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
     msgDataFormat: JSON
   pay:
       appId: wx45d98d2c8e80956f
-      mchId: 1488332072
-      mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
+      mchId: 1517295821
+      mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
       subAppId:
       subMchId:
       keyPath:
@@ -81,4 +81,6 @@ logging:
 
 gallery:
   domain:
-    url: https://gallery.mxth.com
+    url: https://gallery.yile.vip
+    personUrl: https://gallery.yile.vip/wechat/index.html
+    rechargeUrl: https://gallery.yile.vip/wechat/recharge.html
