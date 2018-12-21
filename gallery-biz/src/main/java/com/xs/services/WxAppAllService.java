@@ -1166,17 +1166,13 @@ public class WxAppAllService {
         fontMap.put("汉仪旗黑-50S", "HYQiHei-50S");
     }
 
-    public void drawFontsToPic(MultipartFile base64Var, HttpServletResponse response, String fontToPics, String pic, String filterPic) {
+    public void drawFontsToPic(MultipartFile base64Var, HttpServletResponse response, String fontToPics, String filterPic) {
 
         if (StringUtils.isEmpty(fontToPics)) {
 //            return ResultGenerator.genFailResult("文字描述数据为空");
         }
-        if (StringUtils.isEmpty(pic)) {
-//            return ResultGenerator.genFailResult("背景图片地址数据为空");
-        }
 
         logger.info("fontToPics: {}", fontToPics);
-        logger.info("pic: {}", pic);
 
         Gson gson = new Gson();
         JSONObject jsonObject = JSONObject.parseObject(fontToPics);
@@ -1200,7 +1196,6 @@ public class WxAppAllService {
 
         try {
             //加载前端已生成图片
-            logger.info("图片路径参数: {}", pic);
 //            BufferedImage backPic = ImageIO.read(new URL(pic));
             BufferedImage backPic = ImageIO.read(base64Var.getInputStream());
             int backPicWidth = backPic.getWidth();
