@@ -1166,25 +1166,29 @@ public class WxAppAllService {
         fontMap.put("汉仪旗黑-50S", "HYQiHei-50S");
     }
 
-    public void drawFontsToPic(MultipartFile base64Var, HttpServletResponse response, String fontToPics, String filterPic) {
+    public Object drawFontsToPic(String fontToPics, String pic, String filterPic) {
 
         if (StringUtils.isEmpty(fontToPics)) {
-//            return ResultGenerator.genFailResult("文字描述数据为空");
+            return ResultGenerator.genFailResult("文字描述数据为空");
+        }
+        if (StringUtils.isEmpty(pic)) {
+            return ResultGenerator.genFailResult("背景图片地址数据为空");
         }
 
         logger.info("fontToPics: {}", fontToPics);
+        logger.info("pic: {}", pic);
 
         Gson gson = new Gson();
         JSONObject jsonObject = JSONObject.parseObject(fontToPics);
         Object fontToPicsObject = jsonObject.get("fontToPics");
         if (fontToPicsObject == null || (fontToPicsObject != null && fontToPicsObject.toString().length() == 0)) {
-//            return ResultGenerator.genSuccessResult(pic);
+            return ResultGenerator.genSuccessResult(pic);
         }
 
         List<FontToPic> fontToPicList = gson.fromJson(fontToPicsObject.toString(), new TypeToken<List<FontToPic>>(){}.getType());
 
         if (fontToPicList == null || (fontToPicList != null && fontToPicList.isEmpty())) {
-//            return ResultGenerator.genSuccessResult(pic);
+            return ResultGenerator.genSuccessResult(pic);
         }
 
         logger.info("fontToPicList size: {}", fontToPicList.size());
@@ -1196,8 +1200,7 @@ public class WxAppAllService {
 
         try {
             //加载前端已生成图片
-//            BufferedImage backPic = ImageIO.read(new URL(pic));
-            BufferedImage backPic = ImageIO.read(base64Var.getInputStream());
+            BufferedImage backPic = ImageIO.read(new URL(pic));
             int backPicWidth = backPic.getWidth();
             int backPicHeight = backPic.getHeight();
             System.out.println(backPicWidth + ", " + backPicHeight);
@@ -1231,7 +1234,7 @@ public class WxAppAllService {
 
                 if (color.startsWith("#")) {
                     logger.error("图片颜色值设置不正确....当前颜色值: {}", color);
-//                    return ResultGenerator.genFailResult("图片颜色值设置不正确,请联系管理员进行处理,当前颜色值: " + color);
+                    return ResultGenerator.genFailResult("图片颜色值设置不正确,请联系管理员进行处理,当前颜色值: " + color);
                 }
 
                 String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
@@ -1255,7 +1258,7 @@ public class WxAppAllService {
                 String tmpFamily = fontMap.get(family);
                 if (tmpFamily == null) {
                     logger.error("字体描述有误,系统中不存在此字体!, {}", family);
-//                    return ResultGenerator.genFailResult("图片字体值设置不正确,请联系管理员进行处理,当前字体: " + family);
+                    return ResultGenerator.genFailResult("图片字体值设置不正确,请联系管理员进行处理,当前字体: " + family);
                 }
                 Font font = new Font(tmpFamily, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
 
@@ -1323,21 +1326,18 @@ public class WxAppAllService {
                 backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_SMOOTH), 0, 0, null);
             }
 
-            logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
             backPicGraphics.dispose();
 
             temp = File.createTempFile("temp", ".png");
 //            ImageIO.write(backPic, "JPG", temp);//faster 不支持透明度
             //Mildly faster
-//            BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
-//            ImageIO.write(backPic, "JPG", imageOutputStream);
-            ServletOutputStream outputStream = response.getOutputStream();
-            ImageIO.write(backPic, "JPG", outputStream);
-            outputStream.flush();
-            outputStream.close();
-//            imageOutputStream.close();
 
-//            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
+            BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
+            ImageIO.write(backPic, "PNG", imageOutputStream);
+            imageOutputStream.close();
+            logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
+
+            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
@@ -1353,7 +1353,7 @@ public class WxAppAllService {
                 temp.delete();
             }
         }
-//        return ResultGenerator.genFailResult(errMsg.length() == 0 ? "图片保存失败": errMsg.toString());
+        return ResultGenerator.genFailResult(errMsg.length() == 0 ? "图片保存失败": errMsg.toString());
     }
 
 
@@ -1424,6 +1424,156 @@ public class WxAppAllService {
 
         JSONObject object = JSONObject.parseObject(exchange.getBody());
         return object;
+    }
+
+
+    public void drawFontsToPic1(MultipartFile base64Var, HttpServletResponse response, String fontToPics, String filterPic) {
+
+        if (StringUtils.isEmpty(fontToPics)) {
+        }
+
+        logger.info("fontToPics: {}", fontToPics);
+
+        Gson gson = new Gson();
+        JSONObject jsonObject = JSONObject.parseObject(fontToPics);
+        Object fontToPicsObject = jsonObject.get("fontToPics");
+        if (fontToPicsObject == null || (fontToPicsObject != null && fontToPicsObject.toString().length() == 0)) {
+        }
+
+        List<FontToPic> fontToPicList = gson.fromJson(fontToPicsObject.toString(), new TypeToken<List<FontToPic>>(){}.getType());
+
+        if (fontToPicList == null || (fontToPicList != null && fontToPicList.isEmpty())) {
+        }
+
+        logger.info("fontToPicList size: {}", fontToPicList.size());
+
+        File temp = null;
+        StringBuilder errMsg = new StringBuilder();
+
+        try {
+            //加载前端已生成图片
+            BufferedImage backPic = ImageIO.read(base64Var.getInputStream());
+            int backPicWidth = backPic.getWidth();
+            int backPicHeight = backPic.getHeight();
+            System.out.println(backPicWidth + ", " + backPicHeight);
+            Graphics2D backPicGraphics = backPic.createGraphics();
+
+            AtomicInteger index = new AtomicInteger();
+            long startT = System.currentTimeMillis();
+            logger.info("开始处理文字描述.....");
+
+            for(FontToPic fontToPic: fontToPicList) {
+                logger.info("开始处理第{}个文字描述,并合并图片....", index.get());
+
+                String text = fontToPic.getText();
+                float rotate = fontToPic.getRotate();//旋转角度
+                float w = fontToPic.getW();//div宽
+                float h = fontToPic.getH();//div高
+                float l = fontToPic.getL();//div距离原点左侧距离
+                float t = fontToPic.getT();//div距离原点上侧距离
+                String align = fontToPic.getAlign();//'left', 'right', 'center'
+                String weight = fontToPic.getWeight();//'normal', 'bold'
+                int size = fontToPic.getSize();
+                String color = fontToPic.getColor();//"rgba(234, 12, 12, 1)"
+                String family = fontToPic.getFamily();
+
+                if (StringUtils.isEmpty(text) || StringUtils.isEmpty(align)
+                        || StringUtils.isEmpty(weight) || StringUtils.isEmpty(color)
+                        || StringUtils.isEmpty(family)) {
+                    logger.warn("字体描述中有值为空.....");
+                    continue;
+                }
+
+                if (color.startsWith("#")) {
+                    logger.error("图片颜色值设置不正确....当前颜色值: {}", color);
+                    continue;
+                }
+
+                String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
+
+                //创建相应字体
+                String tmpFamily = fontMap.get(family);
+                if (tmpFamily == null) {
+                    logger.error("字体描述有误,系统中不存在此字体!, {}", family);
+                    continue;
+                }
+                Font font = new Font(tmpFamily, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
+
+                //画div框
+                int wr = Math.round(w);
+                int hr = Math.round(h);
+                int lr = Math.round(l);
+                int tr = Math.round(t);
+
+                BufferedImage divBufferedImage = new BufferedImage(wr, hr, BufferedImage.TYPE_INT_RGB);
+                Graphics2D divGraphics2D = divBufferedImage.createGraphics();
+                divBufferedImage = divGraphics2D.getDeviceConfiguration().createCompatibleImage(wr, hr, Transparency.TRANSLUCENT);
+                Graphics2D divGraphics2D_A = divBufferedImage.createGraphics();
+                FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+                divGraphics2D_A.setFont(font);
+                divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
+
+                int textWidth = fontMetrics.stringWidth(text);
+                int fx = 0;
+                int fy = 0;
+                fy = fontMetrics.getAscent();
+                if ("center".equals(align)) {
+                    fx = (wr - textWidth) / 2;//文字距离左侧距离
+                } else if ("left".equals(align)) {
+                    fx = 0;//文字距离左侧距离
+                } else {
+                    fx = wr - textWidth;//文字距离左侧距离
+
+                }
+
+                int sizex = fx;
+                int sizey = fy;
+                int sizex_max = sizex + wr;
+                int textLength = text.length();
+
+                for (int j = 0; j < textLength; j++) {
+                    String s1 = String.valueOf(text.charAt(j));
+                    int i1 = fontMetrics.stringWidth(s1);
+                    if (sizex + i1 <= sizex_max) {
+                        divGraphics2D_A.drawString(s1, sizex, sizey);
+                        sizex += i1;
+                    } else {
+                        sizey += fontMetrics.getHeight();
+                        divGraphics2D_A.drawString(s1, fx, sizey);
+                        sizex = i1;
+                    }
+                }
+                divGraphics2D.dispose();
+
+                backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
+                index.getAndIncrement();
+            }
+
+            if (!StringUtils.isEmpty(filterPic)) {
+                BufferedImage filterPIcBufferedImage = ImageIO.read(new URL(filterPic));
+                backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_SMOOTH), 0, 0, null);
+            }
+
+            logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
+            backPicGraphics.dispose();
+
+            temp = File.createTempFile("temp", ".png");
+            ServletOutputStream outputStream = response.getOutputStream();
+            ImageIO.write(backPic, "PNG", outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (MalformedURLException e) {
+            logger.error(e.getMessage(), e);
+            errMsg.append(e.getMessage() + "\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            errMsg.append(e.getMessage() + "\n");
+        }
+        finally {
+            if (temp != null && temp.exists()) {
+                temp.delete();
+            }
+        }
     }
 
 }
