@@ -1231,6 +1231,11 @@ public class WxAppAllService {
                     continue;
                 }
 
+                if (color.startsWith("#")) {
+                    logger.error("图片颜色值设置不正确....当前颜色值: {}", color);
+                    return ResultGenerator.genFailResult("图片颜色值设置不正确,请联系管理员进行处理,当前颜色值: " + color);
+                }
+
                 String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
 
 //                JSONObject fontJsonObject = getFontUtil(text, family);
@@ -1251,8 +1256,8 @@ public class WxAppAllService {
                 //创建相应字体
                 String tmpFamily = fontMap.get(family);
                 if (tmpFamily == null) {
-                    logger.warn("字体描述有误,系统中不存在此字体!, {}", family);
-                    continue;
+                    logger.error("字体描述有误,系统中不存在此字体!, {}", family);
+                    return ResultGenerator.genFailResult("图片字体值设置不正确,请联系管理员进行处理,当前字体: " + family);
                 }
                 Font font = new Font(tmpFamily, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
 
