@@ -162,9 +162,9 @@ public class WxAppAllController extends BaseController {
 
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
-    @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
-    public Object drawFontsToPic(@RequestBody String fontToPics, @RequestParam String pic, @RequestParam(required = false) String filterPic){
-        return wxAppAllService.drawFontsToPic(fontToPics, pic, filterPic);
+    @GetMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
+    public void drawFontsToPic(MultipartFile base64Var, @RequestParam String fontToPics, @RequestParam String pic, @RequestParam(required = false) String filterPic){
+        wxAppAllService.drawFontsToPic(base64Var, this.response, fontToPics, pic, filterPic);
     }
 
     @IgnoreAuth

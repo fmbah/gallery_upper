@@ -32,6 +32,8 @@ import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -1164,13 +1166,13 @@ public class WxAppAllService {
         fontMap.put("汉仪旗黑-50S", "HYQiHei-50S");
     }
 
-    public Object drawFontsToPic(String fontToPics, String pic, String filterPic) {
+    public void drawFontsToPic(MultipartFile base64Var, HttpServletResponse response, String fontToPics, String pic, String filterPic) {
 
         if (StringUtils.isEmpty(fontToPics)) {
-            return ResultGenerator.genFailResult("文字描述数据为空");
+//            return ResultGenerator.genFailResult("文字描述数据为空");
         }
         if (StringUtils.isEmpty(pic)) {
-            return ResultGenerator.genFailResult("背景图片地址数据为空");
+//            return ResultGenerator.genFailResult("背景图片地址数据为空");
         }
 
         logger.info("fontToPics: {}", fontToPics);
@@ -1180,13 +1182,13 @@ public class WxAppAllService {
         JSONObject jsonObject = JSONObject.parseObject(fontToPics);
         Object fontToPicsObject = jsonObject.get("fontToPics");
         if (fontToPicsObject == null || (fontToPicsObject != null && fontToPicsObject.toString().length() == 0)) {
-            return ResultGenerator.genSuccessResult(pic);
+//            return ResultGenerator.genSuccessResult(pic);
         }
 
         List<FontToPic> fontToPicList = gson.fromJson(fontToPicsObject.toString(), new TypeToken<List<FontToPic>>(){}.getType());
 
         if (fontToPicList == null || (fontToPicList != null && fontToPicList.isEmpty())) {
-            return ResultGenerator.genSuccessResult(pic);
+//            return ResultGenerator.genSuccessResult(pic);
         }
 
         logger.info("fontToPicList size: {}", fontToPicList.size());
@@ -1199,7 +1201,8 @@ public class WxAppAllService {
         try {
             //加载前端已生成图片
             logger.info("图片路径参数: {}", pic);
-            BufferedImage backPic = ImageIO.read(new URL(pic));
+//            BufferedImage backPic = ImageIO.read(new URL(pic));
+            BufferedImage backPic = ImageIO.read(base64Var.getInputStream());
             int backPicWidth = backPic.getWidth();
             int backPicHeight = backPic.getHeight();
             System.out.println(backPicWidth + ", " + backPicHeight);
@@ -1233,7 +1236,7 @@ public class WxAppAllService {
 
                 if (color.startsWith("#")) {
                     logger.error("图片颜色值设置不正确....当前颜色值: {}", color);
-                    return ResultGenerator.genFailResult("图片颜色值设置不正确,请联系管理员进行处理,当前颜色值: " + color);
+//                    return ResultGenerator.genFailResult("图片颜色值设置不正确,请联系管理员进行处理,当前颜色值: " + color);
                 }
 
                 String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
@@ -1257,7 +1260,7 @@ public class WxAppAllService {
                 String tmpFamily = fontMap.get(family);
                 if (tmpFamily == null) {
                     logger.error("字体描述有误,系统中不存在此字体!, {}", family);
-                    return ResultGenerator.genFailResult("图片字体值设置不正确,请联系管理员进行处理,当前字体: " + family);
+//                    return ResultGenerator.genFailResult("图片字体值设置不正确,请联系管理员进行处理,当前字体: " + family);
                 }
                 Font font = new Font(tmpFamily, "normal".equals(weight) ? Font.PLAIN : Font.BOLD, size);
 
@@ -1331,11 +1334,15 @@ public class WxAppAllService {
             temp = File.createTempFile("temp", ".png");
 //            ImageIO.write(backPic, "JPG", temp);//faster 不支持透明度
             //Mildly faster
-            BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
-            ImageIO.write(backPic, "PNG", imageOutputStream);
-            imageOutputStream.close();
+//            BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
+//            ImageIO.write(backPic, "JPG", imageOutputStream);
+            ServletOutputStream outputStream = response.getOutputStream();
+            ImageIO.write(backPic, "JPG", outputStream);
+            outputStream.flush();
+            outputStream.close();
+//            imageOutputStream.close();
 
-            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
+//            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
@@ -1351,7 +1358,7 @@ public class WxAppAllService {
                 temp.delete();
             }
         }
-        return ResultGenerator.genFailResult(errMsg.length() == 0 ? "图片保存失败": errMsg.toString());
+//        return ResultGenerator.genFailResult(errMsg.length() == 0 ? "图片保存失败": errMsg.toString());
     }
 
 
