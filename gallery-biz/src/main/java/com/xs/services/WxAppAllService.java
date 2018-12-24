@@ -1438,11 +1438,13 @@ public class WxAppAllService {
         JSONObject jsonObject = JSONObject.parseObject(fontToPics);
         Object fontToPicsObject = jsonObject.get("fontToPics");
         if (fontToPicsObject == null || (fontToPicsObject != null && fontToPicsObject.toString().length() == 0)) {
+            return;
         }
 
         List<FontToPic> fontToPicList = gson.fromJson(fontToPicsObject.toString(), new TypeToken<List<FontToPic>>(){}.getType());
 
         if (fontToPicList == null || (fontToPicList != null && fontToPicList.isEmpty())) {
+            return;
         }
 
         logger.info("fontToPicList size: {}", fontToPicList.size());
