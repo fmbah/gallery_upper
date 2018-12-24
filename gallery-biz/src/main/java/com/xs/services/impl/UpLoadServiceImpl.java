@@ -321,7 +321,7 @@ public class UpLoadServiceImpl implements UpLoadService {
     @Override
     public String up1(MultipartFile file) throws IOException {
 
-        Path path = Paths.get(this.getClass().getResource("banner.txt").getPath() + File.separator + System.currentTimeMillis() + "_" + file.getOriginalFilename());
+        Path path = Paths.get(this.getClass().getResource("tmpImg").getPath() + File.separator + System.currentTimeMillis() + "_" + file.getOriginalFilename());
         Files.write(path, file.getBytes());
 
         return null;
