@@ -4,11 +4,12 @@ http:
     charset: UTF-8
     enabled: true
     force: true
-# 数据源配置 DES@s67hXzwVvffm04HtYeT7Paq4dStI3tHtT1cSJ_get4-MApbpSr8eBv78ZbvCVyk5paBMJxL_3thM
+# 数据源配置
+# jdbc:mysql://10.220.88.72:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8
 spring:
   datasource:
     drivername: com.mysql.jdbc.Driver
-    url: jdbc:mysql://10.220.88.72:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8
+    url: DES@s67hXzwVvffm04HtYeT7Paq4dStI3tHtT1cSJ_get4-MApbpSr8eBv78ZbvCVyk5paBMJxL_3thM
     username: gallery
     password: DES@cUwRBuLxs3ffp3DGsFaw4A
     # 使用druid数据源
