@@ -148,6 +148,7 @@ public class WxAppAllController extends BaseController {
      * @auther: Fmbah
      * @date: 18-12-17 上午10:02
      */
+    @IgnoreAuth
     @ApiOperation(value = "file转url地址",notes = "base64串转url地址")
     @PostMapping(value = "/fileToUrl",produces = "application/json;charset=utf-8")
     public Object fileToUrl(@ApiParam(value = "文件") @RequestParam(name = "base64Var") MultipartFile base64Var) throws IOException {

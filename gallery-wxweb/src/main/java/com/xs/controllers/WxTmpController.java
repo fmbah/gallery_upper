@@ -26,7 +26,7 @@ public class WxTmpController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic1")
-    public void drawFontsToPic1(@RequestPart("base64Var") MultipartFile base64Var, @RequestPart(name = "fontToPics") String fontToPics, @RequestPart(name = "filterPic", required = false) String filterPic){
+    public void drawFontsToPic1(@RequestPart(name = "base64Var") MultipartFile base64Var, @RequestPart(name = "fontToPics") String fontToPics, @RequestPart(name = "filterPic", required = false) String filterPic){
         wxAppAllService.drawFontsToPic1(base64Var, this.response, fontToPics,filterPic);
     }
 }

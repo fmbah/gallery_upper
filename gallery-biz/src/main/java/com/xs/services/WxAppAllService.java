@@ -912,6 +912,7 @@ public class WxAppAllService {
 
     public Object fileToUrl(MultipartFile file) throws IOException {
         return ResultGenerator.genSuccessResult(upLoadService.up(file));
+//        return ResultGenerator.genSuccessResult(upLoadService.up1(file));
     }
 
     public Object drawFonts() {

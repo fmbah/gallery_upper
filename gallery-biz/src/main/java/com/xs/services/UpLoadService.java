@@ -42,6 +42,8 @@ public interface UpLoadService {
      */
     String up(MultipartFile file) throws IOException;
 
+    String up1(MultipartFile file) throws IOException;
+
     Object remove(String fileName);
 
     Object base64ToUrl(Base64ToUrl base64ToUrl);

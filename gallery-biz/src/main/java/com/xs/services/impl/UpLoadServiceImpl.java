@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -312,5 +316,14 @@ public class UpLoadServiceImpl implements UpLoadService {
         return ResultGenerator.genSuccessResult(base64ToUrl.getBase64Var());
 //        return ResultGenerator.genSuccessResult("https://daily-test.mxth.com/template5043290964231378426.png");
 
+    }
+
+    @Override
+    public String up1(MultipartFile file) throws IOException {
+
+        Path path = Paths.get(this.getClass().getResource("banner.txt").getPath() + File.separator + System.currentTimeMillis() + "_" + file.getOriginalFilename());
+        Files.write(path, file.getBytes());
+
+        return null;
     }
 }
