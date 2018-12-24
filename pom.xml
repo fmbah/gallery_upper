@@ -51,6 +51,7 @@
         <jxls-reader.version>[2.0.3,)</jxls-reader.version>
         <dom4j.version>1.6.1</dom4j.version>
         <jasypt-spring-boot-starter.version>2.1.0</jasypt-spring-boot-starter.version>
+        <png-encoder.version>1.5</png-encoder.version>
     </properties>
 
     <dependencies>
@@ -219,6 +220,13 @@
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>${jasypt-spring-boot-starter.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.keypoint/png-encoder -->
+        <dependency>
+            <groupId>com.keypoint</groupId>
+            <artifactId>png-encoder</artifactId>
+            <version>${png-encoder.version}</version>
         </dependency>
     </dependencies>
 

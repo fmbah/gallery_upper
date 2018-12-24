@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.keypoint.PngEncoder;
 import com.xs.beans.*;
 import com.xs.beans.Label;
 import com.xs.core.ResultGenerator;
@@ -1191,8 +1192,6 @@ public class WxAppAllService {
             return ResultGenerator.genSuccessResult(pic);
         }
 
-        logger.info("fontToPicList size: {}", fontToPicList.size());
-
 //        Date now = new Date();
         File temp = null;
         StringBuilder errMsg = new StringBuilder();
@@ -1200,7 +1199,9 @@ public class WxAppAllService {
 
         try {
             //加载前端已生成图片
+            long startT0 = System.currentTimeMillis();
             BufferedImage backPic = ImageIO.read(new URL(pic));
+            logger.info("背景图读取完成.....耗时: {}ms", System.currentTimeMillis() - startT0);
             int backPicWidth = backPic.getWidth();
             int backPicHeight = backPic.getHeight();
             System.out.println(backPicWidth + ", " + backPicHeight);
@@ -1208,7 +1209,7 @@ public class WxAppAllService {
 
             AtomicInteger index = new AtomicInteger();
             long startT = System.currentTimeMillis();
-            logger.info("开始处理文字描述.....");
+            logger.info("开始处理背景图文字合成.....");
 
             for(FontToPic fontToPic: fontToPicList) {
                 logger.info("开始处理第{}个文字描述,并合并图片....", index.get());
@@ -1322,8 +1323,10 @@ public class WxAppAllService {
             }
 
             if (!StringUtils.isEmpty(filterPic)) {
+                long startT_T = System.currentTimeMillis();
                 BufferedImage filterPIcBufferedImage = ImageIO.read(new URL(filterPic));
                 backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_SMOOTH), 0, 0, null);
+                logger.info("过滤层图片读取合并到背景图完成.....耗时: {}ms", System.currentTimeMillis() - startT_T);
             }
 
             backPicGraphics.dispose();
@@ -1335,7 +1338,7 @@ public class WxAppAllService {
             BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
             ImageIO.write(backPic, "PNG", imageOutputStream);
             imageOutputStream.close();
-            logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
+            logger.info("开始处理背景图文字合成.....共耗时: {}ms", (System.currentTimeMillis() - startT));
 
             return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
         } catch (MalformedURLException e) {

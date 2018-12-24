@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -29,7 +28,7 @@ public class WxTmpController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic1")
-    public void drawFontsToPic1(@RequestBody MultipartFile base64Var, @RequestParam String fontToPics, @RequestParam(required = false) String filterPic){
+    public void drawFontsToPic1(@RequestBody MultipartFile base64Var, @RequestBody String fontToPics, @RequestBody(required = false) String filterPic){
         wxAppAllService.drawFontsToPic1(base64Var, this.response, fontToPics,filterPic);
     }
 }
