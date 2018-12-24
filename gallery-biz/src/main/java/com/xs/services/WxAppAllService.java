@@ -1167,7 +1167,7 @@ public class WxAppAllService {
         fontMap.put("汉仪旗黑-50S", "HYQiHei-50S");
     }
 
-    public Object drawFontsToPic(String fontToPics, String pic, String filterPic) {
+    public Object drawFontsToPic(String fontToPics, String pic, String filterPic, OutputStream outputStream) {
 
         if (StringUtils.isEmpty(fontToPics)) {
             return ResultGenerator.genFailResult("文字描述数据为空");

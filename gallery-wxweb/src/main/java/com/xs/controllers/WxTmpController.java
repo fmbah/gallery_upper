@@ -1,6 +1,5 @@
 package com.xs.controllers;
 
-import com.xs.beans.WxTmp;
 import com.xs.configurer.sannotation.IgnoreAuth;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.WxAppAllService;
@@ -8,9 +7,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @ClassName WxTmpController
@@ -28,7 +26,7 @@ public class WxTmpController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic1")
-    public void drawFontsToPic1(@RequestBody WxTmp wxTmp){
-        wxAppAllService.drawFontsToPic1(wxTmp.getBase64Var(), this.response, wxTmp.getFontToPics(),wxTmp.getFilterPic());
+    public void drawFontsToPic1(@RequestPart("base64Var") MultipartFile base64Var, @RequestPart(name = "fontToPics") String fontToPics, @RequestPart(name = "filterPic", required = false) String filterPic){
+        wxAppAllService.drawFontsToPic1(base64Var, this.response, fontToPics,filterPic);
     }
 }

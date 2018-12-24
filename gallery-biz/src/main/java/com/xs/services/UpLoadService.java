@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * \* 杭州桃子网络科技股份有限公司
@@ -64,5 +65,7 @@ public interface UpLoadService {
     Object orderImport(MultipartFile file);
 
     Object upFile(File file);
+    Object upFileStream(InputStream is);
+
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.Cookie;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @Auther: Fmbah
@@ -163,8 +164,8 @@ public class WxAppAllController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
-    public Object drawFontsToPic(@RequestBody String fontToPics, @RequestParam String pic, @RequestParam(required = false) String filterPic){
-        return wxAppAllService.drawFontsToPic(fontToPics, pic, filterPic);
+    public Object drawFontsToPic(@RequestBody String fontToPics, @RequestParam String pic, @RequestParam(required = false) String filterPic) throws IOException {
+        return wxAppAllService.drawFontsToPic(fontToPics, pic, filterPic, this.response.getOutputStream());
     }
 
     @IgnoreAuth
