@@ -251,13 +251,13 @@ public class UpLoadServiceImpl implements UpLoadService {
             String base64Str = base64ToUrl.getBase64Var().split(",")[1];
 
             logger.warn("executorService start:" + System.currentTimeMillis());
-            ExecutorService executorService = Executors.newFixedThreadPool(3);
-            Future<byte[]> submit = executorService.submit(() -> java.util.Base64.getDecoder().decode(base64Str));
-            executorService.shutdown();
+//            ExecutorService executorService = Executors.newFixedThreadPool(3);
+//            Future<byte[]> submit = executorService.submit(() -> java.util.Base64.getDecoder().decode(base64Str));
+//            executorService.shutdown();
 
 //            byte[] decoderBytes = Base64.decodeFast(base64Str);
-//            byte[] decoderBytes = java.util.Base64.getDecoder().decode(base64Str);
-            byte[] decoderBytes = submit.get();
+            byte[] decoderBytes = java.util.Base64.getDecoder().decode(base64Str);
+//            byte[] decoderBytes = submit.get();
             write.write(decoderBytes);
             write.close();
             logger.warn("executorService end:" + System.currentTimeMillis());
@@ -281,11 +281,13 @@ public class UpLoadServiceImpl implements UpLoadService {
             logger.warn("oss end:" + System.currentTimeMillis());
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } finally {
+        }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+        finally {
             if (template != null) {
                 template.delete();
             }
