@@ -37,7 +37,7 @@ public class OneHourWriteRedisDataSimpleJob0 {
     @Autowired
     private TemplateStatisticsMapper templateStatisticsMapper;
 
-    @Scheduled(cron = "30 * * * * ?")
+    @Scheduled(cron = "* 30 * * * ?")
     public void runSchedule() {
 
         logger.info("OneHourWriteRedisDataSimpleJob0......");
