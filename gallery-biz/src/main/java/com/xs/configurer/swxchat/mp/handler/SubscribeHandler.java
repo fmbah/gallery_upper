@@ -55,7 +55,6 @@ public class SubscribeHandler extends AbstractHandler {
                 user = userService.findBy("wxUnionid", userWxInfo.getUnionId());
             }
             if (user == null) {
-                user.setShareProfitAmount(BigDecimal.ZERO);
                 user.setWxOpenid(userWxInfo.getOpenId());
                 user.setWxUnionid(userWxInfo.getUnionId());
                 user.setWxMiniOpenid(StringUtils.EMPTY);

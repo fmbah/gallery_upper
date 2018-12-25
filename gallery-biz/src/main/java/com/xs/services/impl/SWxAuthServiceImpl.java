@@ -17,6 +17,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,7 +91,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                             user.setWxOpenid(wxMpUser.getOpenId());
                             user.setWxUnionid(wxMpUser.getUnionId());
                             user.setWxMiniOpenid(StringUtils.EMPTY);
-                            user.setWxSex(Byte.valueOf(wxMpUser.getSex().toString()));
+                            user.setWxSex(Byte.valueOf(wxMpUser.getSex() == null ? "0" : wxMpUser.getSex().toString()));
                             user.setWxHeadimgurl(wxMpUser.getHeadImgUrl());
                             user.setMemberType(new Byte("0"));
                             Calendar instance = Calendar.getInstance();

@@ -217,7 +217,7 @@ public class PayBearingServiceImpl implements PayBearingService {
 //             totalFee = 1;
         }
         request.setOutTradeNo((isMiniApp ? "mini_" : "mp_") + outTradeNo.substring(0,outTradeNo.length()-1));
-        request.setTotalFee(totalFee);
+        request.setTotalFee(totalFee * 100);
         String sign = SignUtils.createSign(request, null, this.mchKey, false);
         request.setSign(sign);
         return request;
