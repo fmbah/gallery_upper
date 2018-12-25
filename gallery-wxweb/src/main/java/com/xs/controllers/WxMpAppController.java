@@ -1,10 +1,13 @@
 package com.xs.controllers;
 
 import com.xs.configurer.sannotation.IgnoreAuth;
+import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
 import com.xs.services.SWxAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -175,6 +178,28 @@ public class WxMpAppController extends BaseController {
     }
 
 
+    /**
+     *
+     * 功能描述: 由页面发起权限认证请求，获取jssdk参数
+     *
+     * @param:
+     * @return:
+     * @auther: Fmbah
+     * @date: 18-12-25 下午5:44
+     */
+    @IgnoreAuth
+    @GetMapping(value = "jssdkAuth", produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "由页面发起权限认证请求，获取jssdk参数", notes = "由页面发起权限认证请求，获取jssdk参数，查询方式url?pageUrl=当前页面完整路径包括参数")
+    public Object jssdkAuth() {
+        try {
+            logger.info("****************pageUrl：{}****************************openId：{}*****************************unionId：{}***************", request.getParameter("pageUrl"), request.getParameter("openId"), request.getParameter("unionId"));
+            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(request.getParameter("pageUrl") + "&openId=" + request.getParameter("openId") + "&unionId=" + request.getParameter("unionId"));
+            return ResultGenerator.genSuccessResult(jsapiSignature);
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return ResultGenerator.genFailResult("生成jssdk签名失败");
+    }
 
 
 
