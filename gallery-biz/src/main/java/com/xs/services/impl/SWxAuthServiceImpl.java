@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xs.beans.*;
 import com.xs.core.ResponseBean;
 import com.xs.core.ResultGenerator;
+import com.xs.core.sexception.ServiceException;
 import com.xs.daos.*;
 import com.xs.services.SWxAuthService;
 import com.xs.services.SlideService;
@@ -38,7 +39,7 @@ import static com.xs.core.ProjectConstant.WX_MP_USER_TOKEN;
  \* User: zhaoxin
  \* Date: 2018/7/6
  \* Time: 9:02
- \* Description: 
+ \* Description:
  \*/
 @Service("sWxAuthService")
 @Transactional
@@ -86,6 +87,9 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                     if (user == null) {
                         WxMpUser wxMpUser = wxMpService.getUserService().userInfo(wxMpOAuth2AccessToken.getOpenId());
                         if (wxMpUser != null) {
+                            if (!wxMpUser.getSubscribe()) {
+                                throw new ServiceException("请关注公众号后,进行其它操作!");
+                            }
                             user = new User();
                             user.setShareProfitAmount(BigDecimal.ZERO);
                             user.setWxOpenid(wxMpUser.getOpenId());
