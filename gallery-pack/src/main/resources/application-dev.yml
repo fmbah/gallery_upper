@@ -77,7 +77,7 @@ logging:
   level:
     com:
       xs:
-        daos: debug
+        daos: error
 
 gallery:
   domain:
