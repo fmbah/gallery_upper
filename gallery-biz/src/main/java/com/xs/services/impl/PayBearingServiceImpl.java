@@ -31,17 +31,14 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
-
-import static com.xs.core.ProjectConstant.WEB_BACK_DOMAIN;
 
 /**
  \* 杭州桃子网络科技股份有限公司
  \* User: zhaoxin
  \* Date: 2018/6/13
  \* Time: 19:23
- \* Description: 
+ \* Description:
  \*/
 @Service
 public class PayBearingServiceImpl implements PayBearingService {
@@ -62,6 +59,8 @@ public class PayBearingServiceImpl implements PayBearingService {
     private String mchId;
     @Value("${wechat.pay.mchKey}")
     private String mchKey;
+    @Value("${gallery.domain.url}")
+    private String url;
 
 
     @Override
@@ -159,12 +158,12 @@ public class PayBearingServiceImpl implements PayBearingService {
     }
 
     /**
-    * @Description:  组装下单参数
-    * @Param:
-    * @return:
-    * @Author: zhaoxin
-    * @Date: 2018/6/14
-    **/
+     * @Description:  组装下单参数
+     * @Param:
+     * @return:
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     private WxPayUnifiedOrderRequest assembleParam(List<UserPayment> orders, User user, HttpServletRequest resp, Boolean isMiniApp) {
         WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
         StringBuffer stringBuffer = new StringBuffer();
@@ -180,7 +179,7 @@ public class PayBearingServiceImpl implements PayBearingService {
         String body = "火星图库";
         request.setBody(body);
         request.setSpbillCreateIp(IpUtils.getIpAddr(resp));
-        request.setNotifyUrl(WEB_BACK_DOMAIN + "/api/wx/app/payBearing/payNotify");
+        request.setNotifyUrl(this.url + "/api/wx/app/payBearing/payNotify");
         request.setTradeType("JSAPI");
 
         String outTradeNo = "";
@@ -223,13 +222,13 @@ public class PayBearingServiceImpl implements PayBearingService {
         return request;
     }
 
-    /** 
-    * @Description: 再签名操作 
-    * @Param: 预支付订单id 
-    * @return: 调起支付参数 
-    * @Author: zhaoxin
-    * @Date: 2018/6/14 
-    **/ 
+    /**
+     * @Description: 再签名操作
+     * @Param: 预支付订单id
+     * @return: 调起支付参数
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     private Object againSign(String preparId, Boolean isMiniApp) {
         Map<String, String> params = new HashedMap();
         String time = String.valueOf(System.currentTimeMillis() / 1000);
@@ -255,12 +254,12 @@ public class PayBearingServiceImpl implements PayBearingService {
     }
 
     /**
-    * @Description: 解析请求流为字符串
-    * @Param: request：请求流
-    * @return: 通知内容
-    * @Author: zhaoxin
-    * @Date: 2018/6/14
-    **/
+     * @Description: 解析请求流为字符串
+     * @Param: request：请求流
+     * @return: 通知内容
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     private String analysisRequest(HttpServletRequest request) {
         ServletInputStream inputStream = null;
         ByteArrayOutputStream outputStream = null;
@@ -292,15 +291,15 @@ public class PayBearingServiceImpl implements PayBearingService {
         }
     }
 
-    /** 
-    * @Description: 传入微信回调返回的XML信息
+    /**
+     * @Description: 传入微信回调返回的XML信息
      *                以Map形式返回便于取值
      *                dom4j解析XML,返回第一级元素键值对。如果第一级元素有子节点，则此节点的值为空
-    * @Param:  strXML：微信通知内容
-    * @return:
-    * @Author: zhaoxin
-    * @Date: 2018/6/14 
-    **/ 
+     * @Param:  strXML：微信通知内容
+     * @return:
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     public SortedMap<String, String> dom4jXMLParse(String strXML) throws DocumentException {
         SortedMap<String, String> smap = new TreeMap<>();
         Document doc = DocumentHelper.parseText(strXML);
