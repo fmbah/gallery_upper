@@ -31,10 +31,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
-
-import static com.xs.core.ProjectConstant.WEB_BACK_DOMAIN;
 
 /**
  \* 杭州桃子网络科技股份有限公司
@@ -62,6 +59,8 @@ public class PayBearingServiceImpl implements PayBearingService {
     private String mchId;
     @Value("${wechat.pay.mchKey}")
     private String mchKey;
+    @Value("${gallery.domain.url}")
+    private String url;
 
 
     @Override
@@ -180,7 +179,7 @@ public class PayBearingServiceImpl implements PayBearingService {
         String body = "火星图库";
         request.setBody(body);
         request.setSpbillCreateIp(IpUtils.getIpAddr(resp));
-        request.setNotifyUrl(WEB_BACK_DOMAIN + "/api/wx/app/payBearing/payNotify");
+        request.setNotifyUrl(this.url + "/api/wx/app/payBearing/payNotify");
         request.setTradeType("JSAPI");
 
         String outTradeNo = "";
