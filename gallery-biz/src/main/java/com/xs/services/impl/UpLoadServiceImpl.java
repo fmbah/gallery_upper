@@ -151,7 +151,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 
         ArrayList<String> allowedOrigin = new ArrayList<String>();
 // 指定允许跨域请求的来源。
-        allowedOrigin.add(url);
+        allowedOrigin.add(cdnurl);
 
         ArrayList<String> allowedMethod = new ArrayList<String>();
 // 指定允许的跨域请求方法(GET/PUT/DELETE/POST/HEAD)。
@@ -159,8 +159,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 
         ArrayList<String> allowedHeader = new ArrayList<String>();
 // 是否允许预取指令（OPTIONS）中Access-Control-Request-Headers头中指定的Header。
-//        allowedHeader.add("x-oss-test");
-        allowedHeader.add("*");
+        allowedHeader.add("x-oss-test");
 
         ArrayList<String> exposedHeader = new ArrayList<String>();
 // 指定允许用户从应用程序中访问的响应头。
