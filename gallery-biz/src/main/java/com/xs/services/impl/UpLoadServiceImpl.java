@@ -50,6 +50,8 @@ public class UpLoadServiceImpl implements UpLoadService {
     private OssConfig ossConfig;
     @Value("${gallery.domain.url}")
     private String url;
+    @Value("${aliyun.oss.cdnurl}")
+    private String cdnurl;
 
     /***
      * 多图片上传
@@ -61,15 +63,15 @@ public class UpLoadServiceImpl implements UpLoadService {
     public Object upLoad(MultipartFile[] files)throws IOException {
         String urls="";
         if(files.length>0){
-                for(MultipartFile file : files){
-                    try{
-                        urls+=up(file)+",";
-                    }catch (IOException e){
-                        e.printStackTrace();
-                        throw new ServiceException("系统错误，请联系管理员进行处理");
-                    }
+            for(MultipartFile file : files){
+                try{
+                    urls+=up(file)+",";
+                }catch (IOException e){
+                    e.printStackTrace();
+                    throw new ServiceException("系统错误，请联系管理员进行处理");
                 }
-                return ResultGenerator.genSuccessResult(urls.substring(0, urls.length() - 1));
+            }
+            return ResultGenerator.genSuccessResult(urls.substring(0, urls.length() - 1));
         }
         return ResultGenerator.genFailResult("文件数量为空，请重新上传");
     }
@@ -91,25 +93,25 @@ public class UpLoadServiceImpl implements UpLoadService {
 
             URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(null!=url){
-                return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
+                return cdnurl + fileName;
             }
         }
         throw  new ServiceException("上传文件为空，请重新上传");
     }
 
     public String upFileStream(InputStream is) {
-            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-            String fileName = new Date().getTime() + "";
-            ossClient.putObject(ossConfig.getBucket(), fileName, is);
-            SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
-            setParams(request);
-            ossClient.setBucketCORS(request);
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
-            if(null!=url){
-                return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
-            }
+        OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+        String fileName = new Date().getTime() + "";
+        ossClient.putObject(ossConfig.getBucket(), fileName, is);
+        SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
+        setParams(request);
+        ossClient.setBucketCORS(request);
+        URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+        if(null!=url){
+            return cdnurl + fileName;
+        }
 
-            return null;
+        return null;
     }
 
     /***
@@ -133,7 +135,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 
                 URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
                 if(null!=url){
-                    return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
+                    return cdnurl + fileName;
                 }
             }
             throw  new RuntimeException("图片太大，最大10MB");
@@ -295,7 +297,7 @@ public class UpLoadServiceImpl implements UpLoadService {
             }
             URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(url != null) {
-                base64ToUrl.setBase64Var(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
+                base64ToUrl.setBase64Var(cdnurl + template.getName());
             }
             logger.warn("oss end:" + System.currentTimeMillis());
         } catch (IOException e) {
