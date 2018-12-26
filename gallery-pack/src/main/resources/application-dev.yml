@@ -47,7 +47,7 @@ aliyun:
     accessKeyId: DES@32NWPMTGH-ApvXlbRLNuQlJxBuHQqWzg
     accessKeySecret: ydBCcgGiwqNZDrN2d4d1XbL954eYuZ
     bucket: daily-test
-    cdnurl: https://daily-test.oss-cn-hangzhou.aliyuncs.com/
+    cdnurl: https://daily-test.mxth.com/
 
 
 wechat:
