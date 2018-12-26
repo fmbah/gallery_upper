@@ -81,6 +81,6 @@ logging:
 
 gallery:
   domain:
-    url: https://gallery.yile.vip
-    personUrl: https://gallery.yile.vip/wechat/index.html
-    rechargeUrl: https://gallery.yile.vip/wechat/recharge.html
+    url: https://gallery.mxth.com
+    personUrl: https://gallery.mxth.com/wechat/index.html
+    rechargeUrl: https://gallery.mxth.com/wechat/recharge.html
