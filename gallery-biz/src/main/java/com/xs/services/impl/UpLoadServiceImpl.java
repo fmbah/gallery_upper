@@ -50,6 +50,8 @@ public class UpLoadServiceImpl implements UpLoadService {
     private OssConfig ossConfig;
     @Value("${gallery.domain.url}")
     private String url;
+    @Value("${aliyun.oss.cdnurl}")
+    private String cdnurl;
 
     /***
      * 多图片上传
@@ -91,7 +93,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 
             URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(null!=url){
-                return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
+                return cdnurl + fileName;
             }
         }
         throw  new ServiceException("上传文件为空，请重新上传");
@@ -106,7 +108,7 @@ public class UpLoadServiceImpl implements UpLoadService {
             ossClient.setBucketCORS(request);
             URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(null!=url){
-                return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
+                return cdnurl + fileName;
             }
 
             return null;
@@ -133,7 +135,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 
                 URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
                 if(null!=url){
-                    return ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + fileName;
+                    return cdnurl + fileName;
                 }
             }
             throw  new RuntimeException("图片太大，最大10MB");
@@ -295,7 +297,7 @@ public class UpLoadServiceImpl implements UpLoadService {
             }
             URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(url != null) {
-                base64ToUrl.setBase64Var(ProjectConstant.ALIYUN_OSS_IMG_ADDRESS + template.getName());
+                base64ToUrl.setBase64Var(cdnurl + template.getName());
             }
             logger.warn("oss end:" + System.currentTimeMillis());
         } catch (IOException e) {

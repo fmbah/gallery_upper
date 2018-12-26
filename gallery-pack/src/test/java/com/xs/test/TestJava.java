@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import com.google.gson.Gson;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.awt.*;
+import java.sql.Connection;
 
 /**
  * @ClassName TestJava
@@ -54,12 +56,14 @@ public class TestJava {
     }
 
     @Test
-    public void testFont() {
+    public void testFont() throws ClassNotFoundException {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fontFamilies = ge.getAvailableFontFamilyNames();
         for (String f : fontFamilies) {
             System.out.println(f);
         }
+
+
     }
 
 }
