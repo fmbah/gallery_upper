@@ -159,7 +159,8 @@ public class UpLoadServiceImpl implements UpLoadService {
 
         ArrayList<String> allowedHeader = new ArrayList<String>();
 // 是否允许预取指令（OPTIONS）中Access-Control-Request-Headers头中指定的Header。
-        allowedHeader.add("x-oss-test");
+//        allowedHeader.add("x-oss-test");
+        allowedHeader.add("*");
 
         ArrayList<String> exposedHeader = new ArrayList<String>();
 // 指定允许用户从应用程序中访问的响应头。
