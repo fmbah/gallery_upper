@@ -111,7 +111,8 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
 
 
     @Override
-    public void save(CompanyBrand model) {
+    @Transactional(rollbackFor = ServiceException.class)
+    public synchronized void save(CompanyBrand model) {
 
         model.setGmtCreate(new Date());
         model.setGmtModified(new Date());
@@ -134,7 +135,6 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
                 user.setGmtModified(new Date());
                 instance = Calendar.getInstance();
                 instance.add(Calendar.YEAR, 99);
-                model.setExpiredTime(instance.getTime());
                 user.setMemberExpired(instance.getTime());
                 userMapper.updateByPrimaryKey(user);
             } else {
