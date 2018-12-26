@@ -47,28 +47,28 @@ aliyun:
     accessKeyId: DES@32NWPMTGH-ApvXlbRLNuQlJxBuHQqWzg
     accessKeySecret: ydBCcgGiwqNZDrN2d4d1XbL954eYuZ
     bucket: daily-test
-    cdnurl: https://daily-test.mxth.com/
+    cdnurl: https://daily-test.oss-cn-hangzhou.aliyuncs.com/
 
 
 wechat:
   miniapp:
-    appid: wx45d98d2c8e80956f
-    secret: 42f0e12c6ce1019d4b467d028208e741
-    mchId: 1488332072
-    mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
+    appid: wxe872cecbe6201aca
+    secret: DES@Bn_ar_N4296pY9B2Pkqr76I4_dIn1ACNX0x8TZLn57FScQbh0Kls4A
+    mchId: 1517295821
+    mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
     token: gOcTDdBFEI
     aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
     msgDataFormat: JSON
   pay:
       appId: wx45d98d2c8e80956f
-      mchId: 1488332072
-      mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
+      mchId: 1517295821
+      mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
       subAppId:
       subMchId:
       keyPath:
   mp:
-      appId: wx339e0d4617a97a30
-      secret: 40d31a3415eb46591c144fb5c0a5be31
+      appId: wx3d912b758d72faa1
+      secret: DES@nIJYOt47oS1npE1pxq_vxED5ugS32naiCntbY2f-wfJScQbh0Kls4A
       token: gOcTDdBFEI
       aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
 
@@ -77,7 +77,7 @@ logging:
   level:
     com:
       xs:
-        daos: debug
+        daos: error
 
 gallery:
   domain:
