@@ -151,7 +151,7 @@ public class UpLoadServiceImpl implements UpLoadService {
 
         ArrayList<String> allowedOrigin = new ArrayList<String>();
 // 指定允许跨域请求的来源。
-        allowedOrigin.add(cdnurl);
+        allowedOrigin.add(url);
 
         ArrayList<String> allowedMethod = new ArrayList<String>();
 // 指定允许的跨域请求方法(GET/PUT/DELETE/POST/HEAD)。
