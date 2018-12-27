@@ -53,16 +53,16 @@ aliyun:
 wechat:
   miniapp:
     appid: wx45d98d2c8e80956f
-    secret: DES@Bn_ar_N4296pY9B2Pkqr76I4_dIn1ACNX0x8TZLn57FScQbh0Kls4A
-    mchId: 1517295821
-    mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
+    secret: 42f0e12c6ce1019d4b467d028208e741
+    mchId: 1488332072
+    mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
     token: gOcTDdBFEI
     aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
     msgDataFormat: JSON
   pay:
       appId: wx45d98d2c8e80956f
-      mchId: 1517295821
-      mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
+      mchId: 1488332072
+      mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
       subAppId:
       subMchId:
       keyPath:
