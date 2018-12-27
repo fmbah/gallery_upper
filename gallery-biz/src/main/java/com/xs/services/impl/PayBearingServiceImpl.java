@@ -31,6 +31,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -210,13 +211,13 @@ public class PayBearingServiceImpl implements PayBearingService {
             }
             body.concat(stringBuffer.toString());
             outTradeNo = outTradeNo + order.getOrderNo() + "_";
-            totalFee = totalFee + order.getAmount().intValue();
+            totalFee = totalFee + order.getAmount().multiply(new BigDecimal(100)).intValue();
             logger.info("*****************************实际支付金额{}************************",totalFee);
             //TODO 测试所以订单金额为1分钱，上线后还原为订单实际价格
 //             totalFee = 1;
         }
         request.setOutTradeNo((isMiniApp ? "mini_" : "mp_") + outTradeNo.substring(0,outTradeNo.length()-1));
-        request.setTotalFee(totalFee * 100);
+        request.setTotalFee(totalFee);
         String sign = SignUtils.createSign(request, null, this.mchKey, false);
         request.setSign(sign);
         return request;
