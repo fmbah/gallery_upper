@@ -31,6 +31,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -38,7 +39,7 @@ import java.util.*;
  \* User: zhaoxin
  \* Date: 2018/6/13
  \* Time: 19:23
- \* Description: 
+ \* Description:
  \*/
 @Service
 public class PayBearingServiceImpl implements PayBearingService {
@@ -158,12 +159,12 @@ public class PayBearingServiceImpl implements PayBearingService {
     }
 
     /**
-    * @Description:  组装下单参数
-    * @Param:
-    * @return:
-    * @Author: zhaoxin
-    * @Date: 2018/6/14
-    **/
+     * @Description:  组装下单参数
+     * @Param:
+     * @return:
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     private WxPayUnifiedOrderRequest assembleParam(List<UserPayment> orders, User user, HttpServletRequest resp, Boolean isMiniApp) {
         WxPayUnifiedOrderRequest request = new WxPayUnifiedOrderRequest();
         StringBuffer stringBuffer = new StringBuffer();
@@ -210,25 +211,25 @@ public class PayBearingServiceImpl implements PayBearingService {
             }
             body.concat(stringBuffer.toString());
             outTradeNo = outTradeNo + order.getOrderNo() + "_";
-            totalFee = totalFee + order.getAmount().intValue();
+            totalFee = totalFee + order.getAmount().multiply(new BigDecimal(100)).intValue();
             logger.info("*****************************实际支付金额{}************************",totalFee);
             //TODO 测试所以订单金额为1分钱，上线后还原为订单实际价格
 //             totalFee = 1;
         }
         request.setOutTradeNo((isMiniApp ? "mini_" : "mp_") + outTradeNo.substring(0,outTradeNo.length()-1));
-        request.setTotalFee(totalFee * 100);
+        request.setTotalFee(totalFee);
         String sign = SignUtils.createSign(request, null, this.mchKey, false);
         request.setSign(sign);
         return request;
     }
 
-    /** 
-    * @Description: 再签名操作 
-    * @Param: 预支付订单id 
-    * @return: 调起支付参数 
-    * @Author: zhaoxin
-    * @Date: 2018/6/14 
-    **/ 
+    /**
+     * @Description: 再签名操作
+     * @Param: 预支付订单id
+     * @return: 调起支付参数
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     private Object againSign(String preparId, Boolean isMiniApp) {
         Map<String, String> params = new HashedMap();
         String time = String.valueOf(System.currentTimeMillis() / 1000);
@@ -254,12 +255,12 @@ public class PayBearingServiceImpl implements PayBearingService {
     }
 
     /**
-    * @Description: 解析请求流为字符串
-    * @Param: request：请求流
-    * @return: 通知内容
-    * @Author: zhaoxin
-    * @Date: 2018/6/14
-    **/
+     * @Description: 解析请求流为字符串
+     * @Param: request：请求流
+     * @return: 通知内容
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     private String analysisRequest(HttpServletRequest request) {
         ServletInputStream inputStream = null;
         ByteArrayOutputStream outputStream = null;
@@ -291,15 +292,15 @@ public class PayBearingServiceImpl implements PayBearingService {
         }
     }
 
-    /** 
-    * @Description: 传入微信回调返回的XML信息
+    /**
+     * @Description: 传入微信回调返回的XML信息
      *                以Map形式返回便于取值
      *                dom4j解析XML,返回第一级元素键值对。如果第一级元素有子节点，则此节点的值为空
-    * @Param:  strXML：微信通知内容
-    * @return:
-    * @Author: zhaoxin
-    * @Date: 2018/6/14 
-    **/ 
+     * @Param:  strXML：微信通知内容
+     * @return:
+     * @Author: zhaoxin
+     * @Date: 2018/6/14
+     **/
     public SortedMap<String, String> dom4jXMLParse(String strXML) throws DocumentException {
         SortedMap<String, String> smap = new TreeMap<>();
         Document doc = DocumentHelper.parseText(strXML);
