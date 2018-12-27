@@ -192,8 +192,7 @@ public class WxMpAppController extends BaseController {
     @ApiOperation(value = "由页面发起权限认证请求，获取jssdk参数", notes = "由页面发起权限认证请求，获取jssdk参数，查询方式url?pageUrl=当前页面完整路径包括参数")
     public Object jssdkAuth() {
         try {
-            logger.info("****************pageUrl：{}****************************openId：{}", request.getParameter("pageUrl"), request.getParameter("openId"));
-            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(request.getParameter("pageUrl") + "&openId=" + request.getParameter("openId"));
+            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(request.getParameter("pageUrl"));
             return ResultGenerator.genSuccessResult(jsapiSignature);
         } catch (WxErrorException e) {
             e.printStackTrace();

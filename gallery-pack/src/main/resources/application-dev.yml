@@ -52,7 +52,7 @@ aliyun:
 
 wechat:
   miniapp:
-    appid: wxe872cecbe6201aca
+    appid: wx45d98d2c8e80956f
     secret: DES@Bn_ar_N4296pY9B2Pkqr76I4_dIn1ACNX0x8TZLn57FScQbh0Kls4A
     mchId: 1517295821
     mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
@@ -67,8 +67,8 @@ wechat:
       subMchId:
       keyPath:
   mp:
-      appId: wx3d912b758d72faa1
-      secret: DES@nIJYOt47oS1npE1pxq_vxED5ugS32naiCntbY2f-wfJScQbh0Kls4A
+      appId: wx339e0d4617a97a30
+      secret: 40d31a3415eb46591c144fb5c0a5be31
       token: gOcTDdBFEI
       aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
 
