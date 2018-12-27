@@ -19,6 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 /**
  * @Auther: Fmbah
@@ -171,8 +172,8 @@ public class WxAppAllController extends BaseController {
 
     @IgnoreAuth
     @ApiOperation(value = "获取网络字体",notes = "获取网络字体")
-    @GetMapping(value = "/webFont",produces = "application/json;charset=utf-8")
-    public Object webFont(@RequestParam String text, @RequestParam String fontName){
-        return wxAppAllService.getFont(text, fontName);
+    @PostMapping(value = "/webFont",produces = "application/json;charset=utf-8")
+    public Object webFont(@RequestBody HashMap<String, String> textDes){
+        return wxAppAllService.getFont(textDes.get("text"), textDes.get("fontName"));
     }
 }

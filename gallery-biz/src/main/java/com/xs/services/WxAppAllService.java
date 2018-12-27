@@ -1170,20 +1170,14 @@ public class WxAppAllService {
 
     public Object drawFontsToPic(String fontToPics, String pic, String filterPic, OutputStream outputStream) {
 
-        if (StringUtils.isEmpty(fontToPics)) {
-            return ResultGenerator.genFailResult("文字描述数据为空");
-        }
-        if (StringUtils.isEmpty(pic)) {
-            return ResultGenerator.genFailResult("背景图片地址数据为空");
-        }
+        checkParamters(fontToPics, pic);
 
-        logger.info("fontToPics: {}", fontToPics);
-        logger.info("pic: {}", pic);
+        logger.info("fontToPics: [{}], pic: [{}]", fontToPics, pic);
 
         Gson gson = new Gson();
         JSONObject jsonObject = JSONObject.parseObject(fontToPics);
         Object fontToPicsObject = jsonObject.get("fontToPics");
-        if (fontToPicsObject == null || (fontToPicsObject != null && fontToPicsObject.toString().length() == 0)) {
+        if (fontToPicsObject == null) {
             return ResultGenerator.genSuccessResult(pic);
         }
 
@@ -1193,15 +1187,13 @@ public class WxAppAllService {
             return ResultGenerator.genSuccessResult(pic);
         }
 
-//        Date now = new Date();
         File temp = null;
         StringBuilder errMsg = new StringBuilder();
-//        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
         try {
             //加载前端已生成图片
             long startT0 = System.currentTimeMillis();
-            BufferedImage backPic = ImageIO.read(new URL(pic));
+            BufferedImage backPic = ImageIO.read(new URL(pic));//slow code.............
             logger.info("背景图读取完成.....耗时: {}ms", System.currentTimeMillis() - startT0);
             int backPicWidth = backPic.getWidth();
             int backPicHeight = backPic.getHeight();
@@ -1241,21 +1233,6 @@ public class WxAppAllService {
 
                 String[] colors = color.substring(color.indexOf("(") + 1, color.indexOf(")")).split(",");
 
-//                JSONObject fontJsonObject = getFontUtil(text, family);
-//                logger.info("fontJsonObject: {}", fontJsonObject);
-//
-//                String source = "https://www.hanyi.studio/WebFonts/" + fontJsonObject.get("UserGuid") + "/" + CalendarUtil.getYear(now) + CalendarUtil.getMonth(now) + "/" + fontJsonObject.get("FontFamily") + ".ttf";
-//
-//                //加载字体
-//                File fileFamily = writeInputStreamToFile(source);//"http://hellofonts.oss-cn-beijing.aliyuncs.com/汉仪喵魂自由体/5.00/HYMiaoHunZiYouTiW.ttf"
-//                if (fileFamily == null) {
-//                    logger.warn("字体加载失败.....,当前ttf路径为: {}", source);
-//                    continue;
-//                }
-
-
-                //注册字体
-//                graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT, fileFamily));
                 //创建相应字体
                 String tmpFamily = fontMap.get(family);
                 if (tmpFamily == null) {
@@ -1274,7 +1251,6 @@ public class WxAppAllService {
                 Graphics2D divGraphics2D = divBufferedImage.createGraphics();
                 divBufferedImage = divGraphics2D.getDeviceConfiguration().createCompatibleImage(wr, hr, Transparency.TRANSLUCENT);
                 Graphics2D divGraphics2D_A = divBufferedImage.createGraphics();
-//                divGraphics2D = divBufferedImage.createGraphics();
                 FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
                 divGraphics2D_A.setFont(font);
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
@@ -1282,7 +1258,6 @@ public class WxAppAllService {
                 int textWidth = fontMetrics.stringWidth(text);
                 int fx = 0;
                 int fy = 0;
-//                fy = (fontMetrics.getAscent() + (hr - (fontMetrics.getAscent() + fontMetrics.getDescent())) / 2);//文字距离div上侧边界居中
                 fy = fontMetrics.getAscent();
                 if ("center".equals(align)) {
                     fx = (wr - textWidth) / 2;//文字距离左侧距离
@@ -1296,7 +1271,6 @@ public class WxAppAllService {
                 int sizex = fx;
                 int sizey = fy;
                 int sizex_max = sizex + wr;
-//                int sizey_max = tr + hr;
                 int textLength = text.length();
 
                 for (int j = 0; j < textLength; j++) {
@@ -1315,9 +1289,6 @@ public class WxAppAllService {
                     }
                 }
                 divGraphics2D.dispose();
-//                if (fileFamily != null && fileFamily.exists()) {
-//                    fileFamily.delete();
-//                }
 
                 backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
                 index.getAndIncrement();
@@ -1334,25 +1305,19 @@ public class WxAppAllService {
 
             temp = File.createTempFile("temp", ".png");
 //            ImageIO.write(backPic, "JPG", temp);//faster 不支持透明度
-            //Mildly faster
-
             BufferedOutputStream imageOutputStream = new BufferedOutputStream(new FileOutputStream(temp));
-            ImageIO.write(backPic, "PNG", imageOutputStream);
+            ImageIO.write(backPic, "PNG", imageOutputStream);//Mildly faster
             imageOutputStream.close();
             logger.info("开始处理背景图文字合成.....共耗时: {}ms", (System.currentTimeMillis() - startT));
 
-            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));
+            return ResultGenerator.genSuccessResult(upLoadService.upFile(temp));//调用阿里oss上传文件接口,并返回文件cdn路径
         } catch (MalformedURLException e) {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             errMsg.append(e.getMessage() + "\n");
-        }
-//        catch (FontFormatException e) {
-//            e.printStackTrace();
-//        }
-        finally {
+        } finally {
             if (temp != null && temp.exists()) {
                 temp.delete();
             }
@@ -1400,6 +1365,15 @@ public class WxAppAllService {
         outStream.close();
 
         return file;
+    }
+
+    private void checkParamters(String fontToPics, String pic) {
+        if (StringUtils.isEmpty(fontToPics)) {
+            throw new ServiceException("文字描述数据为空");
+        }
+        if (StringUtils.isEmpty(pic)) {
+            throw new ServiceException("背景图片地址数据为空");
+        }
     }
 
     public Object getFont(String text, String fontName) {

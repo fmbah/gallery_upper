@@ -262,28 +262,17 @@ public class UpLoadServiceImpl implements UpLoadService {
     @Override
     public Object base64ToUrl(Base64ToUrl base64ToUrl) {
 
-//        BASE64Decoder decoder = new BASE64Decoder();
         File template = null;
         try {
             String s1 = base64ToUrl.getBase64Var().split("data:image/")[1];
             template = File.createTempFile("template", ".".concat(s1.substring(0, s1.indexOf(";"))));
             FileOutputStream write = new FileOutputStream(template);
-//            byte[] decoderBytes = decoder.decodeBuffer(base64ToUrl.getBase64Var().split(",")[1]);
             String base64Str = base64ToUrl.getBase64Var().split(",")[1];
 
-            logger.warn("executorService start:" + System.currentTimeMillis());
-//            ExecutorService executorService = Executors.newFixedThreadPool(3);
-//            Future<byte[]> submit = executorService.submit(() -> java.util.Base64.getDecoder().decode(base64Str));
-//            executorService.shutdown();
-
-//            byte[] decoderBytes = Base64.decodeFast(base64Str);
             byte[] decoderBytes = java.util.Base64.getDecoder().decode(base64Str);
-//            byte[] decoderBytes = submit.get();
             write.write(decoderBytes);
             write.close();
-            logger.warn("executorService end:" + System.currentTimeMillis());
 
-            logger.warn("oss start:" + System.currentTimeMillis());
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
             try {
                 ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
@@ -299,24 +288,16 @@ public class UpLoadServiceImpl implements UpLoadService {
             if(url != null) {
                 base64ToUrl.setBase64Var(cdnurl + template.getName());
             }
-            logger.warn("oss end:" + System.currentTimeMillis());
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
         finally {
             if (template != null) {
                 template.delete();
             }
         }
 
-
         return ResultGenerator.genSuccessResult(base64ToUrl.getBase64Var());
-//        return ResultGenerator.genSuccessResult("https://daily-test.mxth.com/template5043290964231378426.png");
 
     }
 
