@@ -149,6 +149,7 @@ public class WxAppAllController extends BaseController {
      * @auther: Fmbah
      * @date: 18-12-17 上午10:02
      */
+    @IgnoreAuth
     @ApiOperation(value = "file转url地址",notes = "base64串转url地址")
     @PostMapping(value = "/fileToUrl",produces = "application/json;charset=utf-8")
     public Object fileToUrl(@ApiParam(value = "文件") @RequestParam(name = "base64Var") MultipartFile base64Var) throws IOException {
@@ -162,12 +163,14 @@ public class WxAppAllController extends BaseController {
         return wxAppAllService.drawFonts();
     }
 
+    @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
     public Object drawFontsToPic(@RequestBody String fontToPics, @RequestParam String pic, @RequestParam(required = false) String filterPic) throws IOException {
         return wxAppAllService.drawFontsToPic(fontToPics, pic, filterPic, this.response.getOutputStream());
     }
 
+    @IgnoreAuth
     @ApiOperation(value = "获取网络字体",notes = "获取网络字体")
     @PostMapping(value = "/webFont",produces = "application/json;charset=utf-8")
     public Object webFont(@RequestBody HashMap<String, String> textDes){
