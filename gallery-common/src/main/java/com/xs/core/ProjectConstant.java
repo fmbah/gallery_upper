@@ -15,13 +15,6 @@ public final class ProjectConstant {
     public static final String CONTROLLER_PACKAGE = BASE_PACKAGE + ".controllers";//生成的Controller所在包
     public static final String MAPPER_INTERFACE_REFERENCE = BASE_PACKAGE + ".core.smapper.SMapper";//Mapper插件基础接口的完全限定名
 
-
-    public static final String WEB_BACK_DOMAIN = "https://gallery.mxth.com";//后台域名
-
-    //阿里配置
-    public static final String ALIYUN_OSS_IMG_ADDRESS="https://daily-test.mxth.com/";
-
-
     //后台配置
     public static final String BACK_MANAGER_KEY = "managerKey";
     public static final String BACK_MANAGER_MENUID = "MENUID";
@@ -40,7 +33,6 @@ public final class ProjectConstant {
     public static final String WX_USER_TOKEN = "wxUserToken:userId:%s";
     public static final String WX_MP_USER_TOKEN = "wxMpUserToken:userId:%s";
     public static final String WX_USER_FONT_TOKEN = "TOKEN";
-    public static final String WX_MSG = "wxMsg";
     public static final String CODE_PRICE = "code_price";
 
 
