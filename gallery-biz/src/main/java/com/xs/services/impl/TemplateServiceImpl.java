@@ -333,4 +333,24 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
 
         return template;
     }
+
+    @Override
+    @Transactional(rollbackFor = ServiceException.class)
+    public void deleteById(Integer id) {
+        Template template = super.findById(id);
+        if (template == null) {
+            throw new ServiceException("模板数据不存在或已删除");
+        }
+        Condition condition = new Condition(TemplateLabels.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("templateId", id);
+        List<TemplateLabels> templateLabels = templateLabelsMapper.selectByCondition(condition);
+        if (templateLabels != null) {
+            for (TemplateLabels t: templateLabels) {
+                templateLabelsMapper.deleteByPrimaryKey(t.getId());
+            }
+        }
+
+        super.deleteById(id);
+    }
 }
