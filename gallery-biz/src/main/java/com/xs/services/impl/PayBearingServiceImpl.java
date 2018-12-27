@@ -62,6 +62,8 @@ public class PayBearingServiceImpl implements PayBearingService {
     private String mchKey;
     @Value("${gallery.domain.url}")
     private String url;
+    @Value("${spring.profiles.active}")
+    private String env;
 
 
     @Override
@@ -213,8 +215,9 @@ public class PayBearingServiceImpl implements PayBearingService {
             outTradeNo = outTradeNo + order.getOrderNo() + "_";
             totalFee = totalFee + order.getAmount().multiply(new BigDecimal(100)).intValue();
             logger.info("*****************************实际支付金额{}************************",totalFee);
-            //TODO 测试所以订单金额为1分钱，上线后还原为订单实际价格
-//             totalFee = 1;
+            if ("dev".equals(env)) {
+                totalFee = 1;
+            }
         }
         request.setOutTradeNo((isMiniApp ? "mini_" : "mp_") + outTradeNo.substring(0,outTradeNo.length()-1));
         request.setTotalFee(totalFee);
