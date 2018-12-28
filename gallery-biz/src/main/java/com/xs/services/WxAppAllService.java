@@ -1299,7 +1299,7 @@ public class WxAppAllService {
                         }
 
                         int sizex = fx;
-                        int sizey = fy * tmpindex;
+                        int sizey = tmpindex * fontMetrics.getAscent() + tmpindex* fontMetrics.getDescent();
                         int sizex_max = sizex + wr;
                         textLength = textStr.length();
 
