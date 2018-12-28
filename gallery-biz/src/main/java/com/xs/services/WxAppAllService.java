@@ -97,7 +97,7 @@ public class WxAppAllService {
      * 功能描述: 首页轮播图
      *
      * @param: 位置（首页：1；分享获益：2；会员权益：3；）
-     * @return: 
+     * @return:
      * @auther: Fmbah
      * @date: 18-10-19 下午3:55
      */
@@ -1259,33 +1259,96 @@ public class WxAppAllService {
                 int fx = 0;
                 int fy = 0;
                 fy = fontMetrics.getAscent();
-                if ("center".equals(align)) {
-                    fx = (wr - textWidth) / 2;//文字距离左侧距离
-                } else if ("left".equals(align)) {
-                    fx = 0;//文字距离左侧距离
+                //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
+                //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
+                if (textWidth > wr) {
+                    List<String> textStrs = new ArrayList<>();
+                    StringBuilder sb = new StringBuilder();
+
+                    int textLength = text.length();
+                    int subTextWidth = 0;
+                    for (int i = 0; i< textLength; i++) {
+                        String s1 = String.valueOf(text.charAt(i));
+                        if (StringUtils.isEmpty(s1.trim())) {
+                            continue;
+                        }
+                        int i1 = fontMetrics.stringWidth(s1);
+                        subTextWidth += i1;
+                        if (subTextWidth <= wr) {
+                            sb.append(s1);
+                        } else {
+                            textStrs.add(sb.toString());
+                            sb = new StringBuilder(s1);
+                            subTextWidth = i1;
+                        }
+                    }
+
+                    textStrs.add(sb.toString());
+
+                    int tmpindex = 0;
+                    for (String textStr: textStrs) {
+
+                        tmpindex++;
+
+                        textWidth = fontMetrics.stringWidth(textStr);
+
+                        if ("center".equals(align)) {
+                            fx = (wr - textWidth) / 2;//文字距离左侧距离
+                        } else if ("left".equals(align)) {
+                            fx = 0;//文字距离左侧距离
+                        } else {
+                            fx = wr - textWidth;//文字距离左侧距离
+
+                        }
+
+                        int sizex = fx;
+                        int sizey = tmpindex * fontMetrics.getAscent() + tmpindex* fontMetrics.getDescent();
+                        int sizex_max = sizex + wr;
+                        textLength = textStr.length();
+
+                        for (int j = 0; j < textLength; j++) {
+                            String s1 = String.valueOf(textStr.charAt(j));
+                            int i1 = fontMetrics.stringWidth(s1);
+                            if (sizex + i1 <= sizex_max) {
+                                divGraphics2D_A.drawString(s1, sizex, sizey);
+                                sizex += i1;
+                            } else {
+                                sizey += fontMetrics.getHeight();
+                                divGraphics2D_A.drawString(s1, fx, sizey);
+                                sizex = i1;
+                            }
+                        }
+                    }
+
                 } else {
-                    fx = wr - textWidth;//文字距离左侧距离
-
-                }
-
-                int sizex = fx;
-                int sizey = fy;
-                int sizex_max = sizex + wr;
-                int textLength = text.length();
-
-                for (int j = 0; j < textLength; j++) {
-                    String s1 = String.valueOf(text.charAt(j));
-                    int i1 = fontMetrics.stringWidth(s1);
-                    if (sizex + i1 <= sizex_max) {
-                        divGraphics2D_A.drawString(s1, sizex, sizey);
-                        sizex += i1;
+                    if ("center".equals(align)) {
+                        fx = (wr - textWidth) / 2;//文字距离左侧距离
+                    } else if ("left".equals(align)) {
+                        fx = 0;//文字距离左侧距离
                     } else {
-                        sizey += fontMetrics.getHeight();
-//                        if (sizey > sizey_max) {
-//                            break;
-//                        }
-                        divGraphics2D_A.drawString(s1, fx, sizey);
-                        sizex = i1;
+                        fx = wr - textWidth;//文字距离左侧距离
+
+                    }
+
+                    int sizex = fx;
+                    int sizey = fy;
+                    int sizex_max = sizex + wr;
+                    int textLength = text.length();
+
+                    for (int j = 0; j < textLength; j++) {
+                        String s1 = String.valueOf(text.charAt(j));
+                        if (StringUtils.isEmpty(s1.trim())) {
+                            continue;
+                        }
+                        int i1 = fontMetrics.stringWidth(s1);
+                        if (sizex + i1 <= sizex_max) {
+                            divGraphics2D_A.drawString(s1, sizex, sizey);
+                            sizex += i1;
+                        } else {
+                            sizey += fontMetrics.getHeight();
+                            divGraphics2D_A.drawString(s1, fx, sizey);
+                            sizex = i1;
+                        }
                     }
                 }
                 divGraphics2D.dispose();
@@ -1497,30 +1560,96 @@ public class WxAppAllService {
                 int fx = 0;
                 int fy = 0;
                 fy = fontMetrics.getAscent();
-                if ("center".equals(align)) {
-                    fx = (wr - textWidth) / 2;//文字距离左侧距离
-                } else if ("left".equals(align)) {
-                    fx = 0;//文字距离左侧距离
+                //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
+                //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
+                if (textWidth > wr) {
+                    List<String> textStrs = new ArrayList<>();
+                    StringBuilder sb = new StringBuilder();
+
+                    int textLength = text.length();
+                    int subTextWidth = 0;
+                    for (int i = 0; i< textLength; i++) {
+                        String s1 = String.valueOf(text.charAt(i));
+                        if (StringUtils.isEmpty(s1.trim())) {
+                            continue;
+                        }
+                        int i1 = fontMetrics.stringWidth(s1);
+                        subTextWidth += i1;
+                        if (subTextWidth <= wr) {
+                            sb.append(s1);
+                        } else {
+                            textStrs.add(sb.toString());
+                            sb = new StringBuilder(s1);
+                            subTextWidth = i1;
+                        }
+                    }
+
+                    textStrs.add(sb.toString());
+
+                    int tmpindex = 0;
+                    for (String textStr: textStrs) {
+
+                        tmpindex++;
+
+                        textWidth = fontMetrics.stringWidth(textStr);
+
+                        if ("center".equals(align)) {
+                            fx = (wr - textWidth) / 2;//文字距离左侧距离
+                        } else if ("left".equals(align)) {
+                            fx = 0;//文字距离左侧距离
+                        } else {
+                            fx = wr - textWidth;//文字距离左侧距离
+
+                        }
+
+                        int sizex = fx;
+                        int sizey = tmpindex * fontMetrics.getAscent() + tmpindex* fontMetrics.getDescent();
+                        int sizex_max = sizex + wr;
+                        textLength = textStr.length();
+
+                        for (int j = 0; j < textLength; j++) {
+                            String s1 = String.valueOf(textStr.charAt(j));
+                            int i1 = fontMetrics.stringWidth(s1);
+                            if (sizex + i1 <= sizex_max) {
+                                divGraphics2D_A.drawString(s1, sizex, sizey);
+                                sizex += i1;
+                            } else {
+                                sizey += fontMetrics.getHeight();
+                                divGraphics2D_A.drawString(s1, fx, sizey);
+                                sizex = i1;
+                            }
+                        }
+                    }
+
                 } else {
-                    fx = wr - textWidth;//文字距离左侧距离
-
-                }
-
-                int sizex = fx;
-                int sizey = fy;
-                int sizex_max = sizex + wr;
-                int textLength = text.length();
-
-                for (int j = 0; j < textLength; j++) {
-                    String s1 = String.valueOf(text.charAt(j));
-                    int i1 = fontMetrics.stringWidth(s1);
-                    if (sizex + i1 <= sizex_max) {
-                        divGraphics2D_A.drawString(s1, sizex, sizey);
-                        sizex += i1;
+                    if ("center".equals(align)) {
+                        fx = (wr - textWidth) / 2;//文字距离左侧距离
+                    } else if ("left".equals(align)) {
+                        fx = 0;//文字距离左侧距离
                     } else {
-                        sizey += fontMetrics.getHeight();
-                        divGraphics2D_A.drawString(s1, fx, sizey);
-                        sizex = i1;
+                        fx = wr - textWidth;//文字距离左侧距离
+
+                    }
+
+                    int sizex = fx;
+                    int sizey = fy;
+                    int sizex_max = sizex + wr;
+                    int textLength = text.length();
+
+                    for (int j = 0; j < textLength; j++) {
+                        String s1 = String.valueOf(text.charAt(j));
+                        if (StringUtils.isEmpty(s1.trim())) {
+                            continue;
+                        }
+                        int i1 = fontMetrics.stringWidth(s1);
+                        if (sizex + i1 <= sizex_max) {
+                            divGraphics2D_A.drawString(s1, sizex, sizey);
+                            sizex += i1;
+                        } else {
+                            sizey += fontMetrics.getHeight();
+                            divGraphics2D_A.drawString(s1, fx, sizey);
+                            sizex = i1;
+                        }
                     }
                 }
                 divGraphics2D.dispose();
