@@ -1570,17 +1570,26 @@ public class WxAppAllService {
                     int subTextWidth = 0;
                     for (int i = 0; i< textLength; i++) {
                         String s1 = String.valueOf(text.charAt(i));
+                        if (StringUtils.isEmpty(s1.trim())) {
+                            continue;
+                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         subTextWidth += i1;
                         if (subTextWidth <= wr) {
                             sb.append(s1);
                         } else {
                             textStrs.add(sb.toString());
-                            sb = new StringBuilder("");
+                            sb = new StringBuilder(s1);
+                            subTextWidth = i1;
                         }
                     }
 
+                    textStrs.add(sb.toString());
+
+                    int tmpindex = 0;
                     for (String textStr: textStrs) {
+
+                        tmpindex++;
 
                         textWidth = fontMetrics.stringWidth(textStr);
 
@@ -1594,7 +1603,7 @@ public class WxAppAllService {
                         }
 
                         int sizex = fx;
-                        int sizey = fy;
+                        int sizey = tmpindex * fontMetrics.getAscent() + tmpindex* fontMetrics.getDescent();
                         int sizex_max = sizex + wr;
                         textLength = textStr.length();
 
@@ -1629,6 +1638,9 @@ public class WxAppAllService {
 
                     for (int j = 0; j < textLength; j++) {
                         String s1 = String.valueOf(text.charAt(j));
+                        if (StringUtils.isEmpty(s1.trim())) {
+                            continue;
+                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         if (sizex + i1 <= sizex_max) {
                             divGraphics2D_A.drawString(s1, sizex, sizey);
