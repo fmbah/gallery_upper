@@ -18,4 +18,6 @@ public interface WxMenuService {
      */
     String menuCreate(String json);
 
+
+    Object drawpic(String fontToPics, String pic);
 }

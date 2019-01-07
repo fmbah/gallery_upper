@@ -10,7 +10,13 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.net.URL;
 import java.sql.Connection;
 
 /**
@@ -57,13 +63,43 @@ public class TestJava {
 
     @Test
     public void testFont() throws ClassNotFoundException {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String[] fontFamilies = ge.getAvailableFontFamilyNames();
-        for (String f : fontFamilies) {
-            System.out.println(f);
-        }
+//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        String[] fontFamilies = ge.getAvailableFontFamilyNames();
+//        for (String f : fontFamilies) {
+//            System.out.println(f);
+//        }
 
 
+        System.out.println((byte)"a".charAt(0));
     }
 
+    @Test
+    public void testHtmlToImage() {
+        try {
+            generateOutput();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void generateOutput() throws Exception {
+
+        //load the webpage into the editor
+        //JEditorPane ed = new JEditorPane(new URL("http://www.google.com"));
+        JEditorPane ed = new JEditorPane(new URL("https://daily-test.mxth.com/1546056198856_temp7069828511555224172.png"));
+        ed.setSize(2000, 2000);
+
+        //create a new image
+        BufferedImage image = new BufferedImage(ed.getWidth(), ed.getHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+
+        //paint the editor onto the image
+        SwingUtilities.paintComponent(image.createGraphics(),
+                ed,
+                new JPanel(),
+                0, 0, image.getWidth(), image.getHeight());
+        //save the image to file
+        ImageIO.write((RenderedImage) image, "png", new File("html.png"));
+
+    }
 }

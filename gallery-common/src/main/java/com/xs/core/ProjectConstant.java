@@ -35,5 +35,8 @@ public final class ProjectConstant {
     public static final String WX_USER_FONT_TOKEN = "TOKEN";
     public static final String CODE_PRICE = "code_price";
 
+    //二期需求
+    public static final String BRAND_CODE_PRICE = "brandCodePrice:brandId:%s";
+
 
 }

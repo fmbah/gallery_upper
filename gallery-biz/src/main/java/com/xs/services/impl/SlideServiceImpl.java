@@ -74,4 +74,7 @@ public class SlideServiceImpl extends AbstractService<Slide> implements SlideSer
     public Slide findById(Integer id) {
         return super.findById(id);
     }
+
+
+
 }

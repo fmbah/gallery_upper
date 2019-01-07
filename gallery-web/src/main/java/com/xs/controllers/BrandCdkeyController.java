@@ -75,6 +75,18 @@ public class BrandCdkeyController extends BaseController{
         return brandCdkeyService.getCodePrice();
     }
 
+    @ApiOperation(value = "获取各个品牌激活码价格",notes = "获取各个品牌激活码价格")
+    @GetMapping(value = "/getAllBrandCodePrice",produces = "application/json;charset=utf-8")
+    public Object getAllBrandCodePrice() {
+        return brandCdkeyService.getAllBrandCodePrice();
+    }
+
+    @ApiOperation(value = "相应品牌激活码价格设置",notes = "相应品牌激活码价格设置")
+    @PostMapping(value = "/settingOneCodePrice/{price}/{brandId}/",produces = "application/json;charset=utf-8")
+    public Object settingOneCodePrice(@PathVariable BigDecimal price, @PathVariable String brandId) {
+        return brandCdkeyService.settingOneCodePrice(price, brandId);
+    }
+
     /***
     * 详情
     * @return

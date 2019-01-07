@@ -57,4 +57,17 @@ public interface BrandCdkeyService extends Service<BrandCdkey> {
      * @date: 18-11-21 下午2:51
      */
     Object getCodePrice();
+    
+    /**
+     *
+     * 功能描述: 获取各个品牌激活码价格
+     *
+     * @param:
+     * @return: 
+     * @auther: Fmbah
+     * @date: 19-1-2 上午10:31
+     */
+    Object getAllBrandCodePrice();
+
+    Object settingOneCodePrice(BigDecimal price, String brandId);
 }

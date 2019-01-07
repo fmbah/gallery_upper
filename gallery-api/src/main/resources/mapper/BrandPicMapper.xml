@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xs.daos.BrandPicMapper">
+  <resultMap id="BaseResultMap" type="com.xs.beans.BrandPic">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pic_name" jdbcType="VARCHAR" property="picName" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="template_id" jdbcType="INTEGER" property="templateId" />
+    <result column="miniapp_display_src" jdbcType="VARCHAR" property="miniappDisplaySrc" />
+    <result column="latest_apply_src" jdbcType="VARCHAR" property="latestApplySrc" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+</mapper>

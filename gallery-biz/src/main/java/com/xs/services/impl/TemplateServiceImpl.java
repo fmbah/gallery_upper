@@ -74,6 +74,7 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
         if (ratio != null) {
             criteria.andEqualTo("ratio", ratio);
         }
+        criteria.andNotEqualTo("ratio", 0);
         if (categoryId != null) {
             criteria.andEqualTo("categoryId", categoryId);
         }

@@ -3,11 +3,14 @@ package com.xs.services.impl;
 import com.aliyun.oss.OSSClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xs.beans.BrandCdkCodePrice;
+import com.xs.beans.CompanyBrand;
 import com.xs.beans.User;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.ResultGenerator;
 import com.xs.daos.BrandCdkeyMapper;
 import com.xs.beans.BrandCdkey;
+import com.xs.daos.CompanyBrandMapper;
 import com.xs.daos.UserMapper;
 import com.xs.services.BrandCdkeyService;
 import com.xs.core.sservice.AbstractService;
@@ -27,11 +30,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static com.xs.core.ProjectConstant.BRAND_CODE_PRICE;
 import static com.xs.core.ProjectConstant.CODE_PRICE;
 
 
@@ -53,6 +54,8 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
     private UserMapper userMapper;
     @Autowired
     private JedisPool jedisPool;
+    @Autowired
+    private CompanyBrandMapper companyBrandMapper;
 
 
     @Override
@@ -160,5 +163,52 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
         try (Jedis jedis = jedisPool.getResource()) {
             return ResultGenerator.genSuccessResult(jedis.get(CODE_PRICE));
         }
+    }
+
+    @Override
+    public Object getAllBrandCodePrice() {
+        try (Jedis jedis = jedisPool.getResource()) {
+
+
+            List<CompanyBrand> companyBrands = companyBrandMapper.selectAll();
+            for (int i = 0; i < companyBrands.size(); i++) {
+                CompanyBrand companyBrand = companyBrands.get(i);
+                String value = jedis.get(String.format(BRAND_CODE_PRICE, companyBrand.getId().toString()));
+                if (StringUtils.isEmpty(value)) {
+                    jedis.set(String.format(BRAND_CODE_PRICE, companyBrand.getId().toString()), "100");
+                }
+            }
+
+            Set<String> keys = jedis.keys(String.format(BRAND_CODE_PRICE, "*"));
+            List<BrandCdkCodePrice> result = new ArrayList<>();
+            for (String key: keys) {
+                String brandId =  key.split(":")[2];
+                CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(Integer.valueOf(brandId));
+                if (companyBrand != null) {
+                    BrandCdkCodePrice brandCdkCodePrice = new BrandCdkCodePrice();
+                    brandCdkCodePrice.setBrandId(companyBrand.getId());
+                    brandCdkCodePrice.setBrandName(companyBrand.getName());
+                    brandCdkCodePrice.setPayName("品牌会员");
+                    brandCdkCodePrice.setPrice(new BigDecimal(jedis.get(key)));
+                    result.add(brandCdkCodePrice);
+                } else {
+                    jedis.del(key);
+                }
+            }
+
+            return ResultGenerator.genSuccessResult(result);
+        }
+    }
+
+    @Override
+    public Object settingOneCodePrice(BigDecimal price, String brandId) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            String value = jedis.get(String.format(BRAND_CODE_PRICE, brandId));
+            if (StringUtils.isEmpty(value)) {
+                return ResultGenerator.genFailResult("未找到相应品牌激活码支付数据");
+            }
+            jedis.set(String.format(BRAND_CODE_PRICE, brandId), price.toString());
+        }
+        return ResultGenerator.genSuccessResult();
     }
 }

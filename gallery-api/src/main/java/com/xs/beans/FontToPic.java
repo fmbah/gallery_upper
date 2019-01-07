@@ -28,6 +28,8 @@ public class FontToPic extends BaseBean {
 
     private float textW;
 
+    private String writingMode;//从左向右
+
 
     public String getAlign() {
         return align;
@@ -133,5 +135,13 @@ public class FontToPic extends BaseBean {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getWritingMode() {
+        return writingMode;
+    }
+
+    public void setWritingMode(String writingMode) {
+        this.writingMode = writingMode;
     }
 }

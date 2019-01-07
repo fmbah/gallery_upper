@@ -332,7 +332,6 @@ public class WxAppAllService {
 
         HashMap result = new HashMap();
 
-        PageHelper.startPage(page, size);
         Condition condition = new Condition(Template.class);
         Example.Criteria criteria = condition.createCriteria();
         if (categoryId != null) {
@@ -372,6 +371,7 @@ public class WxAppAllService {
 
         criteria.andEqualTo("enabled", true);
         condition.setOrderByClause(" id desc");
+        PageHelper.startPage(page, size);
         List<Template> templates = templateService.findByCondition(condition);
         for (int i = 0, j = templates.size(); i < j; i++) {
             templates.get(i).setDescri(null);
@@ -1269,9 +1269,6 @@ public class WxAppAllService {
                     int subTextWidth = 0;
                     for (int i = 0; i< textLength; i++) {
                         String s1 = String.valueOf(text.charAt(i));
-                        if (StringUtils.isEmpty(s1.trim())) {
-                            continue;
-                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         subTextWidth += i1;
                         if (subTextWidth <= wr) {
@@ -1337,9 +1334,6 @@ public class WxAppAllService {
 
                     for (int j = 0; j < textLength; j++) {
                         String s1 = String.valueOf(text.charAt(j));
-                        if (StringUtils.isEmpty(s1.trim())) {
-                            continue;
-                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         if (sizex + i1 <= sizex_max) {
                             divGraphics2D_A.drawString(s1, sizex, sizey);
@@ -1570,9 +1564,6 @@ public class WxAppAllService {
                     int subTextWidth = 0;
                     for (int i = 0; i< textLength; i++) {
                         String s1 = String.valueOf(text.charAt(i));
-                        if (StringUtils.isEmpty(s1.trim())) {
-                            continue;
-                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         subTextWidth += i1;
                         if (subTextWidth <= wr) {
@@ -1638,9 +1629,6 @@ public class WxAppAllService {
 
                     for (int j = 0; j < textLength; j++) {
                         String s1 = String.valueOf(text.charAt(j));
-                        if (StringUtils.isEmpty(s1.trim())) {
-                            continue;
-                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         if (sizex + i1 <= sizex_max) {
                             divGraphics2D_A.drawString(s1, sizex, sizey);

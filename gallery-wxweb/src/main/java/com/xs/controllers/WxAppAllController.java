@@ -73,6 +73,7 @@ public class WxAppAllController extends BaseController {
         return wxAppAllService.templateInfo(userId, id);
     }
 
+    @IgnoreAuth
     @GetMapping(value = "/templateCenter/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "模板中心 分类/筛选 搜索", notes = "模板中心 分类/筛选 搜索")
     public Object templateCenter(@ApiParam(value = "页码",name = "page", type = "query",defaultValue = "0") @RequestParam(required = false, defaultValue = "0") Integer page,
