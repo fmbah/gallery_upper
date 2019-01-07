@@ -1269,9 +1269,6 @@ public class WxAppAllService {
                     int subTextWidth = 0;
                     for (int i = 0; i< textLength; i++) {
                         String s1 = String.valueOf(text.charAt(i));
-                        if (StringUtils.isEmpty(s1.trim())) {
-                            continue;
-                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         subTextWidth += i1;
                         if (subTextWidth <= wr) {
@@ -1337,9 +1334,6 @@ public class WxAppAllService {
 
                     for (int j = 0; j < textLength; j++) {
                         String s1 = String.valueOf(text.charAt(j));
-                        if (StringUtils.isEmpty(s1.trim())) {
-                            continue;
-                        }
                         int i1 = fontMetrics.stringWidth(s1);
                         if (sizex + i1 <= sizex_max) {
                             divGraphics2D_A.drawString(s1, sizex, sizey);
