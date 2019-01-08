@@ -157,9 +157,6 @@ public class WxMenuServiceImpl implements WxMenuService {
                             int subTextWidth = 0;
                             for (int i = 0; i < textLength; i++) {
                                 String s1 = String.valueOf(text.charAt(i));
-                                if (StringUtils.isEmpty(s1.trim())) {
-                                    continue;
-                                }
                                 int i1 = fontMetrics.stringWidth(s1);
                                 subTextWidth += i1;
                                 if (subTextWidth <= wr) {
@@ -225,9 +222,6 @@ public class WxMenuServiceImpl implements WxMenuService {
 
                             for (int j = 0; j < textLength; j++) {
                                 String s1 = String.valueOf(text.charAt(j));
-                                if (StringUtils.isEmpty(s1.trim())) {
-                                    continue;
-                                }
                                 int i1 = fontMetrics.stringWidth(s1);
                                 if (sizex + i1 <= sizex_max) {
                                     divGraphics2D_A.drawString(s1, sizex, sizey);
@@ -254,11 +248,8 @@ public class WxMenuServiceImpl implements WxMenuService {
                             for (int i = 0; i < t_length; i++) {
                                 char c = text.charAt(i);
                                 String s1 = String.valueOf(c);
-                                if (StringUtils.isEmpty(s1.trim())) {
-                                    continue;
-                                }
                                 int i1;
-                                if ((c >= 'a' && c <= 'z') || c >= 'A' && c <= 'Z') {
+                                if(!(19968 <= (int)c && (int)c <40869)) {
                                     i1 = fontMetrics.stringWidth(s1);
                                 } else {
                                     i1 = fontMetrics.getHeight();
@@ -284,11 +275,8 @@ public class WxMenuServiceImpl implements WxMenuService {
                             for (int b = 0; b < laststr.length(); b++) {
                                 char c = laststr.charAt(b);
                                 String s1 = String.valueOf(c);
-                                if (StringUtils.isEmpty(s1.trim())) {
-                                    continue;
-                                }
                                 int i1;
-                                if ((c >= 'a' && c <= 'z') || c >= 'A' && c <= 'Z') {
+                                if(!(19968 <= (int)c && (int)c <40869)) {
                                     i1 = fontMetrics.stringWidth(s1);
                                 } else {
                                     i1 = fontMetrics.getHeight();
@@ -314,7 +302,7 @@ public class WxMenuServiceImpl implements WxMenuService {
                                     char c = text.charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
-                                    if ((c >= 'a' && c <= 'z') || c >= 'A' && c <= 'Z') {
+                                    if(!(19968 <= (int)c && (int)c <40869)) {
                                         letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.stringWidth(s1), BufferedImage.TYPE_INT_RGB);
                                         Graphics graphics1 = letter.getGraphics();
                                         graphics1.setColor(Color.BLUE);
@@ -322,12 +310,8 @@ public class WxMenuServiceImpl implements WxMenuService {
                                         Graphics2D letterGraphics = letter.createGraphics();
                                         letterGraphics.setFont(font);
                                         letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.stringWidth(s1) / 2);
                                         letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getDescent());
                                         letterGraphics.dispose();
-                                    }
-                                    if (StringUtils.isEmpty(s1.trim())) {
-                                        continue;
                                     }
 
                                     if (letter != null) {
@@ -347,7 +331,7 @@ public class WxMenuServiceImpl implements WxMenuService {
                                         Graphics2D graphics = (Graphics2D)divGraphics2D_A.create();
                                         String s1 = String.valueOf(c);
                                         BufferedImage letter = null;
-                                        if ((c >= 'a' && c <= 'z') || c >= 'A' && c <= 'Z') {
+                                        if(!(19968 <= (int)c && (int)c <40869)) {
                                             letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.stringWidth(s1), BufferedImage.TYPE_INT_RGB);
                                             Graphics graphics1 = letter.getGraphics();
                                             graphics1.setColor(Color.BLUE);
@@ -355,12 +339,8 @@ public class WxMenuServiceImpl implements WxMenuService {
                                             Graphics2D letterGraphics = letter.createGraphics();
                                             letterGraphics.setFont(font);
                                             letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-                                            letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.stringWidth(s1) / 2);
                                             letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getDescent());
                                             letterGraphics.dispose();
-                                        }
-                                        if (StringUtils.isEmpty(s1.trim())) {
-                                            continue;
                                         }
 
                                         if (letter != null) {
@@ -385,14 +365,14 @@ public class WxMenuServiceImpl implements WxMenuService {
                                 }
 
                                 sizey = fy;
-                                t_length = textStrs.get(t_multiple - 1).length();
+                                t_length = textStrs.get(t_multiple).length();
 
                                 for (int j = 0; j < t_length; j++) {
                                     Graphics2D graphics = (Graphics2D)divGraphics2D_A.create();
-                                    char c = textStrs.get(t_multiple - 1).charAt(j);
+                                    char c = textStrs.get(t_multiple).charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
-                                    if ((c >= 'a' && c <= 'z') || c >= 'A' && c <= 'Z') {
+                                    if(!(19968 <= (int)c && (int)c <40869)) {
                                         letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.stringWidth(s1), BufferedImage.TYPE_INT_RGB);
                                         Graphics graphics1 = letter.getGraphics();
                                         graphics1.setColor(Color.BLUE);
@@ -400,12 +380,8 @@ public class WxMenuServiceImpl implements WxMenuService {
                                         Graphics2D letterGraphics = letter.createGraphics();
                                         letterGraphics.setFont(font);
                                         letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.stringWidth(s1) / 2);
                                         letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getDescent());
                                         letterGraphics.dispose();
-                                    }
-                                    if (StringUtils.isEmpty(s1.trim())) {
-                                        continue;
                                     }
 
                                     if (letter != null) {
