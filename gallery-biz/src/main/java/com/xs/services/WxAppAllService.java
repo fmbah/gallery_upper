@@ -1208,6 +1208,7 @@ public class WxAppAllService {
                 logger.info("开始处理第{}个文字描述,并合并图片....", index.get());
 
                 String text = fontToPic.getText();
+                String writingMode = fontToPic.getWritingMode();//书写模式,空则横版,否则竖着从左到右一竖排书写
                 float rotate = fontToPic.getRotate();//旋转角度
                 float w = fontToPic.getW();//div宽
                 float h = fontToPic.getH();//div高
@@ -1255,40 +1256,70 @@ public class WxAppAllService {
                 divGraphics2D_A.setFont(font);
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
 
-                int textWidth = fontMetrics.stringWidth(text);
-                int fx = 0;
-                int fy = 0;
-                fy = fontMetrics.getAscent();
-                //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
-                //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
-                if (textWidth > wr) {
-                    List<String> textStrs = new ArrayList<>();
-                    StringBuilder sb = new StringBuilder();
+                if (StringUtils.isEmpty(writingMode)) {
+                    int textWidth = fontMetrics.stringWidth(text);
+                    int fx = 0;
+                    int fy = 0;
+                    fy = fontMetrics.getAscent();
+                    //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
+                    //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
+                    if (textWidth > wr) {
+                        List<String> textStrs = new ArrayList<>();
+                        StringBuilder sb = new StringBuilder();
 
-                    int textLength = text.length();
-                    int subTextWidth = 0;
-                    for (int i = 0; i< textLength; i++) {
-                        String s1 = String.valueOf(text.charAt(i));
-                        int i1 = fontMetrics.stringWidth(s1);
-                        subTextWidth += i1;
-                        if (subTextWidth <= wr) {
-                            sb.append(s1);
-                        } else {
-                            textStrs.add(sb.toString());
-                            sb = new StringBuilder(s1);
-                            subTextWidth = i1;
+                        int textLength = text.length();
+                        int subTextWidth = 0;
+                        for (int i = 0; i < textLength; i++) {
+                            String s1 = String.valueOf(text.charAt(i));
+                            int i1 = fontMetrics.stringWidth(s1);
+                            subTextWidth += i1;
+                            if (subTextWidth <= wr) {
+                                sb.append(s1);
+                            } else {
+                                textStrs.add(sb.toString());
+                                sb = new StringBuilder(s1);
+                                subTextWidth = i1;
+                            }
                         }
-                    }
 
-                    textStrs.add(sb.toString());
+                        textStrs.add(sb.toString());
 
-                    int tmpindex = 0;
-                    for (String textStr: textStrs) {
+                        int tmpindex = 0;
+                        for (String textStr : textStrs) {
 
-                        tmpindex++;
+                            tmpindex++;
 
-                        textWidth = fontMetrics.stringWidth(textStr);
+                            textWidth = fontMetrics.stringWidth(textStr);
 
+                            if ("center".equals(align)) {
+                                fx = (wr - textWidth) / 2;//文字距离左侧距离
+                            } else if ("left".equals(align)) {
+                                fx = 0;//文字距离左侧距离
+                            } else {
+                                fx = wr - textWidth;//文字距离左侧距离
+
+                            }
+
+                            int sizex = fx;
+                            int sizey = tmpindex * fontMetrics.getAscent() + tmpindex * fontMetrics.getDescent();
+                            int sizex_max = sizex + wr;
+                            textLength = textStr.length();
+
+                            for (int j = 0; j < textLength; j++) {
+                                String s1 = String.valueOf(textStr.charAt(j));
+                                int i1 = fontMetrics.stringWidth(s1);
+                                if (sizex + i1 <= sizex_max) {
+                                    divGraphics2D_A.drawString(s1, sizex, sizey);
+                                    sizex += i1;
+                                } else {
+                                    sizey += fontMetrics.getHeight();
+                                    divGraphics2D_A.drawString(s1, fx, sizey);
+                                    sizex = i1;
+                                }
+                            }
+                        }
+
+                    } else {
                         if ("center".equals(align)) {
                             fx = (wr - textWidth) / 2;//文字距离左侧距离
                         } else if ("left".equals(align)) {
@@ -1299,12 +1330,12 @@ public class WxAppAllService {
                         }
 
                         int sizex = fx;
-                        int sizey = tmpindex * fontMetrics.getAscent() + tmpindex* fontMetrics.getDescent();
+                        int sizey = fy;
                         int sizex_max = sizex + wr;
-                        textLength = textStr.length();
+                        int textLength = text.length();
 
                         for (int j = 0; j < textLength; j++) {
-                            String s1 = String.valueOf(textStr.charAt(j));
+                            String s1 = String.valueOf(text.charAt(j));
                             int i1 = fontMetrics.stringWidth(s1);
                             if (sizex + i1 <= sizex_max) {
                                 divGraphics2D_A.drawString(s1, sizex, sizey);
@@ -1316,33 +1347,170 @@ public class WxAppAllService {
                             }
                         }
                     }
-
                 } else {
-                    if ("center".equals(align)) {
-                        fx = (wr - textWidth) / 2;//文字距离左侧距离
-                    } else if ("left".equals(align)) {
-                        fx = 0;//文字距离左侧距离
-                    } else {
-                        fx = wr - textWidth;//文字距离左侧距离
+                    if ("vertical-lr".equals(writingMode)) {//默认就这一种
+                        //计算文字总高度(包括中英文)
+                        //分析共?列文字,超出列不显示
+                        //计算文字每列容纳的文字集合,并存储起来
+                        //对齐方式,如居左(顶头书写)/居右(底书写)/居中(上下留有等距离空间书写)
+                        int t_length = text.length();
 
-                    }
+                        List<String> textStrs = new ArrayList<>();
+                        StringBuilder sb = new StringBuilder();
 
-                    int sizex = fx;
-                    int sizey = fy;
-                    int sizex_max = sizex + wr;
-                    int textLength = text.length();
+                        int subTextHeight = 0;
+                        for (int i = 0; i < t_length; i++) {
+                            char c = text.charAt(i);
+                            String s1 = String.valueOf(c);
+                            int i1;
+                            if(!(19968 <= (int)c && (int)c <40869)) {
+                                i1 = fontMetrics.stringWidth(s1);
+                            } else {
+                                i1 = fontMetrics.getHeight();
+                            }
 
-                    for (int j = 0; j < textLength; j++) {
-                        String s1 = String.valueOf(text.charAt(j));
-                        int i1 = fontMetrics.stringWidth(s1);
-                        if (sizex + i1 <= sizex_max) {
-                            divGraphics2D_A.drawString(s1, sizex, sizey);
-                            sizex += i1;
-                        } else {
-                            sizey += fontMetrics.getHeight();
-                            divGraphics2D_A.drawString(s1, fx, sizey);
-                            sizex = i1;
+                            subTextHeight += i1;
+                            if (subTextHeight <= hr) {
+                                sb.append(s1);
+                            } else {
+                                textStrs.add(sb.toString());
+                                sb = new StringBuilder(s1);
+                                subTextHeight = i1;
+                            }
                         }
+
+                        textStrs.add(sb.toString());
+
+                        int fx = 0;
+                        int fy = 0;
+                        int t_multiple = textStrs.size() - 1;//共?列
+                        int t_remainder = 0;//最后一列高度
+                        String laststr = textStrs.get(t_multiple);
+                        for (int b = 0; b < laststr.length(); b++) {
+                            char c = laststr.charAt(b);
+                            String s1 = String.valueOf(c);
+                            int i1;
+                            if(!(19968 <= (int)c && (int)c <40869)) {
+                                i1 = fontMetrics.stringWidth(s1);
+                            } else {
+                                i1 = fontMetrics.getHeight();
+                            }
+                            t_remainder += i1;
+                        }
+
+
+                        if (t_multiple == 0) {
+                            if ("center".equals(align)) {
+                                fy = (hr - t_remainder) / 2;
+                            } else if ("left".equals(align)) {
+                                fy = fontMetrics.getAscent();
+                            } else {
+                                fy = hr - t_remainder;
+                            }
+
+                            int sizex = fx;
+                            int sizey = fy;
+
+                            for (int j = 0; j < t_length; j++) {
+                                Graphics2D graphics = (Graphics2D)divGraphics2D_A.create();
+                                char c = text.charAt(j);
+                                String s1 = String.valueOf(c);
+                                BufferedImage letter = null;
+//                                    if(!(19968 <= (int)c && (int)c <40869)) {
+//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
+//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
+//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
+//                                        Graphics2D letterGraphics = letter.createGraphics();
+//                                        letterGraphics.setFont(font);
+//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
+//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
+//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
+//                                        letterGraphics.dispose();
+//                                        graphics1.dispose();
+//                                    }
+
+                                if (letter != null) {
+                                    graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
+                                } else {
+                                    graphics.drawString(s1, sizex, sizey);
+                                }
+                                sizey += fontMetrics.getHeight();
+                                graphics.dispose();
+                            }
+                        } else {
+                            int sizex = fx;
+                            int sizey = fontMetrics.getAscent();
+                            for (int x = 0; x < t_multiple; x++) {
+                                String textStr = textStrs.get(x);
+                                for (char c: textStr.toCharArray()) {
+                                    Graphics2D graphics = (Graphics2D)divGraphics2D_A.create();
+                                    String s1 = String.valueOf(c);
+                                    BufferedImage letter = null;
+//                                    if(!(19968 <= (int)c && (int)c <40869)) {
+//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
+//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
+//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
+//                                        Graphics2D letterGraphics = letter.createGraphics();
+//                                        letterGraphics.setFont(font);
+//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
+//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
+//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
+//                                        letterGraphics.dispose();
+//                                        graphics1.dispose();
+//                                    }
+
+                                    if (letter != null) {
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
+                                    } else {
+                                        graphics.drawString(s1, sizex, sizey);
+                                    }
+                                    sizey += fontMetrics.getHeight();
+                                    graphics.dispose();
+                                }
+                                int width = fontMetrics.stringWidth(String.valueOf(textStr.charAt(0)));
+                                sizex += width;
+                                sizey = fontMetrics.getAscent();
+                            }
+
+                            if ("center".equals(align)) {
+                                fy = (hr - t_remainder) / 2;
+                            } else if ("left".equals(align)) {
+                                fy = fontMetrics.getAscent();
+                            } else {
+                                fy = hr - t_remainder;
+                            }
+
+                            sizey = fy;
+                            t_length = textStrs.get(t_multiple).length();
+
+                            for (int j = 0; j < t_length; j++) {
+                                Graphics2D graphics = (Graphics2D)divGraphics2D_A.create();
+                                char c = textStrs.get(t_multiple).charAt(j);
+                                String s1 = String.valueOf(c);
+                                BufferedImage letter = null;
+//                                    if(!(19968 <= (int)c && (int)c <40869)) {
+//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
+//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
+//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
+//                                        Graphics2D letterGraphics = letter.createGraphics();
+//                                        letterGraphics.setFont(font);
+//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
+//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
+//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
+//                                        letterGraphics.dispose();
+//                                        graphics1.dispose();
+//                                    }
+
+                                if (letter != null) {
+                                    graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
+                                } else {
+                                    graphics.drawString(s1, sizex, sizey);
+                                }
+                                sizey += fontMetrics.getHeight();
+                                graphics.dispose();
+                            }
+                        }
+
                     }
                 }
                 divGraphics2D.dispose();

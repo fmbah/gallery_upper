@@ -302,20 +302,21 @@ public class WxMenuServiceImpl implements WxMenuService {
                                     char c = text.charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
-                                    if(!(19968 <= (int)c && (int)c <40869)) {
-                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.stringWidth(s1), BufferedImage.TYPE_INT_RGB);
-                                        Graphics graphics1 = letter.getGraphics();
-                                        graphics1.setColor(Color.BLUE);
-                                        graphics1.fillRect(0 ,0 , fontMetrics.getHeight(), fontMetrics.stringWidth(s1));
-                                        Graphics2D letterGraphics = letter.createGraphics();
-                                        letterGraphics.setFont(font);
-                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getDescent());
-                                        letterGraphics.dispose();
-                                    }
+//                                    if(!(19968 <= (int)c && (int)c <40869)) {
+//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
+//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
+//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
+//                                        Graphics2D letterGraphics = letter.createGraphics();
+//                                        letterGraphics.setFont(font);
+//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
+//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
+//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
+//                                        letterGraphics.dispose();
+//                                        graphics1.dispose();
+//                                    }
 
                                     if (letter != null) {
-                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey, null);
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
@@ -331,20 +332,21 @@ public class WxMenuServiceImpl implements WxMenuService {
                                         Graphics2D graphics = (Graphics2D)divGraphics2D_A.create();
                                         String s1 = String.valueOf(c);
                                         BufferedImage letter = null;
-                                        if(!(19968 <= (int)c && (int)c <40869)) {
-                                            letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.stringWidth(s1), BufferedImage.TYPE_INT_RGB);
-                                            Graphics graphics1 = letter.getGraphics();
-                                            graphics1.setColor(Color.BLUE);
-                                            graphics1.fillRect(0 ,0 , fontMetrics.getHeight(), fontMetrics.stringWidth(s1));
-                                            Graphics2D letterGraphics = letter.createGraphics();
-                                            letterGraphics.setFont(font);
-                                            letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-                                            letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getDescent());
-                                            letterGraphics.dispose();
-                                        }
+//                                    if(!(19968 <= (int)c && (int)c <40869)) {
+//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
+//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
+//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
+//                                        Graphics2D letterGraphics = letter.createGraphics();
+//                                        letterGraphics.setFont(font);
+//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
+//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
+//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
+//                                        letterGraphics.dispose();
+//                                        graphics1.dispose();
+//                                    }
 
                                         if (letter != null) {
-                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey, null);
+                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
                                         } else {
                                             graphics.drawString(s1, sizex, sizey);
                                         }
@@ -372,20 +374,21 @@ public class WxMenuServiceImpl implements WxMenuService {
                                     char c = textStrs.get(t_multiple).charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
-                                    if(!(19968 <= (int)c && (int)c <40869)) {
-                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.stringWidth(s1), BufferedImage.TYPE_INT_RGB);
-                                        Graphics graphics1 = letter.getGraphics();
-                                        graphics1.setColor(Color.BLUE);
-                                        graphics1.fillRect(0 ,0 , fontMetrics.getHeight(), fontMetrics.stringWidth(s1));
-                                        Graphics2D letterGraphics = letter.createGraphics();
-                                        letterGraphics.setFont(font);
-                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getDescent());
-                                        letterGraphics.dispose();
-                                    }
+//                                    if(!(19968 <= (int)c && (int)c <40869)) {
+//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
+//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
+//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
+//                                        Graphics2D letterGraphics = letter.createGraphics();
+//                                        letterGraphics.setFont(font);
+//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
+//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
+//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
+//                                        letterGraphics.dispose();
+//                                        graphics1.dispose();
+//                                    }
 
                                     if (letter != null) {
-                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey, null);
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
