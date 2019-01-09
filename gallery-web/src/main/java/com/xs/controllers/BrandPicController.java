@@ -66,6 +66,14 @@ public class BrandPicController extends BaseController{
         return ResultGenerator.genSuccessResult();
     }
 
+
+    @ApiOperation(value = "审核",notes = "审核")
+    @PostMapping(value = "/audit/{id}/{status}/",produces = "application/json;charset=utf-8")
+    public Object audit(@PathVariable Integer id, @PathVariable Byte status, @RequestParam String remark) {
+        brandPicService.audit(id, status, remark);
+        return ResultGenerator.genSuccessResult();
+    }
+
     /***
     * 详情
     * @return

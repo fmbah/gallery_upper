@@ -71,18 +71,25 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
         Template template = null;
         if (model.getStatus().byteValue() == 1) {
             model.setMiniappDisplaySrc(model.getLatestApplySrc());
-            template = new Template();
-            template.setCategoryId(0);
-            template.setBrandId(model.getBrandId());
-            template.setRatio(new Byte("0"));
-            template.setEnabled(true);
-            template.setPreviewImageUrl(model.getLatestApplySrc());
-            template.setDescri(StringUtils.EMPTY);
-            template.setName(model.getPicName());
-            template.setGmtModified(now);
-            template.setGmtCreate(now);
-            template.setGratis(false);
-            templateMapper.insert(template);
+            if (model.getTemplateId() == null || model.getTemplateId() == 0) {
+                template = new Template();
+                template.setCategoryId(0);
+                template.setBrandId(model.getBrandId());
+                template.setRatio(new Byte("0"));
+                template.setEnabled(true);
+                template.setPreviewImageUrl(model.getLatestApplySrc());
+                template.setDescri(StringUtils.EMPTY);
+                template.setName(model.getPicName());
+                template.setGmtModified(now);
+                template.setGmtCreate(now);
+                template.setGratis(false);
+                templateMapper.insert(template);
+            } else {
+                template = templateMapper.selectByPrimaryKey(model.getTemplateId());
+                template.setGmtModified(now);
+                template.setPreviewImageUrl(model.getLatestApplySrc());
+                templateMapper.updateByPrimaryKey(template);
+            }
         }
         if (model.getStatus().byteValue() == 2) {
 
@@ -132,5 +139,17 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
         }
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
+    }
+
+    @Override
+    public void audit(Integer id, Byte status, String remark) {
+        BrandPic brandPic = this.findById(id);
+        if (brandPic == null) {
+            throw new ServiceException("品牌图片数据不存在");
+        }
+
+        brandPic.setStatus(status);
+        brandPic.setRemark(StringUtils.isEmpty(remark) ? StringUtils.EMPTY : remark);
+        this.update(brandPic);
     }
 }

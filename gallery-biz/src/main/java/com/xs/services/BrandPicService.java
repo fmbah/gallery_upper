@@ -12,4 +12,6 @@ import com.xs.core.sservice.Service;
 public interface BrandPicService extends Service<BrandPic> {
 
     Object queryWithPage(int page, int size, Byte status, String picName, Integer brandId);
+
+    void audit(Integer id, Byte status, String remark);
 }
