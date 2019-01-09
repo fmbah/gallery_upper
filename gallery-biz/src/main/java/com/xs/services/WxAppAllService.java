@@ -375,6 +375,7 @@ public class WxAppAllService {
         List<Template> templates = templateService.findByCondition(condition);
         for (int i = 0, j = templates.size(); i < j; i++) {
             templates.get(i).setDescri(null);
+            templates.get(i).setTpText(templates.get(i).getCategoryId() == 0 ? "图片" : "模板");
         }
         PageInfo pageInfo = new PageInfo(templates);
 
@@ -468,6 +469,7 @@ public class WxAppAllService {
                         Template next = iterator.next();
 
                         next.setDescri(null);
+                        next.setTpText(next.getCategoryId() == 0 ? "图片" : "模板");
 
                         if (!next.getEnabled()) {
                             iterator.remove();

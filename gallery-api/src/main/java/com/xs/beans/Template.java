@@ -90,6 +90,12 @@ public class Template extends BaseBean {
     @Transient
     @ApiModelProperty(value = "模板分类")
     private TemplateCategory templateCategory;
+
+    @Transient
+    @ApiModelProperty(value = "模板/图片")
+    private String tpText;
+
+
     /**
      * @return id
      */
@@ -274,5 +280,13 @@ public class Template extends BaseBean {
 
     public void setGratis(Boolean gratis) {
         this.gratis = gratis;
+    }
+
+    public String getTpText() {
+        return tpText;
+    }
+
+    public void setTpText(String tpText) {
+        this.tpText = tpText;
     }
 }
