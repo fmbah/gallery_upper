@@ -457,6 +457,8 @@ public class WxAppAllService {
                 if (templates != null && templates.size() > 0) {
                     for (Template template : templates) {
                         template.setHasCollection(true);
+                        template.setDescri(null);
+                        template.setTpText(template.getCategoryId() == 0 ? "图片" : "模板");
                     }
                 }
             }
@@ -467,9 +469,6 @@ public class WxAppAllService {
                     Iterator<Template> iterator = templates.iterator();
                     while (iterator.hasNext()) {
                         Template next = iterator.next();
-
-                        next.setDescri(null);
-                        next.setTpText(next.getCategoryId() == 0 ? "图片" : "模板");
 
                         if (!next.getEnabled()) {
                             iterator.remove();
