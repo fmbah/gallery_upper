@@ -1363,11 +1363,11 @@ public class WxAppAllService {
                             char c = text.charAt(i);
                             String s1 = String.valueOf(c);
                             int i1;
-                            if(!(19968 <= (int)c && (int)c <40869)) {
-                                i1 = fontMetrics.stringWidth(s1);
-                            } else {
+//                            if(!(19968 <= (int)c && (int)c <40869)) {
+//                                i1 = fontMetrics.stringWidth(s1);
+//                            } else {
                                 i1 = fontMetrics.getHeight();
-                            }
+//                            }
 
                             subTextHeight += i1;
                             if (subTextHeight <= hr) {
