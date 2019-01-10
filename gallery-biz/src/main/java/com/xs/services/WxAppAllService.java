@@ -167,6 +167,9 @@ public class WxAppAllService {
                     templateConditionCriteria.andEqualTo("brandId", companyBrand.getId());
                     templateConditionCriteria.andEqualTo("enabled", true);
                     List<Template> templateList = templateService.findByCondition(templateCondition);
+                    for (int i = 0; i < templateList.size(); i++) {
+                        templateList.get(i).setTpText(templateList.get(i).getCategoryId() == 0 ? "图片" : "模板");
+                    }
                     companyBrand.setTemplateList(templateList);
                 }
             }
