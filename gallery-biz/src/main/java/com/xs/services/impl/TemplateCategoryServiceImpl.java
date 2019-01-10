@@ -160,9 +160,9 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
     public TemplateCategory findById(Integer id) {
 
         TemplateCategory templateCategory = super.findById(id);
-        if (templateCategory == null) {
-            throw new ServiceException("分类数据不存在或已删除");
-        }
+//        if (templateCategory == null) {
+//            throw new ServiceException("分类数据不存在或已删除");
+//        }
         if (!StringUtils.isEmpty(templateCategory.getTemplateFilters())) {
             Gson gson = new Gson();
             List<HashMap> filters = gson.fromJson(templateCategory.getTemplateFilters(), new TypeToken<List<HashMap>>(){}.getType());
