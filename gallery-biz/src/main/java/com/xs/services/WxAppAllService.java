@@ -311,6 +311,7 @@ public class WxAppAllService {
 
         template.setCanUse(canUse);
         template.setTemplateCategory(templateCategory);
+        template.setTpText(template.getCategoryId() == 0 ? "图片" : "模板");
 
         this.templateIncr(userId, template.getId(), 3);
 
