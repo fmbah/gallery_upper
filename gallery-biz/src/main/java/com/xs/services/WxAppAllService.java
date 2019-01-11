@@ -1225,7 +1225,7 @@ public class WxAppAllService {
                 String color = fontToPic.getColor();//"rgba(234, 12, 12, 1)"
                 String family = fontToPic.getFamily();
 
-                if (StringUtils.isEmpty(text) || StringUtils.isEmpty(align)
+                if (StringUtils.isEmpty(text_no_process) || StringUtils.isEmpty(align)
                         || StringUtils.isEmpty(weight) || StringUtils.isEmpty(color)
                         || StringUtils.isEmpty(family)) {
                     logger.warn("字体描述中有值为空.....");
