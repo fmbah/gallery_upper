@@ -1319,7 +1319,7 @@ public class WxAppAllService {
                                         divGraphics2D_A.drawString(s1, sizex, sizey);
                                         sizex += i1;
                                     } else {
-                                        sizey += fontMetrics.getHeight();
+                                        sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
                                         divGraphics2D_A.drawString(s1, fx, sizey);
                                         sizex = i1;
                                     }
@@ -1349,7 +1349,7 @@ public class WxAppAllService {
                                     divGraphics2D_A.drawString(s1, sizex, sizey);
                                     sizex += i1;
                                 } else {
-                                    sizey += fontMetrics.getHeight();
+                                    sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
                                     divGraphics2D_A.drawString(s1, fx, sizey);
                                     sizex = i1;
                                 }
@@ -1446,7 +1446,7 @@ public class WxAppAllService {
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
-                                    sizey += fontMetrics.getHeight();
+                                    sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
                                     graphics.dispose();
                                 }
                                 brx += fontMetrics.stringWidth(String.valueOf(text.charAt(0)));
@@ -1477,7 +1477,7 @@ public class WxAppAllService {
                                         } else {
                                             graphics.drawString(s1, sizex, sizey);
                                         }
-                                        sizey += fontMetrics.getHeight();
+                                        sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
                                         graphics.dispose();
                                     }
                                     int width = fontMetrics.stringWidth(String.valueOf(textStr.charAt(0)));
@@ -1519,7 +1519,7 @@ public class WxAppAllService {
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
-                                    sizey += fontMetrics.getHeight();
+                                    sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
                                     graphics.dispose();
                                 }
                                 brx += (fontMetrics.stringWidth(String.valueOf(textStrs.get(t_multiple).charAt(0))) * 2);
