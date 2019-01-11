@@ -1324,7 +1324,7 @@ public class WxAppAllService {
                                         sizex = i1;
                                     }
                                 }
-                                bry += sizey;
+                                bry += sizey + fontMetrics.getDescent();
                             }
 
                         } else {
@@ -1354,7 +1354,7 @@ public class WxAppAllService {
                                     sizex = i1;
                                 }
                             }
-                            bry += sizey;
+                            bry += sizey + fontMetrics.getDescent();
                         }
                     }
                 } else {
