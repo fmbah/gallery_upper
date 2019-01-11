@@ -1308,7 +1308,7 @@ public class WxAppAllService {
                                 }
 
                                 int sizex = fx;
-                                int sizey = tmpindex * fontMetrics.getAscent() + tmpindex * fontMetrics.getDescent();
+                                int sizey = tmpindex * fontMetrics.getHeight();
                                 int sizex_max = sizex + wr;
                                 textLength = textStr.length();
 
