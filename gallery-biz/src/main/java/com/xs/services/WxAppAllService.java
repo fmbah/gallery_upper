@@ -1267,7 +1267,7 @@ public class WxAppAllService {
                         int textWidth = fontMetrics.stringWidth(text);
                         int fx = 0;
                         int fy = 0;
-                        fy = bry;
+                        fy = fontMetrics.getAscent() + bry;
                         //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
                         //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
                         if (textWidth > wr) {
@@ -1319,7 +1319,7 @@ public class WxAppAllService {
                                         divGraphics2D_A.drawString(s1, sizex, sizey);
                                         sizex += i1;
                                     } else {
-                                        sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
+                                        sizey += fontMetrics.getHeight();
                                         divGraphics2D_A.drawString(s1, fx, sizey);
                                         sizex = i1;
                                     }
@@ -1349,7 +1349,7 @@ public class WxAppAllService {
                                     divGraphics2D_A.drawString(s1, sizex, sizey);
                                     sizex += i1;
                                 } else {
-                                    sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
+                                    sizey += fontMetrics.getHeight();
                                     divGraphics2D_A.drawString(s1, fx, sizey);
                                     sizex = i1;
                                 }
@@ -1452,7 +1452,7 @@ public class WxAppAllService {
                                 brx += fontMetrics.stringWidth(String.valueOf(text.charAt(0)));
                             } else {
                                 int sizex = fx;
-                                int sizey = 0;
+                                int sizey = fontMetrics.getAscent();
                                 for (int x = 0; x < t_multiple; x++) {
                                     String textStr = textStrs.get(x);
                                     for (char c : textStr.toCharArray()) {
@@ -1477,7 +1477,7 @@ public class WxAppAllService {
                                         } else {
                                             graphics.drawString(s1, sizex, sizey);
                                         }
-                                        sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
+                                        sizey += fontMetrics.getHeight();
                                         graphics.dispose();
                                     }
                                     int width = fontMetrics.stringWidth(String.valueOf(textStr.charAt(0)));
@@ -1519,7 +1519,7 @@ public class WxAppAllService {
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
-                                    sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
+                                    sizey += fontMetrics.getHeight();
                                     graphics.dispose();
                                 }
                                 brx += (fontMetrics.stringWidth(String.valueOf(textStrs.get(t_multiple).charAt(0))) * 2);
