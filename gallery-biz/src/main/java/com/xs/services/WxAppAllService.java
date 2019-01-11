@@ -1267,7 +1267,7 @@ public class WxAppAllService {
                         int textWidth = fontMetrics.stringWidth(text);
                         int fx = 0;
                         int fy = 0;
-                        fy = fontMetrics.getAscent() + bry + fontMetrics.getLeading();
+                        fy = bry;
                         //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
                         //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
                         if (textWidth > wr) {
@@ -1446,13 +1446,13 @@ public class WxAppAllService {
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
-                                    sizey += fontMetrics.getHeight() + fontMetrics.getLeading();
+                                    sizey += fontMetrics.getHeight();
                                     graphics.dispose();
                                 }
                                 brx += fontMetrics.stringWidth(String.valueOf(text.charAt(0)));
                             } else {
                                 int sizex = fx;
-                                int sizey = fontMetrics.getAscent() + fontMetrics.getLeading();
+                                int sizey = 0;
                                 for (int x = 0; x < t_multiple; x++) {
                                     String textStr = textStrs.get(x);
                                     for (char c : textStr.toCharArray()) {
