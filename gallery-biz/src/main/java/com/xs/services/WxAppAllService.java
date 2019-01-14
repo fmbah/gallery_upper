@@ -1261,7 +1261,7 @@ public class WxAppAllService {
                 divGraphics2D_A.setFont(font);
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
 
-                if (StringUtils.isEmpty(writingMode)) {
+                if (!"vertical-lr".equals(writingMode)) {
                     int bry = 0;
                     for (String text: text_no_process.split("<br/>")) {
                         int textWidth = fontMetrics.stringWidth(text);
@@ -1279,6 +1279,9 @@ public class WxAppAllService {
                             for (int i = 0; i < textLength; i++) {
                                 String s1 = String.valueOf(text.charAt(i));
                                 int i1 = fontMetrics.stringWidth(s1);
+                                if (StringUtils.SPACE.equals(s1)) {
+                                    i1 /= 2;
+                                }
                                 subTextWidth += i1;
                                 if (subTextWidth <= wr) {
                                     sb.append(s1);
@@ -1315,6 +1318,9 @@ public class WxAppAllService {
                                 for (int j = 0; j < textLength; j++) {
                                     String s1 = String.valueOf(textStr.charAt(j));
                                     int i1 = fontMetrics.stringWidth(s1);
+                                    if (StringUtils.SPACE.equals(s1)) {
+                                        i1 /= 2;
+                                    }
                                     if (sizex + i1 <= sizex_max) {
                                         divGraphics2D_A.drawString(s1, sizex, sizey);
                                         sizex += i1;
@@ -1345,6 +1351,9 @@ public class WxAppAllService {
                             for (int j = 0; j < textLength; j++) {
                                 String s1 = String.valueOf(text.charAt(j));
                                 int i1 = fontMetrics.stringWidth(s1);
+                                if (StringUtils.SPACE.equals(s1)) {
+                                    i1 /= 2;
+                                }
                                 if (sizex + i1 <= sizex_max) {
                                     divGraphics2D_A.drawString(s1, sizex, sizey);
                                     sizex += i1;
@@ -1375,11 +1384,10 @@ public class WxAppAllService {
                                 char c = text.charAt(i);
                                 String s1 = String.valueOf(c);
                                 int i1;
-//                                    if (!(19968 <= (int) c && (int) c < 40869)) {
-//                                        i1 = fontMetrics.stringWidth(s1);
-//                                    } else {
                                 i1 = fontMetrics.getHeight();
-//                                    }
+                                if (StringUtils.SPACE.equals(s1)) {
+                                    i1 /= 2;
+                                }
 
                                 subTextHeight += i1;
                                 if (subTextHeight <= hr) {
@@ -1402,11 +1410,10 @@ public class WxAppAllService {
                                 char c = laststr.charAt(b);
                                 String s1 = String.valueOf(c);
                                 int i1;
-//                                    if (!(19968 <= (int) c && (int) c < 40869)) {
-//                                        i1 = fontMetrics.stringWidth(s1);
-//                                    } else {
                                 i1 = fontMetrics.getHeight();
-//                                    }
+                                if (StringUtils.SPACE.equals(s1)) {
+                                    i1 /= 2;
+                                }
                                 t_remainder += i1;
                             }
 
@@ -1428,25 +1435,17 @@ public class WxAppAllService {
                                     char c = text.charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
-//                                    if(!(19968 <= (int)c && (int)c <40869)) {
-//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
-//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
-//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
-//                                        Graphics2D letterGraphics = letter.createGraphics();
-//                                        letterGraphics.setFont(font);
-//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
-//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
-//                                        letterGraphics.dispose();
-//                                        graphics1.dispose();
-//                                    }
 
                                     if (letter != null) {
                                         graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
-                                    sizey += fontMetrics.getHeight();
+                                    if (StringUtils.SPACE.equals(s1)) {
+                                        sizey = sizey + fontMetrics.getHeight() / 2;
+                                    } else {
+                                        sizey += fontMetrics.getHeight();
+                                    }
                                     graphics.dispose();
                                 }
                                 brx += fontMetrics.stringWidth(String.valueOf(text.charAt(0)));
@@ -1459,30 +1458,22 @@ public class WxAppAllService {
                                         Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
                                         String s1 = String.valueOf(c);
                                         BufferedImage letter = null;
-//                                    if(!(19968 <= (int)c && (int)c <40869)) {
-//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
-//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
-//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
-//                                        Graphics2D letterGraphics = letter.createGraphics();
-//                                        letterGraphics.setFont(font);
-//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
-//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
-//                                        letterGraphics.dispose();
-//                                        graphics1.dispose();
-//                                    }
 
                                         if (letter != null) {
                                             graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
                                         } else {
                                             graphics.drawString(s1, sizex, sizey);
                                         }
-                                        sizey += fontMetrics.getHeight();
+                                        if (StringUtils.SPACE.equals(s1)) {
+                                            sizey = sizey + fontMetrics.getHeight() / 2;
+                                        } else {
+                                            sizey += fontMetrics.getHeight();
+                                        }
                                         graphics.dispose();
                                     }
                                     int width = fontMetrics.stringWidth(String.valueOf(textStr.charAt(0)));
                                     sizex += width;
-                                    sizey += fontMetrics.getAscent();
+                                    sizey = fontMetrics.getAscent();
                                 }
 
                                 if ("center".equals(align)) {
@@ -1501,25 +1492,17 @@ public class WxAppAllService {
                                     char c = textStrs.get(t_multiple).charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
-//                                    if(!(19968 <= (int)c && (int)c <40869)) {
-//                                        letter = new BufferedImage(fontMetrics.getHeight(), fontMetrics.getHeight(), BufferedImage.TYPE_INT_RGB);
-//                                        Graphics2D graphics1 = (Graphics2D)letter.getGraphics();
-//                                        letter = graphics1.getDeviceConfiguration().createCompatibleImage(fontMetrics.getHeight(), fontMetrics.getHeight(), Transparency.TRANSLUCENT);
-//                                        Graphics2D letterGraphics = letter.createGraphics();
-//                                        letterGraphics.setFont(font);
-//                                        letterGraphics.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int) Math.round(Double.valueOf(colors[3].trim()) * 255)));
-//                                        letterGraphics.rotate(Math.toRadians(90), fontMetrics.getHeight() / 2, fontMetrics.getHeight() / 2);
-//                                        letterGraphics.drawString(s1, fontMetrics.getDescent(), fontMetrics.getAscent());
-//                                        letterGraphics.dispose();
-//                                        graphics1.dispose();
-//                                    }
 
                                     if (letter != null) {
                                         graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
-                                    sizey += fontMetrics.getHeight();
+                                    if (StringUtils.SPACE.equals(s1)) {
+                                        sizey = sizey + fontMetrics.getHeight() / 2;
+                                    } else {
+                                        sizey += fontMetrics.getHeight();
+                                    }
                                     graphics.dispose();
                                 }
                                 brx += (fontMetrics.stringWidth(String.valueOf(textStrs.get(t_multiple).charAt(0))) * 2);
