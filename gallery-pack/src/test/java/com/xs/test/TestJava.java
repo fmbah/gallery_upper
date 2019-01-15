@@ -79,7 +79,7 @@ public class TestJava {
 //            generateOutput();
 
             String text = "<span style='font-size:1px;color:rgba(0,0,0,0);'>空</span>";
-            System.out.println(text.replaceAll("<br/>", "/n").replaceAll("\\<span\\sstyle\\=\\'font\\-size:\\dpx\\;color\\:rgba\\(0\\,0\\,0\\,0\\)\\;\\'\\>空\\<\\/span\\>", "/s"));
+            System.out.println(text.replaceAll("<br/>", "/n").replaceAll("\\<span\\sstyle\\=\\'font\\-size:(0|([1-9]\\d*))(\\.\\d+)?px\\;color\\:rgba\\(0\\,0\\,0\\,0\\)\\;\\'\\>空\\<\\/span\\>", "/s"));
 
 
         } catch (Exception e) {
