@@ -365,7 +365,7 @@ public class WxAppAllService {
         } else if (isBrand != null && !isBrand.booleanValue()) {
             if (!brandIds.isEmpty()) {
                 brandIds.add(0);
-                criteria.andIn("brandId", brandIds);
+//                criteria.andIn("brandId", brandIds);
             } else {
                 criteria.andEqualTo("brandId", 0);
             }
