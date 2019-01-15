@@ -358,8 +358,9 @@ public class WxAppAllService {
         }
 
         if (isBrand == null) {//全部为null, 具体分类为false,品牌为true
-            brandIds.add(0);
-            criteria.andIn("brandId", brandIds);
+//            brandIds.add(0);
+//            criteria.andIn("brandId", brandIds);
+            criteria.andEqualTo("brandId", 0);
         } else if (isBrand != null && isBrand.booleanValue()) {
             criteria.andIn("brandId", brandIds);
         } else if (isBrand != null && !isBrand.booleanValue()) {
