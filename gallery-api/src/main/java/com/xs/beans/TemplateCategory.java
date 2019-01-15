@@ -44,7 +44,7 @@ category: 普通类目
 
     @ApiModelProperty(value = "简介")
     @Length(max = 128,message = "简介最长128个字符!")
-//    @NotBlank(message = "简介不能为空")
+    @NotBlank(message = "简介不能为空")
     private String introduction;
 
     /**
