@@ -777,18 +777,6 @@ public class WxAppAllService {
             userPayment.setRemark(StringUtils.EMPTY);
         } else if (rechargeType.byteValue() == 1) {
             try (Jedis jedis = jedisPool.getResource()) {
-                String code_price = jedis.get(CODE_PRICE);
-                if (StringUtils.isEmpty(code_price)) {
-                    logger.error("激活码价格数据不存在或已删除");
-                    return ResultGenerator.genFailResult("激活码价格数据不存在或已删除");
-                }
-                try {
-                    userPayment.setAmount(new BigDecimal(code_price));
-                } catch (Exception e) {
-                    logger.error("激活码价格数据有误");
-                    return ResultGenerator.genFailResult("激活码价格数据有误");
-                }
-
                 Condition condition = new Condition(BrandCdkey.class);
                 Example.Criteria criteria = condition.createCriteria();
                 criteria.andEqualTo("code", code);
@@ -804,6 +792,17 @@ public class WxAppAllService {
                 if (companyBrand == null) {
                     logger.error("品牌数据不存在或已删除");
                     return ResultGenerator.genFailResult("品牌数据不存在或已删除");
+                }
+
+                String brandid = brandId + "";
+                String code_price = jedis.get(String.format(BRAND_CODE_PRICE, brandid));
+                if (StringUtils.isEmpty(code_price)) {
+                    return ResultGenerator.genFailResult("激活码价格数据不存在或已删除");
+                }
+                try {
+                    userPayment.setAmount(new BigDecimal(code_price));
+                } catch (Exception e) {
+                    return ResultGenerator.genFailResult("激活码价格数据有误");
                 }
 
                 userPayment.setCdkCode(code);
