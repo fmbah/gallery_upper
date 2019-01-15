@@ -76,7 +76,12 @@ public class TestJava {
     @Test
     public void testHtmlToImage() {
         try {
-            generateOutput();
+//            generateOutput();
+
+            String text = "<span style='font-size:1px;color:rgba(0,0,0,0);'>空</span>";
+            System.out.println(text.replaceAll("<br/>", "/n").replaceAll("\\<span\\sstyle\\=\\'font\\-size:\\dpx\\;color\\:rgba\\(0\\,0\\,0\\,0\\)\\;\\'\\>空\\<\\/span\\>", "/s"));
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

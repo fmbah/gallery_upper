@@ -1610,7 +1610,7 @@ public class WxAppAllService {
         json.put("userGuid","698F3099-E62F-4C3B-B30A-04FB735069FE");
 //        json.put("productId","1269");
         json.put("FontName",fontName);
-        json.put("chas",text.replaceAll("<br/>", "/n"));
+        json.put("chas",text.replaceAll("<br/>", "/n").replaceAll("\\<span\\sstyle\\=\\'font\\-size:\\dpx\\;color\\:rgba\\(0\\,0\\,0\\,0\\)\\;\\'\\>空\\<\\/span\\>", "/s"));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
