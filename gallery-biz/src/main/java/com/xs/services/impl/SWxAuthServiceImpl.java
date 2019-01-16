@@ -290,6 +290,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
             Condition activeCdkCondition = new Condition(ActiveCdk.class);
             Example.Criteria activeCdkConditionCriteria = activeCdkCondition.createCriteria();
             Set<Integer> brandIds = new HashSet<>();
+
             companyBrands.forEach(companyBrand -> {
                 brandIds.add(companyBrand.getId());
             });
