@@ -1262,12 +1262,12 @@ public class WxAppAllService {
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
 
                 if (!"vertical-lr".equals(writingMode)) {
-                    int bry = 0;
+                    int bry = fontMetrics.getAscent();
                     for (String text: text_no_process.split("<br/>")) {
                         int textWidth = fontMetrics.stringWidth(text);
                         int fx = 0;
                         int fy = 0;
-                        fy = fontMetrics.getAscent() + bry;
+                        fy = bry;
                         //如果文字的宽度大于容纳文字的框的宽度,那么注定要开始进行换行操作,并且根据文字对齐方式进行计算文字的摆放位置
                         //合成根据文字宽度计算出来每行容纳的文字集,截断成多行的文字,分别进行渲染
                         if (textWidth > wr) {
@@ -1294,10 +1294,7 @@ public class WxAppAllService {
 
                             textStrs.add(sb.toString());
 
-                            int tmpindex = 0;
                             for (String textStr : textStrs) {
-
-                                tmpindex++;
 
                                 textWidth = fontMetrics.stringWidth(textStr);
 
@@ -1311,7 +1308,7 @@ public class WxAppAllService {
                                 }
 
                                 int sizex = fx;
-                                int sizey = tmpindex * fontMetrics.getHeight();
+                                int sizey = bry;
                                 int sizex_max = sizex + wr;
                                 textLength = textStr.length();
 
@@ -1330,7 +1327,7 @@ public class WxAppAllService {
                                         sizex = i1;
                                     }
                                 }
-                                bry += sizey + fontMetrics.getDescent();
+                                bry += fontMetrics.getHeight();
                             }
 
                         } else {
@@ -1363,7 +1360,7 @@ public class WxAppAllService {
                                     sizex = i1;
                                 }
                             }
-                            bry += sizey + fontMetrics.getDescent();
+                            bry += fontMetrics.getHeight();
                         }
                     }
                 } else {
