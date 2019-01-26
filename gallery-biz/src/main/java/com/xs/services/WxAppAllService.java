@@ -1261,7 +1261,7 @@ public class WxAppAllService {
                 divGraphics2D_A.setFont(font);
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
 
-                if (!"vertical-lr".equals(writingMode)) {
+                if ("!vertical-rl".equals(writingMode)) {
                     int bry = fontMetrics.getAscent();
                     for (String text: text_no_process.split("<br/>")) {
                         int textWidth = fontMetrics.stringWidth(text);
@@ -1364,11 +1364,149 @@ public class WxAppAllService {
                         }
                     }
                 } else {
-                    if ("vertical-lr".equals(writingMode)) {//默认就这一种
+                    if ("vertical-rl".equals(writingMode)) {//默认就这一种
                         //计算文字总高度(包括中英文)
                         //分析共?列文字,超出列不显示
                         //计算文字每列容纳的文字集合,并存储起来
                         //对齐方式,如居左(顶头书写)/居右(底书写)/居中(上下留有等距离空间书写)
+                        int brx = wr;
+                        for (String text : text_no_process.split("<br/>")) {
+                            int t_length = text.length();
+
+                            List<String> textStrs = new ArrayList<>();
+                            StringBuilder sb = new StringBuilder();
+
+                            int subTextHeight = 0;
+                            for (int i = 0; i < t_length; i++) {
+                                char c = text.charAt(i);
+                                String s1 = String.valueOf(c);
+                                int i1;
+                                i1 = fontMetrics.getHeight();
+                                if (StringUtils.SPACE.equals(s1)) {
+                                    i1 /= 2;
+                                }
+
+                                subTextHeight += i1;
+                                if (subTextHeight <= hr) {
+                                    sb.append(s1);
+                                } else {
+                                    textStrs.add(sb.toString());
+                                    sb = new StringBuilder(s1);
+                                    subTextHeight = i1;
+                                }
+                            }
+
+                            textStrs.add(sb.toString());
+
+                            int fx = brx;
+                            int fy = 0;
+                            int t_multiple = textStrs.size() - 1;//共?列
+                            int t_remainder = 0;//最后一列高度
+                            String laststr = textStrs.get(t_multiple);
+                            for (int b = 0; b < laststr.length(); b++) {
+                                char c = laststr.charAt(b);
+                                String s1 = String.valueOf(c);
+                                int i1;
+                                i1 = fontMetrics.getHeight();
+                                if (StringUtils.SPACE.equals(s1)) {
+                                    i1 /= 2;
+                                }
+                                t_remainder += i1;
+                            }
+
+
+                            if (t_multiple == 0) {
+                                if ("center".equals(align)) {
+                                    fy = (hr - t_remainder) / 2 + fontMetrics.getAscent();
+                                } else if ("left".equals(align)) {
+                                    fy = fontMetrics.getAscent();
+                                } else {
+                                    fy = hr - t_remainder + fontMetrics.getAscent();
+                                }
+
+                                int sizex = fx;
+                                int sizey = fy;
+
+                                for (int j = 0; j < t_length; j++) {
+                                    Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                    char c = text.charAt(j);
+                                    String s1 = String.valueOf(c);
+                                    BufferedImage letter = null;
+
+                                    if (letter != null) {
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
+                                    } else {
+                                        graphics.drawString(s1, sizex - fontMetrics.stringWidth(s1), sizey);
+                                    }
+                                    if (StringUtils.SPACE.equals(s1)) {
+                                        sizey = sizey + fontMetrics.getHeight() / 2;
+                                    } else {
+                                        sizey += fontMetrics.getHeight();
+                                    }
+                                    graphics.dispose();
+                                }
+                                brx -= fontMetrics.stringWidth(String.valueOf(text.charAt(0)));
+                            } else {
+                                int sizex = fx;
+                                int sizey = fontMetrics.getAscent();
+                                for (int x = 0; x < t_multiple; x++) {
+                                    String textStr = textStrs.get(x);
+                                    for (char c : textStr.toCharArray()) {
+                                        Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                        String s1 = String.valueOf(c);
+                                        BufferedImage letter = null;
+
+                                        if (letter != null) {
+                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
+                                        } else {
+                                            graphics.drawString(s1, sizex - fontMetrics.stringWidth(s1), sizey);
+                                        }
+                                        if (StringUtils.SPACE.equals(s1)) {
+                                            sizey = sizey + fontMetrics.getHeight() / 2;
+                                        } else {
+                                            sizey += fontMetrics.getHeight();
+                                        }
+                                        graphics.dispose();
+                                    }
+                                    int width = fontMetrics.stringWidth(String.valueOf(textStr.charAt(0)));
+                                    sizex -= width;
+                                    sizey = fontMetrics.getAscent();
+                                }
+
+                                if ("center".equals(align)) {
+                                    fy = (hr - t_remainder) / 2 + fontMetrics.getAscent();
+                                } else if ("left".equals(align)) {
+                                    fy = fontMetrics.getAscent();
+                                } else {
+                                    fy = hr - t_remainder + fontMetrics.getAscent();
+                                }
+
+                                sizey = fy;
+                                t_length = textStrs.get(t_multiple).length();
+
+                                for (int j = 0; j < t_length; j++) {
+                                    Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                    char c = textStrs.get(t_multiple).charAt(j);
+                                    String s1 = String.valueOf(c);
+                                    BufferedImage letter = null;
+
+                                    if (letter != null) {
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
+                                    } else {
+                                        graphics.drawString(s1, sizex - fontMetrics.stringWidth(s1), sizey);
+                                    }
+                                    if (StringUtils.SPACE.equals(s1)) {
+                                        sizey = sizey + fontMetrics.getHeight() / 2;
+                                    } else {
+                                        sizey += fontMetrics.getHeight();
+                                    }
+                                    graphics.dispose();
+                                }
+                                brx -= (fontMetrics.stringWidth(String.valueOf(textStrs.get(t_multiple).charAt(0))) * 2);
+                            }
+
+                        }
+                    } else {
                         int brx = 0;
                         for (String text : text_no_process.split("<br/>")) {
                             int t_length = text.length();
