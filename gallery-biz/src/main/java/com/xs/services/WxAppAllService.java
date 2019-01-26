@@ -1261,7 +1261,7 @@ public class WxAppAllService {
                 divGraphics2D_A.setFont(font);
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
 
-                if ("!vertical-rl".equals(writingMode)) {
+                if (!"vertical-rl".equals(writingMode)) {
                     int bry = fontMetrics.getAscent();
                     for (String text: text_no_process.split("<br/>")) {
                         int textWidth = fontMetrics.stringWidth(text);
