@@ -80,8 +80,8 @@ public class WxAppAllController extends BaseController {
                                  @ApiParam(value = "每页容量",name = "size", type = "query",defaultValue = "0") @RequestParam(required = false, defaultValue = "0") Integer size,
                                  @ApiParam(value = "分类id",name = "categoryId", type = "query") @RequestParam(required = false) Integer categoryId,
                                  @ApiParam(value = "比例,业务方定",name = "ratio", type = "query") @RequestParam(required = false) String ratio
-                                ,@ApiParam(name = "userId", value="用户id", type = "query", required = true) @RequestParam Integer userId
-                                ,@ApiParam(name = "isBrand", value="全部不传此字段, 具体分类为false,品牌为true", type = "query") @RequestParam Boolean isBrand) {
+            ,@ApiParam(name = "userId", value="用户id", type = "query", required = true) @RequestParam Integer userId
+            ,@ApiParam(name = "isBrand", value="全部不传此字段, 具体分类为false,品牌为true", type = "query") @RequestParam Boolean isBrand) {
         return wxAppAllService.templateCenter(page, size, categoryId, ratio, userId, isBrand);
     }
 
@@ -97,14 +97,14 @@ public class WxAppAllController extends BaseController {
     @ApiOperation(value = "用户收藏模板集合", notes = "用户收藏模板集合")
     public Object userCollections(@ApiParam(name = "userId", value="用户id", type = "query",required = true) @PathVariable Integer userId
             , @ApiParam(name = "searchText", value="搜索文字", type = "query",required = false) @RequestParam(required = false) String searchText
-                                 ) {
+    ) {
         return wxAppAllService.userCollections(userId, searchText);
     }
 
     @PostMapping(value = "/verifyBrandCode/{userId}/{code}/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "验证品牌激活码", notes = "验证品牌激活码")
     public Object verifyBrandCode(@ApiParam(name = "userId", value="分类名称", type = "query",required = true) @PathVariable Integer userId,
-                                 @ApiParam(name = "code", value="模板名称", type = "query",required = true) @PathVariable String code) {
+                                  @ApiParam(name = "code", value="模板名称", type = "query",required = true) @PathVariable String code) {
         return wxAppAllService.verifyBrandCode(userId, code);
     }
 
@@ -121,7 +121,7 @@ public class WxAppAllController extends BaseController {
     @PostMapping(value = "/templateIncr/{userId}/{templateId}/{type}/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "分享和使用调用此方法,用来统计数据", notes = "分享和使用调用此方法,用来统计数据")
     public Object templateIncr(@ApiParam(name = "userId", value="用户id", type = "query",required = true) @PathVariable Integer userId,
-                                  @ApiParam(name = "templateId", value="模板id", type = "query",required = true) @PathVariable Integer templateId,
+                               @ApiParam(name = "templateId", value="模板id", type = "query",required = true) @PathVariable Integer templateId,
                                @ApiParam(name = "type", value="类型(1:分享 2:使用 3:查看)", type = "query",required = true) @PathVariable Integer type) {
         return wxAppAllService.templateIncr(userId, templateId, type);
     }
@@ -167,8 +167,9 @@ public class WxAppAllController extends BaseController {
     @IgnoreAuth
     @ApiOperation(value = "根据文字属性合成图片",notes = "根据文字属性合成图片")
     @PostMapping(value = "/drawFontsToPic",produces = "application/json;charset=utf-8")
-    public Object drawFontsToPic(@RequestBody String fontToPics, @RequestParam String pic, @RequestParam(required = false) String filterPic) throws IOException {
-        return wxAppAllService.drawFontsToPic(fontToPics, pic, filterPic, this.response.getOutputStream());
+    public Object drawFontsToPic(@RequestBody String fontToPics, @RequestParam String pic) throws IOException {//, @RequestParam(required = false) String filterPic
+//        return wxAppAllService.drawFontsToPic(fontToPics, pic, filterPic, this.response.getOutputStream());
+        return wxAppAllService.drawFontsToPic(fontToPics, pic, null, this.response.getOutputStream());
     }
 
     @IgnoreAuth
