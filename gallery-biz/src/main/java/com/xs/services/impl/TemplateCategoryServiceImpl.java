@@ -103,9 +103,9 @@ public class TemplateCategoryServiceImpl extends AbstractService<TemplateCategor
                 throw new ServiceException("热门分类背景图不能为空");
             }
 
-//            if (StringUtils.isEmpty(model.getIntroduction())) {
-//                throw new ServiceException("热门分类简介不能为空");
-//            }
+            if (StringUtils.isEmpty(model.getIntroduction())) {
+                throw new ServiceException("热门分类简介不能为空");
+            }
         }
 
         if (!StringUtils.isEmpty(model.getType()) && model.getType().equals("brand_center")) {
