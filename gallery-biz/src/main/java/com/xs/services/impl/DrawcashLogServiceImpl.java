@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG;
+import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG_OK;
 
 
 /**
@@ -149,6 +150,10 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
         if (!hasPass) {
             try (Jedis jedis = jedisPool.getResource()) {
                 jedis.set(String.format(USER_DRAWCASHLOG, user.getId()), "" + drawcashLog.getId());
+            }
+        } else {
+            try (Jedis jedis = jedisPool.getResource()) {
+                jedis.set(String.format(USER_DRAWCASHLOG_OK, user.getId()), "" + drawcashLog.getId());
             }
         }
 

@@ -30,6 +30,7 @@ public final class ProjectConstant {
     public static final String TEMPLATE_USED = "templateUsed:templateId:%s:categoryId:%s:brandId:%s";
     public static final String USER_TEMPLATE_COLLECTIONS = "userTemplateCollection:userId:%s";
     public static final String USER_DRAWCASHLOG = "userDrawcashlog:userId:%s";
+    public static final String USER_DRAWCASHLOG_OK = "userDrawcashlogOk:userId:%s";
     public static final String WX_USER_TOKEN = "wxUserToken:userId:%s";
     public static final String WX_MP_USER_TOKEN = "wxMpUserToken:userId:%s";
     public static final String WX_USER_FONT_TOKEN = "TOKEN";

@@ -29,9 +29,11 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG;
+import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG_OK;
 import static com.xs.core.ProjectConstant.WX_MP_USER_TOKEN;
 
 /**
@@ -255,10 +257,31 @@ public class SWxAuthServiceImpl implements SWxAuthService {
             String jValue = jedis.get(String.format(USER_DRAWCASHLOG, userId));
             if (StringUtils.isEmpty(jValue)) {
                 result.put("hasAlertMsg", false);
+                jValue = jedis.get(String.format(USER_DRAWCASHLOG_OK, userId));
+                if (!StringUtils.isEmpty(jValue)) {
+                    result.put("hasAlertMsg", true);
+                    jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60);
+                    Condition dlCondition1 = new Condition(DrawcashLog.class);
+                    Example.Criteria dlConditionCriteria1 = dlCondition1.createCriteria();
+                    dlConditionCriteria1.andEqualTo("userId", userId);
+                    HashSet<String> statuss = new HashSet<>();
+                    statuss.add("FINISHED");
+                    dlConditionCriteria1.andIn("status", statuss);
+                    dlCondition1.setOrderByClause(" id desc");
+                    List<DrawcashLog> drawcashLogs1 = drawcashLogMapper.selectByCondition(dlCondition1);
+                    if (drawcashLogs1 != null && !drawcashLogs1.isEmpty()) {
+                        DrawcashLog drawcashLog = drawcashLogs1.get(0);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        result.put("alertMsg", sdf.format(drawcashLog.getGmtCreate()) + "提交的提现申请已通过审核，分益金额已打入您的微信钱包，请注意查收！");
+                    } else {
+                        result.put("alertMsg", null);
+                    }
+                }
             } else {
                 result.put("hasAlertMsg", true);
 
-                jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60 * 10);
+                jedis.expire(String.format(USER_DRAWCASHLOG, userId), 60);
 
                 Condition dlCondition1 = new Condition(DrawcashLog.class);
                 Example.Criteria dlConditionCriteria1 = dlCondition1.createCriteria();
