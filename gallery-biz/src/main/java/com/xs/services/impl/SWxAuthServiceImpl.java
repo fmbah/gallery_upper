@@ -294,7 +294,8 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                 if (drawcashLogs1 != null && !drawcashLogs1.isEmpty()) {
                     DrawcashLog drawcashLog = drawcashLogs1.get(0);
 
-                    result.put("alertMsg", drawcashLog.getFailMsg());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    result.put("alertMsg", sdf.format(drawcashLog.getGmtCreate()) + "提交的提现申请已被拒绝，理由：" + drawcashLog.getFailMsg() + "，您可一周后重新提交申请！");
                 } else {
                     result.put("alertMsg", null);
                 }
