@@ -1974,4 +1974,10 @@ public class WxAppAllService {
         }
     }
 
+
+    public void replacePhoneImage(){
+        //获取所有模板
+        //根据描述进行整合
+
+    }
 }

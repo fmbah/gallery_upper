@@ -12,6 +12,7 @@
     <result column="gratis" jdbcType="TINYINT" property="gratis" />
     <result column="is_enabled" jdbcType="BIT" property="isEnabled" />
     <result column="preview_image_url" jdbcType="LONGVARCHAR" property="previewImageUrl" />
+    <result column="phone_preview_image_url" jdbcType="LONGVARCHAR" property="phonePreviewImageUrl" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="descri" jdbcType="LONGVARCHAR" property="desc" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />

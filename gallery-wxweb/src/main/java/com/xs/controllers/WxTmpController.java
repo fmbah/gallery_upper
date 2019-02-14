@@ -29,4 +29,10 @@ public class WxTmpController extends BaseController {
     public void drawFontsToPic1(@RequestPart(name = "base64Var") MultipartFile base64Var, @RequestPart(name = "fontToPics") String fontToPics, @RequestPart(name = "filterPic", required = false) String filterPic){
         wxAppAllService.drawFontsToPic1(base64Var, this.response, fontToPics,filterPic);
     }
+
+    @IgnoreAuth
+    @ApiOperation(value = "手动生成json替换手机端预览图,尽量使用一次",notes = "手动生成json替换手机端预览图")
+    @PostMapping(value = "/replacePhoneImage")
+    public void replacePhoneImage(){
+    }
 }

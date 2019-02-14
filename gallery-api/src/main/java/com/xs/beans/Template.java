@@ -47,6 +47,10 @@ public class Template extends BaseBean {
     @ApiModelProperty(value = "预览图")
     @NotBlank(message = "预览图不能为空!")
     private String previewImageUrl;
+    @Column(name = "phone_preview_image_url")
+    @ApiModelProperty(value = "手机端预览图不能为空")
+    @NotBlank(message = "手机端预览图不能为空!")
+    private String phonePreviewImageUrl;
 
     /**
      * 模板名称
@@ -288,5 +292,13 @@ public class Template extends BaseBean {
 
     public void setTpText(String tpText) {
         this.tpText = tpText;
+    }
+
+    public String getPhonePreviewImageUrl() {
+        return phonePreviewImageUrl;
+    }
+
+    public void setPhonePreviewImageUrl(String phonePreviewImageUrl) {
+        this.phonePreviewImageUrl = phonePreviewImageUrl;
     }
 }
