@@ -723,29 +723,6 @@ public class WxAppAllService {
             }
         }
 
-        //先从库里找下,用户支付记录中(用户id,未支付,相应支付类型),是否存在数据,如果存在,直接返回第一条数据,如果不存在,生成新订单
-        //保证每次下单不会生成垃圾数据
-        Condition userPaymentCondition = new Condition(UserPayment.class);
-        Example.Criteria userPaymentConditionCriteria = userPaymentCondition.createCriteria();
-        userPaymentConditionCriteria.andEqualTo("userId", userId);
-        userPaymentConditionCriteria.andEqualTo("status", "unpay");
-        userPaymentConditionCriteria.andEqualTo("rechargeType", rechargeType);
-        List<UserPayment> userPayments = userPaymentMapper.selectByCondition(userPaymentCondition);
-        if (userPayments != null && !userPayments.isEmpty()) {
-            UserPayment userPayment = userPayments.get(0);
-            boolean needModify = true;
-            if (!StringUtils.isEmpty(userPayment.getCdkCode()) && userPayment.getCdkCode().equals(code)) {
-                needModify = false;
-            }
-            if (needModify) {
-                userPayment.setCdkCode(StringUtils.isEmpty(code) ? StringUtils.EMPTY : code);
-                userPayment.setGmtModified(new Date());
-                userPaymentMapper.updateByPrimaryKey(userPayment);
-            }
-            return ResultGenerator.genSuccessResult(userPayment.getId());
-        }
-
-        Calendar.getInstance();
         UserPayment userPayment = new UserPayment();
         userPayment.setUserId(userId);
         userPayment.setOrderNo(GenerateOrderno.get());
@@ -813,9 +790,33 @@ public class WxAppAllService {
             logger.error("购买类型有误");
             return ResultGenerator.genFailResult("购买类型有误");
         }
+
+        //先从库里找下,用户支付记录中(用户id,未支付,相应支付类型),是否存在数据,如果存在,直接返回第一条数据,如果不存在,生成新订单
+        //保证每次下单不会生成垃圾数据
+        Condition userPaymentCondition = new Condition(UserPayment.class);
+        Example.Criteria userPaymentConditionCriteria = userPaymentCondition.createCriteria();
+        userPaymentConditionCriteria.andEqualTo("userId", userId);
+        userPaymentConditionCriteria.andEqualTo("status", "unpay");
+        userPaymentConditionCriteria.andEqualTo("rechargeType", rechargeType);
+        List<UserPayment> userPayments = userPaymentMapper.selectByCondition(userPaymentCondition);
+        if (userPayments != null && !userPayments.isEmpty()) {
+            UserPayment tmp = userPayments.get(0);
+            boolean needModify = true;
+            if (!StringUtils.isEmpty(tmp.getCdkCode()) && tmp.getCdkCode().equals(code)) {
+                needModify = false;
+            }
+            if (needModify) {
+                tmp.setRemark(userPayment.getRemark());
+                tmp.setCdkCode(userPayment.getCdkCode());
+                tmp.setGmtModified(initDate);
+                tmp.setOrderNo(userPayment.getOrderNo());
+                tmp.setAmount(userPayment.getAmount());
+                userPaymentMapper.updateByPrimaryKey(tmp);
+            }
+            return ResultGenerator.genSuccessResult(tmp.getId());
+        }
+
         userPaymentMapper.insert(userPayment);
-
-
 
         return ResultGenerator.genSuccessResult(userPayment.getId());
     }
