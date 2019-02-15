@@ -1024,7 +1024,7 @@ public class WxAppAllService {
             graphics2DFont.setColor(Color.white);
             graphics2DFont.drawString("中华人民共和国", x, y);
             graphics2DFont.dispose();
-            backPicGraphics.drawImage(fontImage.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 0, null);
+            backPicGraphics.drawImage(fontImage.getScaledInstance(100, 50, Image.SCALE_AREA_AVERAGING), 0, 0, null);
 
             //2. 画文字图片, 左对齐
             BufferedImage fontImage1 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
@@ -1042,7 +1042,7 @@ public class WxAppAllService {
             graphics2DFont1.setFont(font1);
             graphics2DFont1.drawString("123456四五六", x1, y1 + fontMetrics.getHeight());
             graphics2DFont1.dispose();
-            backPicGraphics.drawImage(fontImage1.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 70, null);
+            backPicGraphics.drawImage(fontImage1.getScaledInstance(100, 50, Image.SCALE_AREA_AVERAGING), 0, 70, null);
 
             //2. 画文字图片, 右对齐
             BufferedImage fontImage2 = new BufferedImage(100, 50, BufferedImage.TYPE_INT_RGB);
@@ -1065,7 +1065,7 @@ public class WxAppAllService {
 //            backPicGraphics1.transform(transform);
             backPicGraphics1.rotate(45 * Math.PI / 180, tx, ty);
             backPicGraphics1.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,1.0f)); //透明度设置开始
-            backPicGraphics1.drawImage(fontImage2.getScaledInstance(100, 50, Image.SCALE_SMOOTH), 0, 140, null);
+            backPicGraphics1.drawImage(fontImage2.getScaledInstance(100, 50, Image.SCALE_AREA_AVERAGING), 0, 140, null);
             backPicGraphics1.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER)); //透明度设置 结束
 
             Graphics2D temp1BufferedImageGraphics = fontImage2.createGraphics();
@@ -1435,7 +1435,7 @@ public class WxAppAllService {
                                     BufferedImage letter = null;
 
                                     if (letter != null) {
-                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_AREA_AVERAGING), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex - fontMetrics.stringWidth(s1), sizey);
                                     }
@@ -1458,7 +1458,7 @@ public class WxAppAllService {
                                         BufferedImage letter = null;
 
                                         if (letter != null) {
-                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
+                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_AREA_AVERAGING), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
                                         } else {
                                             graphics.drawString(s1, sizex - fontMetrics.stringWidth(s1), sizey);
                                         }
@@ -1492,7 +1492,7 @@ public class WxAppAllService {
                                     BufferedImage letter = null;
 
                                     if (letter != null) {
-                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_AREA_AVERAGING), sizex - fontMetrics.stringWidth(s1), sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex - fontMetrics.stringWidth(s1), sizey);
                                     }
@@ -1573,7 +1573,7 @@ public class WxAppAllService {
                                     BufferedImage letter = null;
 
                                     if (letter != null) {
-                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_AREA_AVERAGING), sizex, sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
@@ -1596,7 +1596,7 @@ public class WxAppAllService {
                                         BufferedImage letter = null;
 
                                         if (letter != null) {
-                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
+                                            graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_AREA_AVERAGING), sizex, sizey - fontMetrics.getAscent(), null);
                                         } else {
                                             graphics.drawString(s1, sizex, sizey);
                                         }
@@ -1630,7 +1630,7 @@ public class WxAppAllService {
                                     BufferedImage letter = null;
 
                                     if (letter != null) {
-                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_SMOOTH), sizex, sizey - fontMetrics.getAscent(), null);
+                                        graphics.drawImage(letter.getScaledInstance(letter.getWidth(), letter.getHeight(), Image.SCALE_AREA_AVERAGING), sizex, sizey - fontMetrics.getAscent(), null);
                                     } else {
                                         graphics.drawString(s1, sizex, sizey);
                                     }
@@ -1649,14 +1649,14 @@ public class WxAppAllService {
                 }
                 divGraphics2D.dispose();
 
-                backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
+                backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_AREA_AVERAGING), lr, tr, null);
                 index.getAndIncrement();
             }
 
             if (!StringUtils.isEmpty(filterPic)) {
                 long startT_T = System.currentTimeMillis();
                 BufferedImage filterPIcBufferedImage = ImageIO.read(new URL(filterPic));
-                backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_SMOOTH), 0, 0, null);
+                backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_AREA_AVERAGING), 0, 0, null);
                 logger.info("过滤层图片读取合并到背景图完成.....耗时: {}ms", System.currentTimeMillis() - startT_T);
             }
 
@@ -1944,13 +1944,13 @@ public class WxAppAllService {
                 }
                 divGraphics2D.dispose();
 
-                backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_SMOOTH), lr, tr, null);
+                backPicGraphics.drawImage(divBufferedImage.getScaledInstance(wr, hr, Image.SCALE_AREA_AVERAGING), lr, tr, null);
                 index.getAndIncrement();
             }
 
             if (!StringUtils.isEmpty(filterPic)) {
                 BufferedImage filterPIcBufferedImage = ImageIO.read(new URL(filterPic));
-                backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_SMOOTH), 0, 0, null);
+                backPicGraphics.drawImage(filterPIcBufferedImage.getScaledInstance(backPicWidth, backPicHeight, Image.SCALE_AREA_AVERAGING), 0, 0, null);
             }
 
             logger.info("结束处理文字描述.....共耗时: {}ms", (System.currentTimeMillis() - startT));
