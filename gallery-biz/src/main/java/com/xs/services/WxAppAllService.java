@@ -1205,6 +1205,8 @@ public class WxAppAllService {
             int backPicHeight = backPic.getHeight();
             System.out.println(backPicWidth + ", " + backPicHeight);
             Graphics2D backPicGraphics = backPic.createGraphics();
+            backPicGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            backPicGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             AtomicInteger index = new AtomicInteger();
             long startT = System.currentTimeMillis();
@@ -1256,8 +1258,12 @@ public class WxAppAllService {
 
                 BufferedImage divBufferedImage = new BufferedImage(wr, hr, BufferedImage.TYPE_INT_RGB);
                 Graphics2D divGraphics2D = divBufferedImage.createGraphics();
+                divGraphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                divGraphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 divBufferedImage = divGraphics2D.getDeviceConfiguration().createCompatibleImage(wr, hr, Transparency.TRANSLUCENT);
                 Graphics2D divGraphics2D_A = divBufferedImage.createGraphics();
+                divGraphics2D_A.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                divGraphics2D_A.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 FontMetrics fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
                 divGraphics2D_A.setFont(font);
                 divGraphics2D_A.setColor(new Color(Integer.valueOf(colors[0].trim()), Integer.valueOf(colors[1].trim()), Integer.valueOf(colors[2].trim()), (int)Math.round(Double.valueOf(colors[3].trim()) * 255)));
@@ -1430,6 +1436,8 @@ public class WxAppAllService {
 
                                 for (int j = 0; j < t_length; j++) {
                                     Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                    graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                     char c = text.charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
@@ -1454,6 +1462,8 @@ public class WxAppAllService {
                                     String textStr = textStrs.get(x);
                                     for (char c : textStr.toCharArray()) {
                                         Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                         String s1 = String.valueOf(c);
                                         BufferedImage letter = null;
 
@@ -1487,6 +1497,8 @@ public class WxAppAllService {
 
                                 for (int j = 0; j < t_length; j++) {
                                     Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                    graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                     char c = textStrs.get(t_multiple).charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
@@ -1568,6 +1580,8 @@ public class WxAppAllService {
 
                                 for (int j = 0; j < t_length; j++) {
                                     Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                    graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                     char c = text.charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
@@ -1592,6 +1606,8 @@ public class WxAppAllService {
                                     String textStr = textStrs.get(x);
                                     for (char c : textStr.toCharArray()) {
                                         Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                         String s1 = String.valueOf(c);
                                         BufferedImage letter = null;
 
@@ -1625,6 +1641,8 @@ public class WxAppAllService {
 
                                 for (int j = 0; j < t_length; j++) {
                                     Graphics2D graphics = (Graphics2D) divGraphics2D_A.create();
+                                    graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                                     char c = textStrs.get(t_multiple).charAt(j);
                                     String s1 = String.valueOf(c);
                                     BufferedImage letter = null;
