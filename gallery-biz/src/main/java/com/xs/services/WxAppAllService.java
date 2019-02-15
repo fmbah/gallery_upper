@@ -229,9 +229,6 @@ public class WxAppAllService {
                 Object brandIdObject = hashMap.get("brandId");
                 if (brandIdObject != null) {
                     Integer brandId = (Integer) brandIdObject;
-                    if ((brandIds.isEmpty() && brandId == 0) || (brandId != 0 && !brandIds.isEmpty() && !brandIds.contains(brandId))) {
-                        iterator.remove();
-                    }
                     if (brandIds.isEmpty()) {
                         if (brandId != 0) {
                             iterator.remove();
