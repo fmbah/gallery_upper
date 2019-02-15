@@ -198,7 +198,7 @@ public class WxAppAllService {
         if (!StringUtils.isEmpty(searchTemplates.getSearchValue())) {
             searchTemplates.setlNames(searchTemplates.getSearchValue().split(","));
             searchTemplates.setTcTitle(searchTemplates.getSearchValue());
-            searchTemplates.settName(searchTemplates.gettName());
+            searchTemplates.settName(searchTemplates.getSearchValue());
         }
 
         if (StringUtils.isEmpty(searchTemplates.gettRatio())) {
@@ -234,8 +234,10 @@ public class WxAppAllService {
                             iterator.remove();
                         }
                     } else {
-                        if (!brandIds.contains(brandId)) {
-                            iterator.remove();
+                        if (brandId != 0) {
+                            if (!brandIds.contains(brandId)) {
+                                iterator.remove();
+                            }
                         }
                     }
                 }
