@@ -86,6 +86,12 @@ public class User extends BaseBean {
     @ApiModelProperty(value = "分享获益总额")
     private BigDecimal shareProfitAmount;
     @Transient
+    @ApiModelProperty(value = "一级分享获益总额")
+    private BigDecimal var1ShareProfitAmount;
+    @Transient
+    @ApiModelProperty(value = "二级分享获益总额")
+    private BigDecimal var2ShareProfitAmount;
+    @Transient
     @ApiModelProperty(value = "是否会员")
     private String isMemberStr;
     @Transient
@@ -377,5 +383,21 @@ public class User extends BaseBean {
 
     public void setMemberTypeStr(String memberTypeStr) {
         this.memberTypeStr = memberTypeStr;
+    }
+
+    public BigDecimal getVar1ShareProfitAmount() {
+        return var1ShareProfitAmount;
+    }
+
+    public void setVar1ShareProfitAmount(BigDecimal var1ShareProfitAmount) {
+        this.var1ShareProfitAmount = var1ShareProfitAmount;
+    }
+
+    public BigDecimal getVar2ShareProfitAmount() {
+        return var2ShareProfitAmount;
+    }
+
+    public void setVar2ShareProfitAmount(BigDecimal var2ShareProfitAmount) {
+        this.var2ShareProfitAmount = var2ShareProfitAmount;
     }
 }

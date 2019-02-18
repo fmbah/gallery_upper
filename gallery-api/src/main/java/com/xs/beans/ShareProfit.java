@@ -31,6 +31,7 @@ public class ShareProfit extends BaseBean {
 
     private String remark;
 
+
     /**
      * @return id
      */

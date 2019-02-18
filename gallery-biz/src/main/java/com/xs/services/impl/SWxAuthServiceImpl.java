@@ -164,6 +164,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
         Example.Criteria iceConditionCriteria = iceCondition.createCriteria();
         iceConditionCriteria.andEqualTo("userId", userId);
         iceConditionCriteria.andEqualTo("type", "SHARE_PROFIT");
+        iceConditionCriteria.andEqualTo("subType", new Byte("1"));
         iceCondition.setOrderByClause(" gmt_create desc");
         List<Incomexpense> incomexpenseList = incomexpenseMapper.selectByCondition(iceCondition);
         BigDecimal incomeSum = BigDecimal.ZERO;

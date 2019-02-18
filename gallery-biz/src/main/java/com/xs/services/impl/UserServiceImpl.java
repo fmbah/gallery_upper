@@ -269,10 +269,20 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 List<ShareProfit> shareProfits = shareProfitMapper.selectByCondition(shareProfitCondition);
                 if (shareProfits != null) {
                     BigDecimal allProfit = new BigDecimal(0);
+                    BigDecimal var1Profit = new BigDecimal(0);
+                    BigDecimal var2Profit = new BigDecimal(0);
                     for (ShareProfit shareProfit : shareProfits) {
                         allProfit = allProfit.add(shareProfit.getProfit());
+                        if (shareProfit.getSubType().equals(new Byte("1"))) {
+                            var1Profit = var1Profit.add(shareProfit.getProfit());
+                        }
+                        if (shareProfit.getSubType().equals(new Byte("2"))) {
+                            var2Profit = var2Profit.add(shareProfit.getProfit());
+                        }
                     }
                     user.setShareProfitAmount(allProfit);
+                    user.setVar1ShareProfitAmount(var1Profit);
+                    user.setVar2ShareProfitAmount(var2Profit);
                 }
 
             }

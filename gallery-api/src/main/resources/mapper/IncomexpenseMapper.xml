@@ -15,5 +15,7 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="share_profit_id" jdbcType="INTEGER" property="shareProfitId" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="sub_type" jdbcType="TINYINT" property="subType" />
+    <result column="payment_id" jdbcType="INTEGER" property="paymentId" />
   </resultMap>
 </mapper>

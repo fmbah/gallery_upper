@@ -133,8 +133,10 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
                 list.get(i).setBrandName(tmp.getName());
             } else {
                 CompanyBrand companyBrand = companyBrandMapper.selectByPrimaryKey(list.get(i).getBrandId());
-                cache.put(list.get(i).getBrandId(), companyBrand);
-                list.get(i).setBrandName(companyBrand.getName());
+                if (null != companyBrand) {
+                    cache.put(list.get(i).getBrandId(), companyBrand);
+                    list.get(i).setBrandName(companyBrand.getName());
+                }
             }
         }
         PageInfo pageInfo = new PageInfo(list);

@@ -133,6 +133,8 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             incomexpense.setGmtCreate(new Date());
             incomexpense.setShareProfitId(0);
             incomexpense.setRemark(user.getNickname() + "申请提现{" + drawcashLog.getDrawCash() + "}");
+            incomexpense.setSubType(new Byte("0"));
+            incomexpense.setPaymentId(0);
 
             userMapper.updateByPrimaryKey(user);
             incomexpenseMapper.insert(incomexpense);

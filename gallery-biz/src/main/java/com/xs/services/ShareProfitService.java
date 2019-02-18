@@ -2,6 +2,8 @@ package com.xs.services;
 import com.xs.beans.ShareProfit;
 import com.xs.core.sservice.Service;
 
+import java.util.List;
+
 /**
 \* User: zhaoxin
 \* Date: 2018/10/22
@@ -10,5 +12,6 @@ import com.xs.core.sservice.Service;
 \*/
 
 public interface ShareProfitService extends Service<ShareProfit> {
+
 
 }

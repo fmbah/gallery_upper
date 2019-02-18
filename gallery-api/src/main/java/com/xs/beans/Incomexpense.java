@@ -35,9 +35,26 @@ public class Incomexpense extends BaseBean {
     @Transient
     @ApiModelProperty(name = "分享获益名称")
     private String shareProfitName;
+    @Column(name = "sub_type")
+    private Byte subType;
+    @Column(name = "payment_id")
+    private Integer paymentId;
 
 
     private String remark;
+
+    @Transient
+    private String nickName;
+    @Transient
+    private String nickName1;
+    @Transient
+    private String userPic;
+    @Transient
+    private String userPic1;
+    @Transient
+    private String payType;
+    @Transient
+    private BigDecimal payAmount;
 
     /**
      * @return id
@@ -185,5 +202,69 @@ public class Incomexpense extends BaseBean {
 
     public void setShareProfitName(String shareProfitName) {
         this.shareProfitName = shareProfitName;
+    }
+
+    public Byte getSubType() {
+        return subType;
+    }
+
+    public void setSubType(Byte subType) {
+        this.subType = subType;
+    }
+
+    public Integer getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getUserPic() {
+        return userPic;
+    }
+
+    public void setUserPic(String userPic) {
+        this.userPic = userPic;
+    }
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public BigDecimal getPayAmount() {
+        return payAmount;
+    }
+
+    public void setPayAmount(BigDecimal payAmount) {
+        this.payAmount = payAmount;
+    }
+
+    public String getNickName1() {
+        return nickName1;
+    }
+
+    public void setNickName1(String nickName1) {
+        this.nickName1 = nickName1;
+    }
+
+    public String getUserPic1() {
+        return userPic1;
+    }
+
+    public void setUserPic1(String userPic1) {
+        this.userPic1 = userPic1;
     }
 }
