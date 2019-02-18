@@ -1,35 +1,35 @@
-package com.xs.controllers;
-import com.xs.core.ResultGenerator;
-import com.xs.beans.ShareProfit;
-import com.xs.services.ShareProfitService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.xs.core.scontroller.BaseController;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import javax.validation.Valid;
-import org.springframework.validation.BindingResult;
-import java.util.List;
-
-/**
-\* User: zhaoxin
-\* Date: 2018/10/22
-\* To change this template use File | Settings | File Templates.
-\* Description:
-\*/
-
-@Api
-@RestController
-@RequestMapping(value="/api/back//share/profit")
-public class ShareProfitController extends BaseController{
-    @Autowired
-    private ShareProfitService shareProfitService;
-
-
+//package com.xs.controllers;
+//import com.xs.core.ResultGenerator;
+//import com.xs.beans.ShareProfit;
+//import com.xs.services.ShareProfitService;
+//import com.github.pagehelper.PageHelper;
+//import com.github.pagehelper.PageInfo;
+//import com.xs.core.scontroller.BaseController;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import io.swagger.annotations.Api;
+//import io.swagger.annotations.ApiImplicitParam;
+//import io.swagger.annotations.ApiImplicitParams;
+//import io.swagger.annotations.ApiOperation;
+//import javax.validation.Valid;
+//import org.springframework.validation.BindingResult;
+//import java.util.List;
+//
+///**
+//\* User: zhaoxin
+//\* Date: 2018/10/22
+//\* To change this template use File | Settings | File Templates.
+//\* Description:
+//\*/
+//
+//@Api
+//@RestController
+//@RequestMapping(value="/api/back/share/profit")
+//public class ShareProfitController extends BaseController{
+//    @Autowired
+//    private ShareProfitService shareProfitService;
+//
+//
 //    /***
 //    * 新增
 //    * @return
@@ -77,7 +77,7 @@ public class ShareProfitController extends BaseController{
 //        ShareProfit shareProfit = shareProfitService.findById(id);
 //        return ResultGenerator.genSuccessResult(shareProfit);
 //    }
-
+//
 //    /***
 //    * 分页列表
 //    * @return
@@ -101,4 +101,4 @@ public class ShareProfitController extends BaseController{
 //        PageInfo pageInfo = new PageInfo(list);
 //        return ResultGenerator.genSuccessResult(pageInfo);
 //    }
-}
+//}

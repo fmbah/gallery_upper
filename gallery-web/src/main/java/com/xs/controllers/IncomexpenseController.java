@@ -24,7 +24,7 @@ import java.util.List;
 
 @Api
 @RestController
-@RequestMapping(value="/incomexpense")
+@RequestMapping(value="/api/back/incomexpense")
 public class IncomexpenseController extends BaseController{
     @Autowired
     private IncomexpenseService incomexpenseService;
