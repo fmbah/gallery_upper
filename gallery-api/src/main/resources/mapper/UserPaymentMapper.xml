@@ -36,9 +36,9 @@
 
     select * from (select tup.*,
                       case tup.recharge_type
-                      when 5 then '金卡会员'
-                      when 6 then '一年会员'
-                      when 10 then '钻石会员'
+                      when 5 then '火箭会员'
+                      when 6 then '星球会员'
+                      when 10 then '宇宙会员'
                       when 1 then '品牌会员'
                       else
                       '未知'
