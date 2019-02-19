@@ -215,9 +215,9 @@ public class PayBearingServiceImpl implements PayBearingService {
             outTradeNo = outTradeNo + order.getOrderNo() + "_";
             totalFee = totalFee + order.getAmount().multiply(new BigDecimal(100)).intValue();
             logger.info("*****************************实际支付金额{}************************",totalFee);
-//            if ("dev".equals(env)) {
-//                totalFee = 1;
-//            }
+            if ("dev".equals(env)) {
+                totalFee = 1;
+            }
         }
         request.setOutTradeNo((isMiniApp ? "mini_" : "mp_") + outTradeNo.substring(0,outTradeNo.length()-1));
         request.setTotalFee(totalFee);
