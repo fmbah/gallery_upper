@@ -703,9 +703,9 @@ public class WxAppAllService {
             if (user.getMemberType().byteValue() > rechargeType) {
 
                 if (user.getMemberType().byteValue() == 5) {
-                    user.setMemberTypeStr("金卡会员");
+                    user.setMemberTypeStr("火箭会员");
                 } else if(user.getMemberType().byteValue() == 6) {
-                    user.setMemberTypeStr("铂金会员");
+                    user.setMemberTypeStr("星球会员");
                 } else if(user.getMemberType().byteValue() == 10) {
                     user.setMemberTypeStr("钻石会员");
                 } else {
@@ -715,10 +715,10 @@ public class WxAppAllService {
                 String rechargeTypeStr = "";
                 switch (rechargeType) {
                     case 5 :
-                        rechargeTypeStr = "金卡会员";
+                        rechargeTypeStr = "火箭会员";
                         break;
                     case 6 :
-                        rechargeTypeStr = "铂金会员";
+                        rechargeTypeStr = "星球会员";
                         break;
                     case 10 :
                         rechargeTypeStr = "钻石会员";

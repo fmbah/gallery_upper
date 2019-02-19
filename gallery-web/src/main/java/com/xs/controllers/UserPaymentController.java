@@ -89,7 +89,7 @@ public class UserPaymentController extends BaseController{
             @ApiImplicitParam(value = "结束时间",name = "eTime",paramType = "query"),
             @ApiImplicitParam(value = "一级分益人id",name = "sp1Id",paramType = "query"),
             @ApiImplicitParam(value = "一级分益人名称",name = "sp1Name",paramType = "query"),
-            @ApiImplicitParam(value = "充值类型(支付类型：5: 半年会员6: 全年会员10: 终身会员0: 非会员1: 品牌会员)",name = "type",paramType = "query"),
+            @ApiImplicitParam(value = "充值类型(支付类型：5: 半年会员6: 全年会员10: 宇宙会员0: 非会员1: 品牌会员)",name = "type",paramType = "query"),
             @ApiImplicitParam(value = "是否导出",name = "isExport",paramType = "query")
     })
     @GetMapping(value = "/list",produces = "application/json;charset=utf-8")

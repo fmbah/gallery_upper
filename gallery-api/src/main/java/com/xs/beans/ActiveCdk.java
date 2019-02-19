@@ -77,8 +77,8 @@ public class ActiveCdk extends BaseBean {
 
     /**
      * 0: 非会员
-5: 金卡会员
-6: 铂金会员
+5: 火箭会员
+6: 星球会员
 10: 钻石会员
      */
     @Column(name = "member_type")
@@ -358,13 +358,13 @@ public class ActiveCdk extends BaseBean {
 
     /**
      * 获取0: 非会员
-5: 金卡会员
-6: 铂金会员
+5: 火箭会员
+6: 星球会员
 10: 钻石会员
      *
      * @return member_type - 0: 非会员
-5: 金卡会员
-6: 铂金会员
+5: 火箭会员
+6: 星球会员
 10: 钻石会员
      */
     public Byte getMemberType() {
@@ -373,13 +373,13 @@ public class ActiveCdk extends BaseBean {
 
     /**
      * 设置0: 非会员
-5: 金卡会员
-6: 铂金会员
+5: 火箭会员
+6: 星球会员
 10: 钻石会员
      *
      * @param memberType 0: 非会员
-5: 金卡会员
-6: 铂金会员
+5: 火箭会员
+6: 星球会员
 10: 钻石会员
      */
     public void setMemberType(Byte memberType) {

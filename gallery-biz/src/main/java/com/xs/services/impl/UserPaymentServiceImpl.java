@@ -174,7 +174,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
 
                         brandCdkeyMapper.updateByPrimaryKey(brandCdkey);
 
-                        //相当于购买了铂金会员,判断用户身份,如果小于铂金会员,则升为白金会员,默认一年后过期,如果大于铂金会员,则不操作
+                        //相当于购买了星球会员,判断用户身份,如果小于星球会员,则升为白金会员,默认一年后过期,如果大于星球会员,则不操作
                         if (user.getMemberType().byteValue() < 6) {
                             Calendar instance = Calendar.getInstance();
                             instance.add(Calendar.YEAR, 1);
@@ -206,8 +206,8 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                             Byte memberType = sp1User.getMemberType();
                             byte sp1UserMemberType = memberType == null ? 0 : memberType.byteValue();
 //                                0: 非会员
-//                                5: 金卡会员
-//                                6: 铂金会员
+//                                5: 火箭会员
+//                                6: 星球会员
 //                                10: 钻石会员
                             Condition cdkCondition = new Condition(ActiveCdk.class);
                             Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
@@ -222,13 +222,13 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                 }
                             } else if (sp1UserMemberType == 6 || sp1UserMemberType == 10) {//一年会员或钻石会员
                                 hasShareProfit = true;
-                            } else if (sp1UserMemberType == 5) {//金卡会员没钱分
+                            } else if (sp1UserMemberType == 5) {//火箭会员没钱分
                                 if (isBrandMember) {
                                     hasShareProfit = true;
                                 }
                             }
 
-                            if (type == 6) {//铂金会员
+                            if (type == 6) {//星球会员
 
 
                                 if (hasShareProfit) {
