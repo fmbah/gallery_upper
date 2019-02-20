@@ -301,7 +301,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                         incomexpense2.setGmtCreate(now);
                                         incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
                                         incomexpense2.setRemark(user.getNickname() + "-" + 365 + "-" + 50);
-                                        incomexpense2.setSubType(new Byte("1"));
+                                        incomexpense2.setSubType(new Byte("2"));
                                         incomexpense2.setPaymentId(userPaymentList.get(i).getId());
 
 //                                        userMapper.updateByPrimaryKey(sp2User);
@@ -406,7 +406,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                             incomexpense2.setGmtCreate(now);
                                             incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
                                             incomexpense2.setRemark(user.getNickname() + "-" + 899 + "-" + (type2 == 10 ? 120 : 50));
-                                            incomexpense2.setSubType(new Byte("1"));
+                                            incomexpense2.setSubType(new Byte("2"));
                                             incomexpense2.setPaymentId(userPaymentList.get(i).getId());
 
 //                                            userMapper.updateByPrimaryKey(sp2User);
