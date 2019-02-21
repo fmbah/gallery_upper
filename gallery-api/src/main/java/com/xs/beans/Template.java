@@ -49,7 +49,7 @@ public class Template extends BaseBean {
     private String previewImageUrl;
     @Column(name = "phone_preview_image_url")
     @ApiModelProperty(value = "手机端预览图不能为空")
-    @NotBlank(message = "手机端预览图不能为空!")
+//    @NotBlank(message = "手机端预览图不能为空!")
     private String phonePreviewImageUrl;
 
     /**
