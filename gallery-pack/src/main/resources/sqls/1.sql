@@ -5,3 +5,6 @@ ALTER TABLE tb_incomexpense ADD sub_type tinyint(2) NOT NULL COMMENT '1一级分
 ALTER TABLE tb_incomexpense MODIFY sub_type tinyint(2) NOT NULL COMMENT '0非分享获益,1一级分成, 2二级分成';
 
 ALTER TABLE tb_incomexpense ADD payment_id int(10) NOT NULL COMMENT '订单id';
+
+alter table tb_incomexpense set sub_type = 1 where tb_incomexpense.income = 150;
+alter table tb_incomexpense set sub_type = 2 where tb_incomexpense.income = 50;
