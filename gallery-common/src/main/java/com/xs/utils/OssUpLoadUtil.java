@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @Auther: Fmbah
@@ -189,7 +190,7 @@ public class OssUpLoadUtil {
             File tempFile =new File(filePath.trim());
             String fileName = tempFile.getName();
             InputStream inputStream = new FileInputStream(filePath);
-            PutObjectResult putResult = ossClient.putObject(bucket, fileName, inputStream);
+            PutObjectResult putResult = ossClient.putObject(bucket, "a/"+fileName, inputStream);
             LOG.info("ETag:" + putResult.getETag());
         // 设置URL过期时间为10年 3600l* 1000*24*365*10
 
@@ -259,8 +260,14 @@ public class OssUpLoadUtil {
 
     public static void main(String[] args) throws Exception {
 
-        upload(getOSSClient("","",""),"ossforszf","/Users/apple/Documents/arrowright.jpg");
+        String[] folders = {"a", "b", "c", "d", "e", "f", "g", "h", "z"};
+        for (int i= 0; i< 100; i++) {
+            System.out.println(new Random().nextInt(folders.length));
+        }
+
+//        upload(getOSSClient("http://oss-cn-hangzhou.aliyuncs.com","LTAIAop7Bgx35OgG","ydBCcgGiwqNZDrN2d4d1XbL954eYuZ"),"daily-test","/root/图片/2018-09-18 11-22-55 的屏幕截图.png");
 //        downLoad();
+//        uploadObject2OSS(getOSSClient("http://oss-cn-hangzhou.aliyuncs.com","LTAIAop7Bgx35OgG","ydBCcgGiwqNZDrN2d4d1XbL954eYuZ"),new File("/root/图片/2018-09-18 11-22-55 的屏幕截图.png"), "daily-test", "a");
     }
 }
 

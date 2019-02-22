@@ -16,6 +16,7 @@ import com.xs.core.sexception.ServiceException;
 import com.xs.daos.*;
 import com.xs.beans.User;
 import com.xs.services.ActiveCdkService;
+import com.xs.services.UpLoadService;
 import com.xs.services.UserService;
 import com.xs.core.sservice.AbstractService;
 import com.xs.utils.JxlsExportUtil;
@@ -66,6 +67,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     private ShareProfitMapper shareProfitMapper;
     @Autowired
     private JedisPool jedisPool;
+    @Autowired
+    private UpLoadService upLoadService;
 
 
     @Override
@@ -299,14 +302,16 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 exportFile = File.createTempFile("users",".xlsx");
                 JxlsExportUtil.exportExcel("static/template_file/users.xlsx","static/template_file/users.xml",exportFile,model);
 
-                OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-                try {
-                    ossClient.putObject(ossConfig.getBucket(), exportFile.getName(), new FileInputStream(exportFile));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), exportFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
-                return ResultGenerator.genSuccessResult(url.toString().replaceAll("http", "https"));
+//                OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+//                try {
+//                    ossClient.putObject(ossConfig.getBucket(), exportFile.getName(), new FileInputStream(exportFile));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), exportFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+//
+//                return ResultGenerator.genSuccessResult(url.toString().replaceAll("http", "https"));
+                return ResultGenerator.genSuccessResult(upLoadService.upFile(exportFile));
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

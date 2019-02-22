@@ -8,6 +8,7 @@ import com.xs.beans.*;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.ResultGenerator;
 import com.xs.daos.*;
+import com.xs.services.UpLoadService;
 import com.xs.services.UserPaymentService;
 import com.xs.core.sservice.AbstractService;
 import com.xs.utils.JxlsExportUtil;
@@ -53,6 +54,8 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
     private BrandCdkeyMapper brandCdkeyMapper;
     @Autowired
     private CompanyBrandMapper companyBrandMapper;
+    @Autowired
+    private UpLoadService upLoadService;
 
 
     @Override
@@ -78,14 +81,15 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                 exportFile = File.createTempFile("充值消费数据",".xlsx");
                 JxlsExportUtil.exportExcel("static/template_file/userPayments.xlsx","static/template_file/userPayments.xml",exportFile,model);
 
-                OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-                try {
-                    ossClient.putObject(ossConfig.getBucket(), exportFile.getName(), new FileInputStream(exportFile));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), exportFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
-                return ResultGenerator.genSuccessResult(url.toString().replaceAll("http", "https"));
+//                OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+//                try {
+//                    ossClient.putObject(ossConfig.getBucket(), exportFile.getName(), new FileInputStream(exportFile));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), exportFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+//                return ResultGenerator.genSuccessResult(url.toString().replaceAll("http", "https"));
+                return ResultGenerator.genSuccessResult(upLoadService.upFile(exportFile));
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

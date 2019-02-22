@@ -14,6 +14,7 @@ import com.xs.daos.CompanyBrandMapper;
 import com.xs.daos.UserMapper;
 import com.xs.services.BrandCdkeyService;
 import com.xs.core.sservice.AbstractService;
+import com.xs.services.UpLoadService;
 import com.xs.utils.JxlsExportUtil;
 import com.xs.utils.OssUpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,8 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
     private JedisPool jedisPool;
     @Autowired
     private CompanyBrandMapper companyBrandMapper;
+    @Autowired
+    private UpLoadService upLoadService;
 
 
     @Override
@@ -132,14 +135,15 @@ public class BrandCdkeyServiceImpl extends AbstractService<BrandCdkey> implement
             exportFile = File.createTempFile("cdks",".xlsx");
             JxlsExportUtil.exportExcel("static/template_file/cdks.xlsx","static/template_file/cdks.xml",exportFile,model);
 
-            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-            try {
-                ossClient.putObject(ossConfig.getBucket(), exportFile.getName(), new FileInputStream(exportFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), exportFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
-            return url.toString().replaceAll("http", "https");
+//            OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+//            try {
+//                ossClient.putObject(ossConfig.getBucket(), exportFile.getName(), new FileInputStream(exportFile));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), exportFile.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+//            return url.toString().replaceAll("http", "https");
+            return upLoadService.upFile(exportFile).toString();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

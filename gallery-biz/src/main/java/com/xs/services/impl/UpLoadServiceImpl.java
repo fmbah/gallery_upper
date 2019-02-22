@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -80,8 +81,10 @@ public class UpLoadServiceImpl implements UpLoadService {
         if(file != null && file.exists()){
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
             String fileName = new Date().getTime() + "_" + file.getName();
+            String[] folders = {"a", "b", "c", "d", "e", "f", "g", "h", "z"};
+            int i = new Random().nextInt(folders.length);
             try {
-                ossClient.putObject(ossConfig.getBucket(), fileName, new FileInputStream(file));
+                ossClient.putObject(ossConfig.getBucket(), folders[i] + File.separator + fileName, new FileInputStream(file));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -91,9 +94,9 @@ public class UpLoadServiceImpl implements UpLoadService {
 
             ossClient.setBucketCORS(request);
 
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), folders[i] + File.separator + fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(null!=url){
-                return cdnurl + fileName;
+                return cdnurl + folders[i] + File.separator + fileName;
             }
         }
         throw  new ServiceException("上传文件为空，请重新上传");
@@ -102,13 +105,15 @@ public class UpLoadServiceImpl implements UpLoadService {
     public String upFileStream(InputStream is) {
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
             String fileName = new Date().getTime() + "";
-            ossClient.putObject(ossConfig.getBucket(), fileName, is);
+            String[] folders = {"a", "b", "c", "d", "e", "f", "g", "h", "z"};
+            int i = new Random().nextInt(folders.length);
+            ossClient.putObject(ossConfig.getBucket(), folders[i] + File.separator + fileName, is);
             SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
             setParams(request);
             ossClient.setBucketCORS(request);
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), folders[i] + File.separator + fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(null!=url){
-                return cdnurl + fileName;
+                return cdnurl + folders[i] + File.separator + fileName;
             }
 
             return null;
@@ -124,18 +129,20 @@ public class UpLoadServiceImpl implements UpLoadService {
     public String up(MultipartFile file) throws IOException {
         if(!file.isEmpty()){
             if(file.getSize()<10485760){
+                String[] folders = {"a", "b", "c", "d", "e", "f", "g", "h", "z"};
+                int i = new Random().nextInt(folders.length);
                 OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
                 String fileName = new Date().getTime() + "_" + file.getOriginalFilename();
-                ossClient.putObject(ossConfig.getBucket(), fileName, file.getInputStream());
+                ossClient.putObject(ossConfig.getBucket(), folders[i] + File.separator + fileName, file.getInputStream());
                 SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
 
                 setParams(request);
 
                 ossClient.setBucketCORS(request);
 
-                URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+                URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), folders[i] + File.separator + fileName, new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
                 if(null!=url){
-                    return cdnurl + fileName;
+                    return cdnurl + folders[i] + File.separator + fileName;
                 }
             }
             throw  new RuntimeException("图片太大，最大10MB");
@@ -274,8 +281,10 @@ public class UpLoadServiceImpl implements UpLoadService {
             write.close();
 
             OSSClient ossClient =OssUpLoadUtil.getOSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
+            String[] folders = {"a", "b", "c", "d", "e", "f", "g", "h", "z"};
+            int i = new Random().nextInt(folders.length);
             try {
-                ossClient.putObject(ossConfig.getBucket(), template.getName(), new FileInputStream(template));
+                ossClient.putObject(ossConfig.getBucket(), folders[i] + File.separator + template.getName(), new FileInputStream(template));
 
                 SetBucketCORSRequest request = new SetBucketCORSRequest(ossConfig.getBucket());
                 setParams(request);
@@ -284,9 +293,9 @@ public class UpLoadServiceImpl implements UpLoadService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
+            URL url = ossClient.generatePresignedUrl(ossConfig.getBucket(), folders[i] + File.separator + template.getName(),  new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10));
             if(url != null) {
-                base64ToUrl.setBase64Var(cdnurl + template.getName());
+                base64ToUrl.setBase64Var(cdnurl + folders[i] + File.separator + template.getName());
             }
         } catch (IOException e) {
             e.printStackTrace();
