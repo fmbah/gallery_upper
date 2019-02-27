@@ -61,7 +61,7 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
     private OssConfig ossConfig;
 
     @Override
-    public Object queryWithPage(int page, int size, Boolean enabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand) {
+    public Object queryWithPage(int page, int size, Boolean enabled, Byte ratio, Integer categoryId, String name, Integer brandId, Boolean isBrand, Boolean gratis) {
 
         PageHelper.startPage(page, size);
 
@@ -70,6 +70,9 @@ public class TemplateServiceImpl extends AbstractService<Template> implements Te
 
         if (enabled != null) {
             criteria.andEqualTo("enabled", enabled);
+        }
+        if (gratis != null) {
+            criteria.andEqualTo("gratis", gratis);
         }
         if (ratio != null) {
             criteria.andEqualTo("ratio", ratio);

@@ -383,7 +383,7 @@ public class WxAppAllService {
         }
 
         criteria.andEqualTo("enabled", true);
-        condition.setOrderByClause(" id desc");
+        condition.setOrderByClause(" id desc, gratis desc");
         PageHelper.startPage(page, size);
         List<Template> templates = templateService.findByCondition(condition);
         for (int i = 0, j = templates.size(); i < j; i++) {

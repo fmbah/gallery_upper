@@ -89,6 +89,7 @@ public class TemplateController extends BaseController{
             @ApiImplicitParam(value = "分类id",name = "categoryId",paramType = "query"),
             @ApiImplicitParam(value = "品牌id",name = "brandId",paramType = "query"),
             @ApiImplicitParam(value = "比例",name = "ratio",paramType = "query"),
+            @ApiImplicitParam(value = "是否启用",name = "gratis",paramType = "query"),
             @ApiImplicitParam(value = "是否启用",name = "enabled",paramType = "query"),
             @ApiImplicitParam(value = "名称",name = "name",paramType = "query"),
             @ApiImplicitParam(value = "是否品牌",name = "isBrand",paramType = "query", required = true)
@@ -100,10 +101,11 @@ public class TemplateController extends BaseController{
                        @RequestParam(required = false) Integer brandId,
                        @RequestParam(required = false) Byte ratio,
                                    @RequestParam(required = false) Boolean enabled,
+                                   @RequestParam(required = false) Boolean gratis,
                                    @RequestParam(required = false) String name,
                                    @RequestParam(required = true) Boolean isBrand
 
     ){
-        return templateService.queryWithPage(page, size, enabled, ratio, categoryId, name, brandId, isBrand);
+        return templateService.queryWithPage(page, size, enabled, ratio, categoryId, name, brandId, isBrand, gratis);
     }
 }
