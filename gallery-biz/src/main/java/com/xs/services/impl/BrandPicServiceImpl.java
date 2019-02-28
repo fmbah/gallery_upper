@@ -83,6 +83,7 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
                 template.setGmtModified(now);
                 template.setGmtCreate(now);
                 template.setGratis(false);
+                template.setPhonePreviewImageUrl(StringUtils.EMPTY);
                 templateMapper.insert(template);
             } else {
                 template = templateMapper.selectByPrimaryKey(model.getTemplateId());
