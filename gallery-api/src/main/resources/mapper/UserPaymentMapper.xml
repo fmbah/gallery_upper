@@ -32,7 +32,7 @@
   </resultMap>
 
 
-  <select id="queryWithPage" parameterType="com.xs.beans.UserPayment" resultMap="BaseResultMap">
+  <select id="queryWithPage" parameterType="com.xs.beans.UserPayment" resultMap="BaseResultMap"><!-- and status = 'paid' -->
 
     select * from (select tup.*,
                       case tup.recharge_type
@@ -56,7 +56,7 @@
         on tup.id = tmp_tsp2.paymnet_id ) as tmp
 
 
-    where 1=1 and status = 'paid'
+    where 1=1
 
     <if test="userId != null and userId != ''">
       AND tmp.user_id = #{userId}
