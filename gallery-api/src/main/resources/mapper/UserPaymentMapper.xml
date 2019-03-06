@@ -78,13 +78,13 @@
     </if>
 
     <if test="sTime != null and sTime != ''">
-      AND tmp.gmt_create <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
+      AND tmp.gmt_payment <![CDATA[>=]]> str_to_date(#{sTime}, '%Y-%m-%d %H:%i:%s')
     </if>
     <if test="eTime != null and eTime != ''">
-      AND tmp.gmt_create <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
+      AND tmp.gmt_payment <![CDATA[<=]]> str_to_date(#{eTime}, '%Y-%m-%d %H:%i:%s')
     </if>
 
-    order by tmp.gmt_create desc
+    order by tmp.gmt_payment desc
 
   </select>
 
