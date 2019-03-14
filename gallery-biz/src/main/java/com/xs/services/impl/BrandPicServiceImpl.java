@@ -107,6 +107,13 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
     @Override
 	@Transactional(rollbackFor = ServiceException.class)
     public void update(BrandPic model) {
+		BrandPic brandPic = this.findById(model.getId());
+		if (brandPic == null) {
+			throw new ServiceException("品牌图片数据不存在");
+		}
+		if (brandPic.getSource() == 1) {
+			model.setStatus(new Byte("1"));
+		}
         Date now = new Date();
         model.setGmtModified(now);
         Template template = null;

@@ -189,7 +189,7 @@ public class WxAppAllService {
 						for (BrandPic brandPic : brandPics) {
 							Condition tmpCondition = new Condition(Template.class);
 							Example.Criteria tmpConditionCriteria = tmpCondition.createCriteria();
-							tmpConditionCriteria.andEqualTo("brandId", brandPic.getId());
+							tmpConditionCriteria.andEqualTo("brandId", brandPic.getBrandId());
 							tmpConditionCriteria.andEqualTo("enabled", true);
 							tmpConditionCriteria.andEqualTo("categoryId", 0);
 							JSONArray jsonArray = JSONObject.parseArray(brandPic.getTemplateId());
@@ -199,13 +199,15 @@ public class WxAppAllService {
 							}
 							tmpConditionCriteria.andIn("id", templateIds);
 							List<Template> tmps = templateService.findByCondition(tmpCondition);
+							List<String> previews = new ArrayList<>();
 							for (int i = 0; i < tmps.size(); i++) {
 								tmps.get(i).setTpText("图片");
+								previews.add(tmps.get(i).getPreviewImageUrl());
 							}
 
 							HashMap<Object, Object> hashMap = new HashMap<>();
 							hashMap.put("picName", brandPic.getPicName());
-							hashMap.put("picList", tmps);
+							hashMap.put("picList", previews);
 
 							// 添加至templateList1集合中
 							templateList1.add(hashMap);
@@ -417,15 +419,10 @@ public class WxAppAllService {
 //            brandIds.add(0);
 //            criteria.andIn("brandId", brandIds);
             criteria.andEqualTo("brandId", 0);
-        } else if (isBrand != null && isBrand.booleanValue()) {
+        } else if (isBrand != null && isBrand.booleanValue() && !brandIds.isEmpty()) {
             criteria.andIn("brandId", brandIds);
         } else if (isBrand != null && !isBrand.booleanValue()) {
-//            if (!brandIds.isEmpty()) {
-//                brandIds.add(0);
-//                criteria.andIn("brandId", brandIds);
-//            } else {
-                criteria.andEqualTo("brandId", 0);
-//            }
+            criteria.andEqualTo("brandId", 0);
         } else {
             throw new ServiceException("系统故障,请联系管理员处理");
         }

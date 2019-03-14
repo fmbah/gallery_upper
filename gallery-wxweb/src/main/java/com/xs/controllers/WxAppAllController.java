@@ -54,6 +54,7 @@ public class WxAppAllController extends BaseController {
 
     @GetMapping(value = "/openBrandDatas/{userId}/", produces = "application/json;charset=utf-8")
     @ApiOperation(value = "点击品牌中心分类名称后验证是否是品牌会员", notes = "点击品牌中心分类名称后验证是否是品牌会员")
+	@IgnoreAuth
     public Object openBrandDatas(@ApiParam(name = "userId", value="用户id", required = true, type = "query") @PathVariable Integer userId) {
         return wxAppAllService.openBrandDatas(userId);
     }
