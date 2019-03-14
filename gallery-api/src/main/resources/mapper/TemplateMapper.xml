@@ -65,6 +65,9 @@
           or t.ratio = #{tR}
       </foreach>
     </if>
+    <if test="tGratis != null and tGratis != ''">
+      or t.gratis = #{tGratis}
+    </if>
 
     order by t.gmt_modified desc;
   </select>

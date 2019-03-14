@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -73,10 +74,22 @@ public class CompanyBrand extends BaseBean {
     @Transient
     @ApiModelProperty(value = "模板集合")
     private List<Template> templateList;
+    @Transient
+    @ApiModelProperty(value = "图片模板集合")
+    private List<HashMap> picTemplate;
 
     @Transient
     @ApiModelProperty(value = "激活码数量")
     private Integer ckdNum;
+
+
+    public List<HashMap> getPicTemplate() {
+        return picTemplate;
+    }
+
+    public void setPicTemplate(List<HashMap> picTemplate) {
+        this.picTemplate = picTemplate;
+    }
 
     /**
      * @return id

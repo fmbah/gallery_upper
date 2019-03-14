@@ -1,5 +1,6 @@
 package com.xs.beans;
 
+import com.alibaba.fastjson.JSONArray;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -25,17 +26,19 @@ public class BrandPic {
      * 品牌id
      */
     @Column(name = "brand_id")
-    @NotNull
+    @NotNull(message = "品牌ID不能为空")
     private Integer brandId;
 
     @Column(name = "template_id")
-    private Integer templateId;
+    private String templateId;
+    @Transient
+    private JSONArray templateIds;
 
-    public Integer getTemplateId() {
+    public String getTemplateId() {
         return templateId;
     }
 
-    public void setTemplateId(Integer templateId) {
+    public void setTemplateId(String templateId) {
         this.templateId = templateId;
     }
 
@@ -45,14 +48,17 @@ public class BrandPic {
     @Length(max=256,message = "前端展示图不能超过256个字符!")
     @Column(name = "miniapp_display_src")
     private String miniappDisplaySrc;
+    @Transient
+    private JSONArray miniappDisplaySrcs;
 
     /**
      * 最近申请图
      */
     @NotBlank(message = "最近申请图不能为空!")
-    @Length(max=256,message = "最近申请图不能超过256个字符!")
     @Column(name = "latest_apply_src")
     private String latestApplySrc;
+    @Transient
+    private JSONArray latestApplySrcs;
 
     /**
      * 状态(0: 审核中(提交方)/待审核(审核方) 1: 审核成功 2:审核失败)
@@ -70,6 +76,10 @@ public class BrandPic {
 
     @Column(name = "gmt_modified")
     private Date gmtModified;
+
+	@Column(name = "source")
+	@NotNull(message = "来源不能为空")
+	private Integer source;
 
 
     @Transient
@@ -178,7 +188,16 @@ public class BrandPic {
         this.status = status;
     }
 
-    /**
+
+	public Integer getSource() {
+		return source;
+	}
+
+	public void setSource(Integer source) {
+		this.source = source;
+	}
+
+	/**
      * 获取备注
      *
      * @return remark - 备注
@@ -230,5 +249,29 @@ public class BrandPic {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    public JSONArray getTemplateIds() {
+        return templateIds;
+    }
+
+    public void setTemplateIds(JSONArray templateIds) {
+        this.templateIds = templateIds;
+    }
+
+    public JSONArray getMiniappDisplaySrcs() {
+        return miniappDisplaySrcs;
+    }
+
+    public void setMiniappDisplaySrcs(JSONArray miniappDisplaySrcs) {
+        this.miniappDisplaySrcs = miniappDisplaySrcs;
+    }
+
+    public JSONArray getLatestApplySrcs() {
+        return latestApplySrcs;
+    }
+
+    public void setLatestApplySrcs(JSONArray latestApplySrcs) {
+        this.latestApplySrcs = latestApplySrcs;
     }
 }

@@ -1,11 +1,11 @@
 package com.xs.services;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.keypoint.PngEncoder;
 import com.xs.beans.*;
 import com.xs.beans.Label;
 import com.xs.core.ResultGenerator;
@@ -14,7 +14,6 @@ import com.xs.daos.LabelMapper;
 import com.xs.daos.TemplateLabelsMapper;
 import com.xs.daos.TemplateMapper;
 import com.xs.daos.UserPaymentMapper;
-import com.xs.utils.CalendarUtil;
 import com.xs.utils.GenerateOrderno;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,7 +40,6 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -91,6 +89,8 @@ public class WxAppAllService {
     private LabelMapper labelMapper;
     @Autowired
     private UpLoadService upLoadService;
+    @Autowired
+	private BrandPicService brandPicService;
 
     /**
      *
@@ -166,11 +166,55 @@ public class WxAppAllService {
                     Example.Criteria templateConditionCriteria = templateCondition.createCriteria();
                     templateConditionCriteria.andEqualTo("brandId", companyBrand.getId());
                     templateConditionCriteria.andEqualTo("enabled", true);
+					templateConditionCriteria.andNotEqualTo("categoryId", 0);
                     List<Template> templateList = templateService.findByCondition(templateCondition);
+					List<HashMap> templateList1 = new ArrayList<>();
                     for (int i = 0; i < templateList.size(); i++) {
-                        templateList.get(i).setTpText(templateList.get(i).getCategoryId() == 0 ? "图片" : "模板");
+                        templateList.get(i).setTpText("模板");
+                        if (templateList.get(i).getCategoryId() == 0) {
+							Condition brandPicCondition = new Condition(BrandPic.class);
+							Example.Criteria brandPicConditionCriteria = brandPicCondition.createCriteria();
+							brandPicConditionCriteria.andIn("templateId", Arrays.asList(new Integer[templateList.get(i).getId()]));
+						}
                     }
+
+                    // 获取品牌图片数据集合
+					Condition brandPicCondition = new Condition(BrandPic.class);
+					Example.Criteria brandPicConditionCriteria = brandPicCondition.createCriteria();
+					brandPicConditionCriteria.andEqualTo("brandId", companyBrand.getId());
+					brandPicConditionCriteria.andEqualTo("status", 1);
+					List<BrandPic> brandPics = brandPicService.findByCondition(brandPicCondition);
+					// 根据品牌图片获取模板图片
+					if (brandPics != null && !brandPics.isEmpty()) {
+						for (BrandPic brandPic : brandPics) {
+							Condition tmpCondition = new Condition(Template.class);
+							Example.Criteria tmpConditionCriteria = tmpCondition.createCriteria();
+							tmpConditionCriteria.andEqualTo("brandId", brandPic.getId());
+							tmpConditionCriteria.andEqualTo("enabled", true);
+							tmpConditionCriteria.andEqualTo("categoryId", 0);
+							JSONArray jsonArray = JSONObject.parseArray(brandPic.getTemplateId());
+							List<Integer> templateIds = new ArrayList<>();
+							for (int i = 0; i < jsonArray.size(); i++) {
+								templateIds.add(jsonArray.getInteger(i));
+							}
+							tmpConditionCriteria.andIn("id", templateIds);
+							List<Template> tmps = templateService.findByCondition(tmpCondition);
+							for (int i = 0; i < tmps.size(); i++) {
+								tmps.get(i).setTpText("图片");
+							}
+
+							HashMap<Object, Object> hashMap = new HashMap<>();
+							hashMap.put("picName", brandPic.getPicName());
+							hashMap.put("picList", tmps);
+
+							// 添加至templateList1集合中
+							templateList1.add(hashMap);
+						}
+					}
+
                     companyBrand.setTemplateList(templateList);
+					companyBrand.setPicTemplate(templateList1);
+
                 }
             }
         }
@@ -199,6 +243,10 @@ public class WxAppAllService {
             searchTemplates.setlNames(searchTemplates.getSearchValue().split(","));
             searchTemplates.setTcTitle(searchTemplates.getSearchValue());
             searchTemplates.settName(searchTemplates.getSearchValue());
+
+            if (searchTemplates.getSearchValue().indexOf("免费") > 0) {
+				searchTemplates.settGratis("1");
+			}
         }
 
         if (StringUtils.isEmpty(searchTemplates.gettRatio())) {

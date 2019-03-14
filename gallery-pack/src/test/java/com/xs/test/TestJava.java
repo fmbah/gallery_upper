@@ -46,6 +46,9 @@ public class TestJava {
         JSONObject jsonObject1 = JSON.parseObject("{}");
         jsonObject1.put("a", "av");
         System.out.println(jsonObject1);
+        String str = "[\"1\", '2', '3']";
+        JSONArray jsonArray = JSON.parseArray(str);
+        System.out.println(jsonArray.size());
 
     }
 

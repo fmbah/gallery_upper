@@ -35,6 +35,17 @@ public class SearchTemplates extends BaseBean {
     @ApiModelProperty(value = "模糊搜索文字(可能模板名称/分类标题/标签名称)")
     String searchValue;
 
+    @ApiModelProperty(value = "免费")
+    String tGratis;
+
+
+    public String gettGratis() {
+        return tGratis;
+    }
+
+    public void settGratis(String tGratis) {
+        this.tGratis = tGratis;
+    }
 
     public String getTcTitle() {
         return tcTitle;
