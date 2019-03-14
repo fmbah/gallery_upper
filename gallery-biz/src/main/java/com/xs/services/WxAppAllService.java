@@ -378,8 +378,6 @@ public class WxAppAllService {
 //            } else {
                 criteria.andEqualTo("brandId", 0);
 //            }
-        } else {
-            throw new ServiceException("系统故障,请联系管理员处理");
         }
 
         criteria.andEqualTo("enabled", true);
