@@ -22,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -48,6 +45,10 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
     @Override
 	@Transactional(rollbackFor = ServiceException.class)
     public void save(BrandPic model) {
+		JSONArray array = JSONObject.parseArray(model.getLatestApplySrc());
+		if (array == null || array.isEmpty()) {
+			throw new ServiceException("品牌图片文件数据为空");
+		}
         Date now = new Date();
         model.setGmtCreate(now);
         model.setGmtModified(now);
@@ -60,6 +61,7 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
 		List<String> templateids = new ArrayList<>();
         if (model.getSource() == 1) {
 			model.setMiniappDisplaySrc(model.getLatestApplySrc());
+			model.setStatus(new Byte("1"));
 			JSONArray jsonArray = JSONObject.parseArray(model.getLatestApplySrc());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				template = new Template();
@@ -121,8 +123,11 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
         if (model.getStatus().byteValue() == 1) {
 			// "[\"1\", '2', '3']"
             model.setMiniappDisplaySrc(model.getLatestApplySrc());
-            if (model.getTemplateId() == null || model.getTemplateId().equals("0")) {
+            if (brandPic.getTemplateId() == null || brandPic.getTemplateId().equals("0")) {
 				JSONArray jsonArray = JSONObject.parseArray(model.getLatestApplySrc());
+				if (jsonArray == null || jsonArray.isEmpty()) {
+					throw new ServiceException("品牌图片文件数据为空");
+				}
 				for (int i = 0; i < jsonArray.size(); i++) {
 					template = new Template();
 					template.setCategoryId(0);
@@ -142,22 +147,36 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
 				}
             } else {
             	// 如果已存在图片模板的话,先将图片模板删除掉,然后重新添加
-				JSONArray parseArray = JSONArray.parseArray(model.getTemplateId());
+				JSONArray parseArray = JSONArray.parseArray(brandPic.getTemplateId());
+
+				JSONArray jsonArray = JSONObject.parseArray(model.getLatestApplySrc());
+				int size = jsonArray.size();
+				int index = 0;
+				if (jsonArray == null || jsonArray.isEmpty()) {
+					throw new ServiceException("品牌图片文件数据为空");
+				}
+
 				for (int i = 0; i < parseArray.size(); i++) {
 					Template tmp = templateMapper.selectByPrimaryKey(parseArray.getInteger(i));
 					if (tmp != null) {
-						templateMapper.deleteByPrimaryKey(tmp.getId());
+						if (index < size) {
+							tmp.setGmtModified(now);
+							tmp.setPreviewImageUrl(jsonArray.getString(index++));
+							templateMapper.updateByPrimaryKey(tmp);
+							templateids.add(tmp.getId().toString());
+						} else {
+							templateMapper.deleteByPrimaryKey(tmp.getId());
+
+						}
 					}
 				}
-
-				JSONArray jsonArray = JSONObject.parseArray(model.getLatestApplySrc());
-				for (int i = 0; i < jsonArray.size(); i++) {
+				while (index < size) {
 					template = new Template();
 					template.setCategoryId(0);
 					template.setBrandId(model.getBrandId());
 					template.setRatio(new Byte("0"));
 					template.setEnabled(true);
-					template.setPreviewImageUrl(jsonArray.getString(i));
+					template.setPreviewImageUrl(jsonArray.getString(index++));
 					template.setDescri(StringUtils.EMPTY);
 					template.setName(model.getPicName());
 					template.setGmtModified(now);
@@ -168,16 +187,12 @@ public class BrandPicServiceImpl extends AbstractService<BrandPic> implements Br
 
 					templateids.add(template.getId().toString());
 				}
-
-                /// <>																																		</>emplate.setGmtModified(now);
-                /// template.setPreviewImageUrl(model.getLatestApplySrc());
-				/// templateMapper.updateByPrimaryKey(template);
             }
         }
         if (model.getStatus().byteValue() == 2) {
 
         }
-        if (template != null) {
+        if (!templateids.isEmpty() || template != null) {
             model.setTemplateId(JSONObject.toJSONString(templateids));
         }
         super.update(model);

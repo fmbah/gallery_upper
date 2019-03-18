@@ -53,7 +53,7 @@
 
       left join
       (select tu.nickname, tu.id, tsp.user_id, tsp.paymnet_id, tsp.profit from tb_share_profit as tsp inner join tb_user as tu on tu.id = tsp.user_id where tsp.sub_type = 2) as tmp_tsp2
-        on tup.id = tmp_tsp2.paymnet_id ) as tmp
+        on tup.id = tmp_tsp2.paymnet_id where tup.status = 'paid') as tmp
 
 
     where 1=1

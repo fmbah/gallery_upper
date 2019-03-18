@@ -1,5 +1,6 @@
 package com.xs.configurer.sswagger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -25,6 +26,9 @@ import static com.xs.core.ProjectConstant.BACK_MANAGER_MENUID;
 @Configuration
 @EnableSwagger2
 public class Swagger2 {
+
+    @Value("${spring.profiles.active}")
+    private String env;
     @Bean
     public Docket api() {
         //添加head参数
@@ -37,7 +41,7 @@ public class Swagger2 {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.xs.controllers"))
                 .build()
-                .globalOperationParameters(pars);
+                .globalOperationParameters(pars).enable(!"dev".equals(env) ? false : true);
     }
 
     private ApiInfo apiInfo() {

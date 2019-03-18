@@ -199,10 +199,13 @@ public class WxAppAllService {
 							}
 							tmpConditionCriteria.andIn("id", templateIds);
 							List<Template> tmps = templateService.findByCondition(tmpCondition);
-							List<String> previews = new ArrayList<>();
+							List<HashMap> previews = new ArrayList<>();
 							for (int i = 0; i < tmps.size(); i++) {
 								tmps.get(i).setTpText("图片");
-								previews.add(tmps.get(i).getPreviewImageUrl());
+								HashMap hashMap = new HashMap<>();
+								hashMap.put("id", tmps.get(i).getId());
+								hashMap.put("src", tmps.get(i).getPreviewImageUrl());
+								previews.add(hashMap);
 							}
 
 							HashMap<Object, Object> hashMap = new HashMap<>();
@@ -246,7 +249,7 @@ public class WxAppAllService {
             searchTemplates.setTcTitle(searchTemplates.getSearchValue());
             searchTemplates.settName(searchTemplates.getSearchValue());
 
-            if (searchTemplates.getSearchValue().indexOf("免费") > 0) {
+            if (searchTemplates.getSearchValue().indexOf("免费") > -1) {
 				searchTemplates.settGratis("1");
 			}
         }
@@ -423,8 +426,6 @@ public class WxAppAllService {
             criteria.andIn("brandId", brandIds);
         } else if (isBrand != null && !isBrand.booleanValue()) {
             criteria.andEqualTo("brandId", 0);
-        } else {
-            throw new ServiceException("系统故障,请联系管理员处理");
         }
 
         criteria.andEqualTo("enabled", true);
