@@ -183,6 +183,7 @@ public class WxAppAllService {
 					Example.Criteria brandPicConditionCriteria = brandPicCondition.createCriteria();
 					brandPicConditionCriteria.andEqualTo("brandId", companyBrand.getId());
 					brandPicConditionCriteria.andEqualTo("status", 1);
+                    brandPicCondition.setOrderByClause(" gmt_create desc");
 					List<BrandPic> brandPics = brandPicService.findByCondition(brandPicCondition);
 					// 根据品牌图片获取模板图片
 					if (brandPics != null && !brandPics.isEmpty()) {
