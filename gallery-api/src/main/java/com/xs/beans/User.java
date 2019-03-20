@@ -50,7 +50,7 @@ public class User extends BaseBean {
      * 0: 非会员
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      */
     @Column(name = "member_type")
     private Byte memberType;
@@ -250,12 +250,12 @@ public class User extends BaseBean {
      * 获取0: 非会员
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      *
      * @return member_type - 0: 非会员
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      */
     public Byte getMemberType() {
         return memberType;
@@ -265,12 +265,12 @@ public class User extends BaseBean {
      * 设置0: 非会员
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      *
      * @param memberType 0: 非会员
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      */
     public void setMemberType(Byte memberType) {
         this.memberType = memberType;

@@ -754,7 +754,7 @@ public class WxAppAllService {
                 } else if(user.getMemberType().byteValue() == 6) {
                     user.setMemberTypeStr("星球会员");
                 } else if(user.getMemberType().byteValue() == 10) {
-                    user.setMemberTypeStr("钻石会员");
+                    user.setMemberTypeStr("宇宙会员");
                 } else {
                     user.setMemberTypeStr("");
                 }
@@ -768,7 +768,7 @@ public class WxAppAllService {
                         rechargeTypeStr = "星球会员";
                         break;
                     case 10 :
-                        rechargeTypeStr = "钻石会员";
+                        rechargeTypeStr = "宇宙会员";
                         break;
                     default:
                         rechargeTypeStr = "";

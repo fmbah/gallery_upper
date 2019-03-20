@@ -112,7 +112,7 @@ public class WxAppAllController extends BaseController {
 
     @RequestMapping(value = "orderDown",method = RequestMethod.POST)
     @ApiOperation(value = "下订单",notes = "下订单")
-    public Object orderDown(@ApiParam(name = "rechargeType", value = "支付类型：5: 火箭会员 6: 星球会员 10: 钻石会员 (后面俩此处不用 0: 非会员  1: 品牌会员)", required = true, type = "string") @RequestParam Byte rechargeType,
+    public Object orderDown(@ApiParam(name = "rechargeType", value = "支付类型：5: 火箭会员 6: 星球会员 10: 宇宙会员 (后面俩此处不用 0: 非会员  1: 品牌会员)", required = true, type = "string") @RequestParam Byte rechargeType,
                             @ApiParam(name = "userId", value = "用户id", required = true, type = "string") @RequestParam Integer userId){
 
         return wxAppAllService.orderDown(userId, rechargeType, null);
