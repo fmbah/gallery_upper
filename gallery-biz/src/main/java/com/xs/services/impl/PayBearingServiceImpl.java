@@ -199,9 +199,9 @@ public class PayBearingServiceImpl implements PayBearingService {
                     if (rechargeType.byteValue() == 5) {
                         rechargeTypeStr = "火箭会员";
                     } else if (rechargeType.byteValue() == 6) {
-                        rechargeTypeStr = "一年会员";
+                        rechargeTypeStr = "星球会员";
                     } else if (rechargeType.byteValue() == 10) {
-                        rechargeTypeStr = "钻石会员";
+                        rechargeTypeStr = "宇宙会员";
                     } else {
                         rechargeTypeStr = "未知";
                     }

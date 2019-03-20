@@ -41,7 +41,7 @@ public class UserPayment extends BaseBean {
      * 支付类型：
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      */
     @Column(name = "recharge_type")
     private Byte rechargeType;
@@ -52,7 +52,7 @@ public class UserPayment extends BaseBean {
     private String remark;
 
     @Transient
-    @ApiModelProperty(value = "支付类型：5: 火箭会员 6: 星球会员 10: 钻石会员")
+    @ApiModelProperty(value = "支付类型：5: 火箭会员 6: 星球会员 10: 宇宙会员")
     private String rechargeTypeStr;
 
 
@@ -211,12 +211,12 @@ public class UserPayment extends BaseBean {
      * 获取支付类型：
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      *
      * @return recharge_type - 支付类型：
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      */
     public Byte getRechargeType() {
         return rechargeType;
@@ -226,12 +226,12 @@ public class UserPayment extends BaseBean {
      * 设置支付类型：
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      *
      * @param rechargeType 支付类型：
 5: 火箭会员
 6: 星球会员
-10: 钻石会员
+10: 宇宙会员
      */
     public void setRechargeType(Byte rechargeType) {
         this.rechargeType = rechargeType;

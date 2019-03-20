@@ -212,7 +212,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
 //                                0: 非会员
 //                                5: 火箭会员
 //                                6: 星球会员
-//                                10: 钻石会员
+//                                10: 宇宙会员
                             Condition cdkCondition = new Condition(ActiveCdk.class);
                             Example.Criteria cdkConditionCriteria = cdkCondition.createCriteria();
                             cdkConditionCriteria.andEqualTo("usedUserId", sp1User.getId());
@@ -224,7 +224,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                 if (isBrandMember) {
                                     hasShareProfit = true;
                                 }
-                            } else if (sp1UserMemberType == 6 || sp1UserMemberType == 10) {//一年会员或钻石会员
+                            } else if (sp1UserMemberType == 6 || sp1UserMemberType == 10) {//一年会员或宇宙会员
                                 hasShareProfit = true;
                             } else if (sp1UserMemberType == 5) {//火箭会员没钱分
                                 if (isBrandMember) {
@@ -315,7 +315,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                 }
 
 
-                            } else if (type == 10) {//钻石会员
+                            } else if (type == 10) {//宇宙会员
 
                                 if (hasShareProfit) {
                                     //用户数据
@@ -387,7 +387,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
 
                                         if (hasShareProfit2) {
                                             //用户数据
-//                                            sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));//代理+钻石会员=120 代理+会员/品牌=50
+//                                            sp2User.setCashBalance(sp2User.getCashBalance().add(new BigDecimal(type2 == 10 ? 120 : 50)));//代理+宇宙会员=120 代理+会员/品牌=50
 
                                             //分享收益数据
                                             ShareProfit shareProfit2 = new ShareProfit();
