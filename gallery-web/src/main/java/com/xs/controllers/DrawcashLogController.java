@@ -93,7 +93,7 @@ public class DrawcashLogController extends BaseController{
         Object attribute = session.getAttribute(SESSION_ADMIN_ID);
         Integer adminId = null;
         try {
-           adminId = (Integer) attribute;
+           adminId = Integer.valueOf(attribute.toString());
        } catch (ClassCastException e) {
            throw new ServiceException("用户会话失效，请重新登录");
        }

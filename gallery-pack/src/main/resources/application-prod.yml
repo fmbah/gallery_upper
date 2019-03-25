@@ -66,7 +66,7 @@ wechat:
       mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
       subAppId:
       subMchId:
-      keyPath:
+      keyPath: classpath:apiclient_cert.p12
   mp:
       appId: wx3d912b758d72faa1
       secret: DES@nIJYOt47oS1npE1pxq_vxED5ugS32naiCntbY2f-wfJScQbh0Kls4A

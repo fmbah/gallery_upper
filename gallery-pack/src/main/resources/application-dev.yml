@@ -65,7 +65,7 @@ wechat:
       mchKey: 2SAqzcgaQIrP4GKnBkzWtOGahVSWAuZ3
       subAppId:
       subMchId:
-      keyPath:
+      keyPath: classpath:apiclient_cert.p12
   mp:
       appId: wx339e0d4617a97a30
       secret: 40d31a3415eb46591c144fb5c0a5be31

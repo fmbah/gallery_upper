@@ -1,6 +1,7 @@
 package com.xs.services.impl;
 
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.ServiceException;
 import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
 import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
@@ -78,6 +79,8 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
     private String mchId;
     @Value("${wechat.pay.mchKey}")
     private String mchKey;
+    @Value("${spring.profiles.active}")
+    private String env;
     @Autowired
     private AdminService adminService;
 
@@ -125,6 +128,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
     }
 
     @Override
+    @Transactional(rollbackFor = ServiceException.class)
     public Object auditor(HttpServletRequest request, Integer adminId, Integer id, Boolean hasPass, String failMsg) {
 
         DrawcashLog drawcashLog = super.findById(id);
@@ -138,7 +142,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
         if (user == null) {
             return ResultGenerator.genFailResult("该提现记录的申请者数据不存在或已删除");
         }
-        if (!StringUtils.isEmpty(user.getWxOpenid())) {
+        if (StringUtils.isEmpty(user.getWxOpenid())) {
             return ResultGenerator.genFailResult("该提现记录的申请者数据无OPENID");
         }
 
@@ -157,7 +161,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             String orderno = null;
             try (Jedis jedis = jedisPool.getResource()){
                 String cacheOrderno = jedis.hget(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId());
-                if (StringUtils.isEmpty(cacheOrderno)) {
+                if (cacheOrderno == null || StringUtils.EMPTY.equals(cacheOrderno)) {
                     orderno = GenerateOrderno.get();
                     jedis.hset(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId(), orderno);
                 }
@@ -166,8 +170,8 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             entPayRequest.setPartnerTradeNo(orderno);
 
             entPayRequest.setOpenid(user.getWxOpenid());
-            entPayRequest.setReUserName("NO_CHECK");
-            entPayRequest.setAmount(drawcashLog.getDrawCash().multiply(new BigDecimal("100")).intValue());
+            entPayRequest.setCheckName("NO_CHECK");
+            entPayRequest.setAmount(!"dev".equals(env) ? drawcashLog.getDrawCash().multiply(new BigDecimal("100")).intValue() : 100);
             Admin admin = adminService.findById(adminId);
             if (admin == null) {
                 return ResultGenerator.genFailResult("当前操作者数据不存在或已删除");
@@ -175,6 +179,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             String remark = user.getNickname() + "申请提现{" + drawcashLog.getDrawCash() + "}, 当前操作者：【" + admin.getUsername() + "】";
             entPayRequest.setDescription(remark);
             entPayRequest.setSpbillCreateIp(IpUtils.getIpAddr(request));
+
 
             try {
                 EntPayResult payResult = this.wxService.getEntPayService().entPay(entPayRequest);
