@@ -23,15 +23,14 @@ import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.xs.core.ProjectConstant.BACK_LOGIN_BZ;
-import static com.xs.core.ProjectConstant.BACK_MANAGER_KEY;
-import static com.xs.core.ProjectConstant.TEMPLATE_SHARE;
+import static com.xs.core.ProjectConstant.*;
 
 /**
  * @ClassName HiController
@@ -162,6 +161,9 @@ public class LoginController extends BaseController {
                         result.put("menus", null);
                     }
 
+                    HttpSession session = request.getSession();
+                    session.setAttribute(SESSION_ADMIN_ID, admin.getId());
+
                     return ResultGenerator.genSuccessResult(result);
                 } else {
                     return ResultGenerator.genFailResult("帐号或密码不正确，请重新输入或联系管理员处理");
@@ -182,6 +184,7 @@ public class LoginController extends BaseController {
             Long zrem = jedis.zrem(BACK_LOGIN_BZ, username);
             if (zrem != null && zrem != 0) {
                 System.out.println("redis 删除ok ");
+                request.getSession().invalidate();
             } else {
                 System.out.println("redis 删除error ");
             }

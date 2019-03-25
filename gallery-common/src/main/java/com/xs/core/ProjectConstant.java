@@ -39,5 +39,9 @@ public final class ProjectConstant {
     //二期需求
     public static final String BRAND_CODE_PRICE = "brandCodePrice:brandId:%s";
 
+    public static final String SESSION_ADMIN_ID = "adminId";
+    public static final String DRAWCASH_LOG_MAP = "DRAWCASH_LOG";
+    public static final String DRAWCASH_LOG = "DRAWCASH_LOG:ID:";
+
 
 }

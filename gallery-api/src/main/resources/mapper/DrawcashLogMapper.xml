@@ -16,6 +16,9 @@
     <result column="status" jdbcType="CHAR" property="status" />
     <result column="fail_msg" jdbcType="VARCHAR" property="failMsg" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="paymentNo" jdbcType="VARCHAR" property="payment_no" />
+    <result column="paymentTime" jdbcType="VARCHAR" property="payment_time" />
+    <result column="partnerTradeNo" jdbcType="VARCHAR" property="partner_trade_no" />
 
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="wxHeadImgurl" jdbcType="VARCHAR" property="wxHeadImgurl" />

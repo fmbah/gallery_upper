@@ -18,6 +18,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ import tk.mybatis.mapper.entity.Example;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG;
@@ -378,14 +382,50 @@ public class SWxAuthServiceImpl implements SWxAuthService {
 
             int intervalDays = CalendarUtil.getIntervalDays(drawcashLog.getGmtModified(), new Date());
             if (Math.abs(intervalDays) < 7) {
-                return ResultGenerator.genFailResult("提现时间间隔7天");
+//                return ResultGenerator.genFailResult("提现时间间隔7天");
             }
         }
 
+        // 除周一 周五，其它时间不可申请提现
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(System.currentTimeMillis()));
+        int num = calendar.get(Calendar.DAY_OF_WEEK);
+        if (num != 2 && num != 6) {
+            return ResultGenerator.genFailResult("允许周一或周五申请提现");
+        }
+
+
+        // 限制用户单日 最多打5000
+        BigDecimal drawCash = null;
+        try (Jedis jedis = jedisPool.getResource()){
+            String totalPrice = jedis.get("USER_APPLY_DRAWCASHLOG:ID:" + user.getId());
+            BigDecimal standard = new BigDecimal("5000");
+            if (!StringUtils.isEmpty(totalPrice)) {
+                BigDecimal tPrice = new BigDecimal(totalPrice);
+                BigDecimal userBalance = user.getCashBalance();
+                BigDecimal res = tPrice.add(userBalance);
+                if (res.compareTo(standard) > 0) {
+                    return ResultGenerator.genFailResult("用户单日最多提现5000元");
+                }
+                jedis.set("USER_APPLY_DRAWCASHLOG:ID:" + user.getId(), userBalance.toString());
+                drawCash = userBalance;
+            } else {
+                BigDecimal userBalance = user.getCashBalance();
+                if (userBalance.compareTo(standard) > 0) {
+                    jedis.set("USER_APPLY_DRAWCASHLOG:ID:" + user.getId(), standard.toString());
+                    drawCash = standard;
+                } else {
+                    jedis.set("USER_APPLY_DRAWCASHLOG:ID:" + user.getId(), userBalance.toString());
+                    drawCash = userBalance;
+                }
+            }
+
+            jedis.expire("USER_APPLY_DRAWCASHLOG:ID:" + user.getId(), 24 * 60 * 60);
+        }
 
         DrawcashLog drawcashLog = new DrawcashLog();
         drawcashLog.setUserId(user.getId());
-        drawcashLog.setDrawCash(user.getCashBalance());
+        drawcashLog.setDrawCash(drawCash);
         drawcashLog.setTaxationCash(BigDecimal.ZERO);
         drawcashLog.setType("WX_WALLET");
         drawcashLog.setGmtCreate(new Date());

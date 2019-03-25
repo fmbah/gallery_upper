@@ -2,6 +2,8 @@ package com.xs.services;
 import com.xs.beans.DrawcashLog;
 import com.xs.core.sservice.Service;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
 \* User: zhaoxin
 \* Date: 2018/10/22
@@ -32,6 +34,6 @@ public interface DrawcashLogService extends Service<DrawcashLog> {
      * @auther: Fmbah
      * @date: 18-10-22 下午2:10
      */
-    Object auditor(Integer id, Boolean hasPass, String failMsg);
+    Object auditor(HttpServletRequest request, Integer adminId, Integer id, Boolean hasPass, String failMsg);
 }
 

@@ -5,12 +5,16 @@ import com.github.pagehelper.PageInfo;
 import com.xs.beans.DrawcashLog;
 import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
+import com.xs.core.sexception.ServiceException;
 import com.xs.services.DrawcashLogService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static com.xs.core.ProjectConstant.SESSION_ADMIN_ID;
 
 /**
 \* User: zhaoxin
@@ -84,7 +88,17 @@ public class DrawcashLogController extends BaseController{
     public Object auditor(@ApiParam(name = "id", value = "当前数据id", required = true) @PathVariable Integer id,
                          @ApiParam(name = "hasPass", value = "是否通过", required = true) @PathVariable Boolean hasPass,
                          @ApiParam(name = "failMsg", value = "拒绝理由") @RequestParam(required = false) String failMsg) {
-        return drawcashLogService.auditor(id, hasPass, failMsg);
+
+        HttpSession session = request.getSession();
+        Object attribute = session.getAttribute(SESSION_ADMIN_ID);
+        Integer adminId = null;
+        try {
+           adminId = (Integer) attribute;
+       } catch (ClassCastException e) {
+           throw new ServiceException("用户会话失效，请重新登录");
+       }
+
+        return drawcashLogService.auditor(request, adminId, id, hasPass, failMsg);
     }
 
     /***

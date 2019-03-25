@@ -45,6 +45,9 @@ public class DrawcashLog extends BaseBean {
     private String failMsg;
 
     private String remark;
+    private String paymentNo;
+    private String paymentTime;
+    private String partnerTradeNo;
 
     @Transient
     private String nickname;
@@ -105,6 +108,30 @@ public class DrawcashLog extends BaseBean {
      */
     public void setTaxationCash(BigDecimal taxationCash) {
         this.taxationCash = taxationCash;
+    }
+
+    public String getPaymentNo() {
+        return paymentNo;
+    }
+
+    public void setPaymentNo(String paymentNo) {
+        this.paymentNo = paymentNo;
+    }
+
+    public String getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(String paymentTime) {
+        this.paymentTime = paymentTime;
+    }
+
+    public String getPartnerTradeNo() {
+        return partnerTradeNo;
+    }
+
+    public void setPartnerTradeNo(String partnerTradeNo) {
+        this.partnerTradeNo = partnerTradeNo;
     }
 
     /**

@@ -1,28 +1,40 @@
 package com.xs.services.impl;
 
 import com.aliyun.oss.OSSClient;
+import com.github.binarywang.wxpay.bean.entpay.EntPayRequest;
+import com.github.binarywang.wxpay.bean.entpay.EntPayResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xs.beans.Admin;
 import com.xs.beans.DrawcashLog;
 import com.xs.beans.Incomexpense;
 import com.xs.beans.User;
 import com.xs.configurer.soss.OssConfig;
 import com.xs.core.ResultGenerator;
 import com.xs.core.sservice.AbstractService;
+import com.xs.core.sservice.SWxPayService;
 import com.xs.daos.DrawcashLogMapper;
 import com.xs.daos.IncomexpenseMapper;
 import com.xs.daos.UserMapper;
+import com.xs.services.AdminService;
 import com.xs.services.DrawcashLogService;
 import com.xs.services.UpLoadService;
+import com.xs.utils.GenerateOrderno;
+import com.xs.utils.IpUtils;
 import com.xs.utils.JxlsExportUtil;
 import com.xs.utils.OssUpLoadUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,8 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG;
-import static com.xs.core.ProjectConstant.USER_DRAWCASHLOG_OK;
+import static com.xs.core.ProjectConstant.*;
 
 
 /**
@@ -59,6 +70,16 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
     private IncomexpenseMapper incomexpenseMapper;
     @Autowired
     private UpLoadService upLoadService;
+    @Resource(name="wxPayService")
+    private WxPayService wxService;
+    @Value("${wechat.mp.appId}")
+    private String mpappId;
+    @Value("${wechat.pay.mchId}")
+    private String mchId;
+    @Value("${wechat.pay.mchKey}")
+    private String mchKey;
+    @Autowired
+    private AdminService adminService;
 
 
     @Override
@@ -104,7 +125,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
     }
 
     @Override
-    public Object auditor(Integer id, Boolean hasPass, String failMsg) {
+    public Object auditor(HttpServletRequest request, Integer adminId, Integer id, Boolean hasPass, String failMsg) {
 
         DrawcashLog drawcashLog = super.findById(id);
         if (drawcashLog == null) {
@@ -117,12 +138,70 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
         if (user == null) {
             return ResultGenerator.genFailResult("该提现记录的申请者数据不存在或已删除");
         }
+        if (!StringUtils.isEmpty(user.getWxOpenid())) {
+            return ResultGenerator.genFailResult("该提现记录的申请者数据无OPENID");
+        }
 
-
+        String partnerTradeNo = null;
+        String paymentNo = null;
+        String paymentTime = null;
         if (hasPass) {
             if (user.getCashBalance().compareTo(drawcashLog.getDrawCash()) < 0) {
                 return ResultGenerator.genFailResult("该提现记录申请者余额不足,请联系管理员进行处理");
             }
+
+            EntPayRequest entPayRequest = new EntPayRequest();
+            entPayRequest.setAppid(mpappId);
+            entPayRequest.setMchId(mchId);
+            // 保证一笔提现对应一个商户订单号，后续如果失败的情况，使用原商户订单号调起付款接口，避免重复支付
+            String orderno = null;
+            try (Jedis jedis = jedisPool.getResource()){
+                String cacheOrderno = jedis.hget(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId());
+                if (StringUtils.isEmpty(cacheOrderno)) {
+                    orderno = GenerateOrderno.get();
+                    jedis.hset(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId(), orderno);
+                }
+                orderno = cacheOrderno;
+            }
+            entPayRequest.setPartnerTradeNo(orderno);
+
+            entPayRequest.setOpenid(user.getWxOpenid());
+            entPayRequest.setReUserName("NO_CHECK");
+            entPayRequest.setAmount(drawcashLog.getDrawCash().multiply(new BigDecimal("100")).intValue());
+            Admin admin = adminService.findById(adminId);
+            if (admin == null) {
+                return ResultGenerator.genFailResult("当前操作者数据不存在或已删除");
+            }
+            String remark = user.getNickname() + "申请提现{" + drawcashLog.getDrawCash() + "}, 当前操作者：【" + admin.getUsername() + "】";
+            entPayRequest.setDescription(remark);
+            entPayRequest.setSpbillCreateIp(IpUtils.getIpAddr(request));
+
+            try {
+                EntPayResult payResult = this.wxService.getEntPayService().entPay(entPayRequest);
+                if (payResult == null) {
+                    return ResultGenerator.genFailResult("申请微信企业付款接口返回值为空");
+                }
+
+                String returnCode = payResult.getReturnCode();
+                if (!"SUCCESS".equals(returnCode)) {
+                    return ResultGenerator.genFailResult("企业付款交易通讯处于非正常状态, 原因： " + payResult.getReturnMsg());
+                }
+                // 交易通讯正常
+                String resultCode = payResult.getResultCode();
+                // 交易失败
+                if (!"SUCCESS".equals(resultCode)) {
+                    return ResultGenerator.genFailResult("企业付款交易失败, 原因： " + payResult.getReturnMsg());
+                }
+                // 交易成功
+                partnerTradeNo = payResult.getPartnerTradeNo();
+                paymentNo = payResult.getPaymentNo();
+                paymentTime = payResult.getPaymentTime();
+
+            } catch (WxPayException e) {
+                e.printStackTrace();
+                return ResultGenerator.genFailResult("申请微信企业付款接口异常：" + e.getMessage());
+            }
+
             user.setCashBalance(user.getCashBalance().subtract(drawcashLog.getDrawCash()));
             user.setGmtModified(new Date());
 
@@ -136,7 +215,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             incomexpense.setTradedate(new Date());
             incomexpense.setGmtCreate(new Date());
             incomexpense.setShareProfitId(0);
-            incomexpense.setRemark(user.getNickname() + "申请提现{" + drawcashLog.getDrawCash() + "}");
+            incomexpense.setRemark(remark);
             incomexpense.setSubType(new Byte("0"));
             incomexpense.setPaymentId(0);
 
@@ -148,6 +227,9 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             }
         }
 
+        drawcashLog.setPartnerTradeNo(partnerTradeNo);
+        drawcashLog.setPaymentNo(paymentNo);
+        drawcashLog.setPaymentTime(paymentTime);
         drawcashLog.setFailMsg(StringUtils.isEmpty(failMsg) ? StringUtils.EMPTY : failMsg);
         drawcashLog.setGmtModified(new Date());
         drawcashLog.setStatus(hasPass ? "FINISHED" : "FAIL");
