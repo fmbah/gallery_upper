@@ -300,7 +300,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
                     DrawcashLog drawcashLog = drawcashLogs1.get(0);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    result.put("alertMsg", sdf.format(drawcashLog.getGmtCreate()) + "提交的提现申请已被拒绝，理由：" + drawcashLog.getFailMsg() + "，您可一周后重新提交申请！");
+                    result.put("alertMsg", sdf.format(drawcashLog.getGmtCreate()) + "提交的提现申请已被拒绝，理由：" + drawcashLog.getFailMsg() + "，若有疑问可联系客服！");
                 } else {
                     result.put("alertMsg", null);
                 }
@@ -387,12 +387,12 @@ public class SWxAuthServiceImpl implements SWxAuthService {
         }
 
         // 除周一 周五，其它时间不可申请提现
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(new Date(System.currentTimeMillis()));
-//        int num = calendar.get(Calendar.DAY_OF_WEEK);
-//        if (num != 2 && num != 6) {
-//            return ResultGenerator.genFailResult("仅允许周一或周五申请提现");
-//        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(System.currentTimeMillis()));
+        int num = calendar.get(Calendar.DAY_OF_WEEK);
+        if (num != 2 && num != 6) {
+            return ResultGenerator.genFailResult("仅允许周一或周五申请提现");
+        }
 
 
         // 限制用户单日 最多打5000

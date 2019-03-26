@@ -163,7 +163,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
 				String cacheOrderno = jedis.hget(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId());
 				if (cacheOrderno == null || StringUtils.EMPTY.equals(cacheOrderno)) {
 					cacheOrderno = GenerateOrderno.get();
-					jedis.hset(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId(), orderno);
+					jedis.hset(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId(), cacheOrderno);
 				}
 				orderno = cacheOrderno;
 			}
