@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import com.google.gson.Gson;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +18,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.sql.Connection;
 
 /**
@@ -109,5 +115,28 @@ public class TestJava {
         //save the image to file
         ImageIO.write((RenderedImage) image, "png", new File("html.png"));
 
+    }
+
+    @Test
+    public void p12Test() {
+        try {
+            KeyStore keystore = KeyStore.getInstance("PKCS12");
+            InputStream inputStream = Resources.getResourceAsStream("apiclient_cert.p12");
+            char[] partnerId2charArray = "1517295821".toCharArray();
+            keystore.load((InputStream)inputStream, partnerId2charArray);
+            SSLContexts.custom().loadKeyMaterial(keystore, partnerId2charArray).build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
     }
 }
