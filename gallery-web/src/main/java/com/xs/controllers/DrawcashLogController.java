@@ -3,6 +3,8 @@ package com.xs.controllers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xs.beans.DrawcashLog;
+import com.xs.core.ResponseBean;
+import com.xs.core.ResultCode;
 import com.xs.core.ResultGenerator;
 import com.xs.core.scontroller.BaseController;
 import com.xs.core.sexception.ServiceException;
@@ -91,11 +93,19 @@ public class DrawcashLogController extends BaseController{
 
         HttpSession session = request.getSession();
         Object attribute = session.getAttribute(SESSION_ADMIN_ID);
+        if (attribute == null) {
+            return new ResponseBean()
+                    .setCode(ResultCode.UNAUTHORIZED)
+                    .setMsg("用户会话失效，请重新登录");
+        }
+
         Integer adminId = null;
         try {
            adminId = Integer.valueOf(attribute.toString());
        } catch (ClassCastException e) {
-            return ResultGenerator.genFailResult("用户会话失效，请重新登录");
+            return new ResponseBean()
+                    .setCode(ResultCode.UNAUTHORIZED)
+                    .setMsg("用户会话失效，请重新登录");
        }
 
         return drawcashLogService.auditor(request, adminId, id, hasPass, failMsg);

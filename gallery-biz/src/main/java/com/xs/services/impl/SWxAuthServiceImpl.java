@@ -391,7 +391,7 @@ public class SWxAuthServiceImpl implements SWxAuthService {
         calendar.setTime(new Date(System.currentTimeMillis()));
         int num = calendar.get(Calendar.DAY_OF_WEEK);
         if (num != 2 && num != 6) {
-            return ResultGenerator.genFailResult("允许周一或周五申请提现");
+            return ResultGenerator.genFailResult("仅允许周一或周五申请提现");
         }
 
 
