@@ -162,7 +162,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
             try (Jedis jedis = jedisPool.getResource()){
                 String cacheOrderno = jedis.hget(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId());
                 if (cacheOrderno == null || StringUtils.EMPTY.equals(cacheOrderno)) {
-                    orderno = GenerateOrderno.get();
+                    cacheOrderno = GenerateOrderno.get();
                     jedis.hset(DRAWCASH_LOG_MAP, DRAWCASH_LOG + drawcashLog.getId(), orderno);
                 }
                 orderno = cacheOrderno;
