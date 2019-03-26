@@ -95,7 +95,7 @@ public class DrawcashLogController extends BaseController{
         try {
            adminId = Integer.valueOf(attribute.toString());
        } catch (ClassCastException e) {
-           throw new ServiceException("用户会话失效，请重新登录");
+            return ResultGenerator.genFailResult("用户会话失效，请重新登录");
        }
 
         return drawcashLogService.auditor(request, adminId, id, hasPass, failMsg);
