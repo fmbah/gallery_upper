@@ -195,7 +195,7 @@ public class DrawcashLogServiceImpl extends AbstractService<DrawcashLog> impleme
 				String resultCode = payResult.getResultCode();
 				// 交易失败
 				if (!"SUCCESS".equals(resultCode)) {
-					return ResultGenerator.genFailResult("企业付款交易失败, 原因： " + payResult.getReturnMsg());
+					return ResultGenerator.genFailResult("企业付款交易失败, 原因： " + payResult.getErrCodeDes());
 				}
 				// 交易成功
 				partnerTradeNo = payResult.getPartnerTradeNo();
