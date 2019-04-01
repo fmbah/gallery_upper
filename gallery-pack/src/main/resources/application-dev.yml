@@ -8,8 +8,8 @@ http:
 spring:
   datasource:
     drivername: com.mysql.jdbc.Driver
-    url: DES@s67hXzwVvfdxset12axMyPKo1-lMNeLbdRhMIUR52vI6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O
-    username: root
+    url: DES@s67hXzwVvfdxset12axMyAFPEyFQz6IQSSFob5m8pho6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O
+    username: gallery
     password: 123456
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
@@ -30,7 +30,7 @@ spring:
 
   redis:
       database: 8
-      host: 10.220.110.228
+      host: 10.220.120.102
       port: 6379
       pass: none
       pool:

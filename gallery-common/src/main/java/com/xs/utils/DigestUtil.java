@@ -100,10 +100,10 @@ public class DigestUtil implements Serializable {
 //		System.out.println("des 加密:" + encrypt);
 //		System.out.println("des 解密:" + decrypt(encrypt, key));
 
-		String data = "jdbc:mysql://rm-bp14kl99s9a87t72m.mysql.rds.aliyuncs.com:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8";
+		String data = "jdbc:mysql://10.220.120.111:3306/gallery?useSSL=true&useUnicode=true&characterEncoding=utf-8";
 		String encoded = encrypt(data);
 		System.out.println("加密:" + encoded);
-		String decoded = decrypt("32NWPMTGH-ApvXlbRLNuQlJxBuHQqWzg");
+		String decoded = decrypt("s67hXzwVvfdxset12axMyAFPEyFQz6IQSSFob5m8pho6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O");
 		System.out.println("解密:" + decoded);
 	}
 
