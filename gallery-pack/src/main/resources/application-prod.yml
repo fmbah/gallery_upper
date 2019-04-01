@@ -61,7 +61,7 @@ wechat:
     aesKey: L2SgaQOmH2cE4Qw3SLkjw4HefXBoZcbs87poHumzS2X
     msgDataFormat: JSON
   pay:
-      appId: wx45d98d2c8e80956f
+      appId: wxe872cecbe6201aca
       mchId: 1517295821
       mchKey: DES@G7S_VlwL9qVfseAZfNSAyxvLh8PV4bJGawzTXB_FHzVScQbh0Kls4A
       subAppId:
