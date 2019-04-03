@@ -8,7 +8,7 @@ http:
 spring:
   datasource:
     drivername: com.mysql.jdbc.Driver
-    url: DES@s67hXzwVvfdxset12axMyAFPEyFQz6IQSSFob5m8pho6r-T-zFO2JCuT0uloNuutEzBcp7YouTmApmeANhDeVN1YAIBmVofnGFP7SLpacFDVL-E-VfKEBkhlGngtQY6O
+    url: DES@s67hXzwVvfdxset12axMyAFPEyFQz6IQSSFob5m8pho6r-T-zFO2JCuT0uloNuutycvxO9P6yv4ZnF_rRLa1YSBmutwd7dXb4Zxn6nJ96PhMs123wP8rCu_sXhqN2Sbg
     username: gallery
     password: 123456
     # 使用druid数据源
