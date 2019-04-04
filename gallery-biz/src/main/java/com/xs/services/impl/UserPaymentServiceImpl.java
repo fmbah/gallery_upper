@@ -259,7 +259,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     incomexpense.setTradedate(now);
                                     incomexpense.setGmtCreate(now);
                                     incomexpense.setShareProfitId(userPaymentList.get(i).getUserId());
-                                    incomexpense.setRemark(user.getNickname() + "-" + 365 + "-" + 150);
+                                    incomexpense.setRemark(user.getNickname().replaceAll("-", StringUtils.EMPTY) + "-" + 365 + "-" + 150);
                                     incomexpense.setSubType(new Byte("1"));
                                     incomexpense.setPaymentId(userPaymentList.get(i).getId());
 
@@ -304,7 +304,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                         incomexpense2.setTradedate(now);
                                         incomexpense2.setGmtCreate(now);
                                         incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
-                                        incomexpense2.setRemark(user.getNickname() + "-" + 365 + "-" + 50);
+                                        incomexpense2.setRemark(user.getNickname().replaceAll("-", StringUtils.EMPTY) + "-" + 365 + "-" + 50);
                                         incomexpense2.setSubType(new Byte("2"));
                                         incomexpense2.setPaymentId(userPaymentList.get(i).getId());
 
@@ -341,7 +341,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                     incomexpense.setTradedate(now);
                                     incomexpense.setGmtCreate(now);
                                     incomexpense.setShareProfitId(userPaymentList.get(i).getUserId());
-                                    incomexpense.setRemark(user.getNickname() + "-" + 899 + "-" + (sp1UserMemberType == 10 ? 350 : 150));
+                                    incomexpense.setRemark(user.getNickname().replaceAll("-", StringUtils.EMPTY) + "-" + 899 + "-" + (sp1UserMemberType == 10 ? 350 : 150));
                                     incomexpense.setSubType(new Byte("1"));
                                     incomexpense.setPaymentId(userPaymentList.get(i).getId());
 
@@ -409,7 +409,7 @@ public class UserPaymentServiceImpl extends AbstractService<UserPayment> impleme
                                             incomexpense2.setTradedate(now);
                                             incomexpense2.setGmtCreate(now);
                                             incomexpense2.setShareProfitId(userPaymentList.get(i).getUserId());
-                                            incomexpense2.setRemark(user.getNickname() + "-" + 899 + "-" + (type2 == 10 ? 120 : 50));
+                                            incomexpense2.setRemark(user.getNickname().replaceAll("-", StringUtils.EMPTY) + "-" + 899 + "-" + (type2 == 10 ? 120 : 50));
                                             incomexpense2.setSubType(new Byte("2"));
                                             incomexpense2.setPaymentId(userPaymentList.get(i).getId());
 
