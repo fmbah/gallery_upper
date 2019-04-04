@@ -103,7 +103,7 @@ public class DigestUtil implements Serializable {
 		String data = "jdbc:mysql://10.220.120.111:3306/gallery?useSSL=false&useUnicode=true&characterEncoding=utf-8";
 		String encoded = encrypt(data);
 		System.out.println("加密:" + encoded);
-		String decoded = decrypt("s67hXzwVvfdxset12axMyAFPEyFQz6IQSSFob5m8pho6r-T-zFO2JCuT0uloNuutycvxO9P6yv4ZnF_rRLa1YSBmutwd7dXb4Zxn6nJ96PhMs123wP8rCu_sXhqN2Sbg");
+		String decoded = decrypt("cUwRBuLxs3ffp3DGsFaw4A");
 		System.out.println("解密:" + decoded);
 	}
 
