@@ -176,9 +176,9 @@ public class CompanyBrandServiceImpl extends AbstractService<CompanyBrand> imple
         if (model.getExpiredTime() == null) {
             throw new ServiceException("过期时间不可为空");
         }
-        if (companyBrand.getBrandPersonalUserid() != model.getBrandPersonalUserid()) {
-            throw new ServiceException("品牌个人号不可修改!");
-        }
+//        if (companyBrand.getBrandPersonalUserid() != model.getBrandPersonalUserid()) {
+//            throw new ServiceException("品牌个人号不可修改!");
+//        }
 
 
         BeanUtils.copyProperties(model, companyBrand);
