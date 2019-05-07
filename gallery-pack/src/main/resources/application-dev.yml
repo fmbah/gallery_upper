@@ -84,3 +84,11 @@ gallery:
     url: https://gallery.mxth.com
     personUrl: https://gallery.mxth.com/wechat/index.html
     rechargeUrl: https://gallery.mxth.com/wechat/recharge.html
+
+task:
+  queue:
+    corePoolSize: 10
+    maxPoolSize: 14
+    queueCapacity: 50
+    keepAllive: 60
+    threadNamePrefix: executor

@@ -11,6 +11,7 @@ import com.xs.core.scontroller.BaseController;
 import com.xs.services.AdminMenuService;
 import com.xs.services.AdminRoleMenuService;
 import com.xs.services.AdminService;
+import com.xs.services.subunit.AsycTask;
 import io.swagger.annotations.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -52,9 +53,13 @@ public class LoginController extends BaseController {
     private AdminRoleMenuService adminRoleMenuService;
     @Autowired
     private AdminMenuService adminMenuService;
+    @Autowired
+    private AsycTask asycTask;
+
 
     @GetMapping("/")
     public Object hi() {
+        asycTask.run();
         return "hi";
     }
 

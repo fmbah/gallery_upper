@@ -85,3 +85,11 @@ gallery:
     url: https://gallery.yile.vip
     personUrl: https://gallery.yile.vip/wechat/index.html
     rechargeUrl: https://gallery.yile.vip/wechat/recharge.html
+
+task:
+  queue:
+    corePoolSize: 10
+    maxPoolSize: 14
+    queueCapacity: 50
+    keepAllive: 60
+    threadNamePrefix: executor
