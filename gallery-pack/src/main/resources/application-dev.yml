@@ -8,25 +8,26 @@ http:
 spring:
   datasource:
     drivername: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     url: DES@s67hXzwVvfdxset12axMyAFPEyFQz6IQSSFob5m8pho6r-T-zFO2JCuT0uloNuutycvxO9P6yv4ZnF_rRLa1YSBmutwd7dXb4Zxn6nJ96PhMs123wP8rCu_sXhqN2Sbg
     username: gallery
     password: 123456
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.jdbc.Driver
-    filters: stat
-    maxActive: 600
-    initialSize: 1
-    maxWait: 60000
-    minIdle: 1
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: select 'x'
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    poolPreparedStatements: true
-    maxOpenPreparedStatements: 20
+    druid:
+      filters: stat
+      maxActive: 6
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
 
   redis:
       database: 8
